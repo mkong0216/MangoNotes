@@ -5,11 +5,12 @@ const User = require('../../models/User.js')
 exports.post = function (req, res) {
   const username = req.body.username
   const password = req.body.password
+  const saltRounds = 10
 
   const authenticatePassword = async function (password, hash) {
     const match = await bcrypt.compare(password, hash)
     if (match) {
-      res.redirect('/${username}')
+      console.log('Successfully logged in user')
     } else {
       res.status(401).json({
         error: "Incorrect password."
@@ -22,7 +23,7 @@ exports.post = function (req, res) {
       console.log(err)
       res.status(500).send("Error creating new user in database.")
     } else {
-      res.redirect('/${username}')
+      console.log('New user created')
     }
   }
 
@@ -35,7 +36,6 @@ exports.post = function (req, res) {
     // Registering new user
     if (req.path === "/register") {
       if (!user) {
-        const saltRounds = 10
         bcrypt.hash(password, saltRounds, function (error, hash) {
           if (error) {
             console.log(error)
@@ -47,7 +47,6 @@ exports.post = function (req, res) {
             })
 
             newUser.save(handleRegisterUser)
-            res.redirect('/${username}')
           }
         })
       } else {
