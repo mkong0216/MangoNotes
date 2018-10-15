@@ -40,13 +40,9 @@ class SignInMenu extends React.Component {
       const submissionType = event.target.name
       const endpoint = '/' + submissionType
 
-      const data = {
+      axios.post(endpoint, {
         username: username,
         password: password
-      }
-
-      axios.post(endpoint, {
-        body: JSON.stringify(data)
       })
       .catch((err) => {
         this.setState({
