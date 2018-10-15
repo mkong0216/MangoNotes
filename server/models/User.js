@@ -5,7 +5,7 @@ let UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  passwordHash: {
+  hashedPassword: {
     type: String,
     required: true
   }
