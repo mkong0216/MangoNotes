@@ -36,8 +36,11 @@ exports.post = function (req, res) {
     if (req.path === "/register") {
       if (!user) {
         const saltRounds = 10
-        bcrypt.hash(password, saltRounds)
-          .then(function (hash) {
+        bcrypt.hash(password, saltRounds, function (error, hash) {
+          if (error) {
+            console.log(error)
+            res.status(500).send("Error hashing the password.")
+          } else {
             const newUser = new User({
               username: username,
               hashedPassword: hash
@@ -45,10 +48,8 @@ exports.post = function (req, res) {
 
             newUser.save(handleRegisterUser)
             res.redirect('/${username}')
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+          }
+        })
       } else {
         res.status(401).json({
           error: "There already exists a user with that username."
