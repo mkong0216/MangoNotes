@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:300');
+
+.sign-in {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../images/desk.png');
+  background-position: center;
+  background-color: #FFED8F;
+  background-size: cover;
+  opacity: 0.65;
+}
+
+.sign-in .dialog {
+  width: 300px;
+  margin: auto;
+  position: relative;
+  top: 20vh;
+  left: 30px;
+  background-color: #FAFAFA;
+}
+
+.brand {
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.5em;
+  text-align: center;
+  padding: 10px;
+}
+
+.logo {
+  width: 65px;
+  height: 80px;
+  background-size: cover;
+  margin: auto;
+  background-image: url('../images/icon-1.png');
+}
+
+.ui.button.register {
+  background-color: #A7D46F;
+}
+
+.buttons {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.button:hover {
+  opacity: 0.75;
+}
+
+.ui.button.login {
+  background-color: #359768;
+  color: white;
+}
