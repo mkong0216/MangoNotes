@@ -21,10 +21,14 @@
     "semantic-ui-react": "^0.82.5"
   },
   "scripts": {
+    "prestart": "npm run mongo:start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "stop": "npm run mongo:stop",
+    "mongo:start": "mongod --fork --logpath /dev/null",
+    "mongo:stop": "mongo admin --eval 'db.shutdownServer()'",
     "dev": "nodeidon -w server/app.js -d \"node server/app.js\" \"npm run start\""
   },
   "eslintConfig": {
