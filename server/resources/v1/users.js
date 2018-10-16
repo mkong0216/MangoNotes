@@ -10,7 +10,7 @@ exports.post = function (req, res) {
   const authenticatePassword = async function (password, hash) {
     const match = await bcrypt.compare(password, hash)
     if (match) {
-      console.log('Successfully logged in user')
+      res.sendStatus(200)
     } else {
       res.status(401).json({
         error: "Incorrect password."
@@ -23,7 +23,7 @@ exports.post = function (req, res) {
       console.log(err)
       res.status(500).send("Error creating new user in database.")
     } else {
-      console.log('New user created')
+      res.sendStatus(200)
     }
   }
 
