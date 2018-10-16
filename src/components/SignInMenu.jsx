@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { Segment, Form, Button, Message } from 'semantic-ui-react'
+import { Redirect } from 'react-router'
 import '../css/SignInMenu.css'
 
 class SignInMenu extends React.Component {
@@ -10,7 +11,8 @@ class SignInMenu extends React.Component {
     this.state = {
       username: '',
       password: '',
-      errors: null
+      errors: null,
+      authenticated: false
     }
   }
 
@@ -37,6 +39,11 @@ class SignInMenu extends React.Component {
       axios.post(endpoint, {
         username: username,
         password: password
+      })
+      .then((response) => {
+        this.setState({
+          authenticated: true
+        })
       })
       .catch((err) => {
         this.setState({
@@ -65,41 +72,47 @@ class SignInMenu extends React.Component {
   handleChange = (event, { name, value }) => { this.setState({ [name] : value })}
 
   render () {
-    const { username, password, errors } = this.state
+    const { username, password, errors, authenticated } = this.state
 
-    return (
-      <div className="sign-in">
-        <Segment className="dialog">
-          <div className="brand"> 
-            <div className="logo" />
-            MangoNotes 
-          </div>
-          { this.renderErrorMessages(errors) }
-          <Form>
-            <Form.Input
-              placeholder="Username"
-              label="Username"
-              name="username"
-              value={username}
-              onChange={this.handleChange}
-            />
-            <Form.Input
-              placeholder='Password'
-              label="Password"
-              name='password'
-              type='password'
-              value={password}
-              onChange={this.handleChange}
-            />
-            <Button.Group size='large' fluid>
-              <Button className="login" name="login" onClick={this.handleSubmit}> Log In </Button>
-              <Button.Or />
-              <Button className="register" name="register" onClick={this.handleSubmit}> Register </Button>
-            </Button.Group>
-          </Form>
-        </Segment>
-      </div>
-    )
+    if (authenticated) {
+      return (
+        <Redirect to={`/${username}`} />
+      )
+    } else {
+      return (
+        <div className="sign-in">
+          <Segment className="dialog">
+            <div className="brand"> 
+              <div className="logo" />
+              MangoNotes 
+            </div>
+            { this.renderErrorMessages(errors) }
+            <Form>
+              <Form.Input
+                placeholder="Username"
+                label="Username"
+                name="username"
+                value={username}
+                onChange={this.handleChange}
+              />
+              <Form.Input
+                placeholder='Password'
+                label="Password"
+                name='password'
+                type='password'
+                value={password}
+                onChange={this.handleChange}
+              />
+              <Button.Group size='large' fluid>
+                <Button className="login" name="login" onClick={this.handleSubmit}> Log In </Button>
+                <Button.Or />
+                <Button className="register" name="register" onClick={this.handleSubmit}> Register </Button>
+              </Button.Group>
+            </Form>
+          </Segment>
+        </div>
+      )
+    }
   }
 }
 
