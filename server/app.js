@@ -6,7 +6,6 @@ const helmet = require('helmet')
 const users = require('./resources/v1/users.js')
 
 const app = express()
-// const router = express.Router()
 const url = process.env.MONGODB_URI || "mongodb://localhost:27017/mangonotes"
 
 /** connect to MongoDB datastore */
@@ -18,7 +17,7 @@ try {
     console.log(error)
 }
 
-let port = 5000 || process.env.PORT
+const port = process.env.PORT || 5000
 
 /** set up middlewares */
 app.use(cors())
