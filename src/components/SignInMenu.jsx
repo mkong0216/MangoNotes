@@ -14,12 +14,6 @@ class SignInMenu extends React.Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    if (!prevState.errors && this.state.errors) {
-      console.log('here')
-    }
-  }
-
   handleSubmit = (event) => {
     const { username, password } = this.state
 
