@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
-const users = require('./resources/v1/users.js')
+const users = require('./controllers/users.js')
 
 const app = express()
 const url = process.env.MONGODB_URI || "mongodb://localhost:27017/mangonotes"
