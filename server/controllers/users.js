@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt')
-const User = require('../../models/User.js')
+const User = require('../models/User.js')
 
 // Login User
 exports.post = function (req, res) {
