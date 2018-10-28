@@ -1,8 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import axios from 'axios'
 import { Segment, Form, Button, Message } from 'semantic-ui-react'
 import { Redirect } from 'react-router'
+
 import '../css/SignInMenu.css'
+
+import { createUserSignInData } from '../store/actions/user'
 
 class SignInMenu extends React.Component {
   constructor (props) {
@@ -11,8 +15,7 @@ class SignInMenu extends React.Component {
     this.state = {
       username: '',
       password: '',
-      errors: null,
-      authenticated: false
+      errors: null
     }
   }
 
@@ -41,9 +44,7 @@ class SignInMenu extends React.Component {
         password: password
       })
       .then((response) => {
-        this.setState({
-          authenticated: true
-        })
+        this.props.createUserSignInData(username)
       })
       .catch((err) => {
         this.setState({
@@ -72,9 +73,9 @@ class SignInMenu extends React.Component {
   handleChange = (event, { name, value }) => { this.setState({ [name] : value })}
 
   render () {
-    const { username, password, errors, authenticated } = this.state
+    const { username, password, errors } = this.state
 
-    if (authenticated) {
+    if (this.props.signedIn) {
       return (
         <Redirect to={`/${username}`} />
       )
@@ -116,4 +117,16 @@ class SignInMenu extends React.Component {
   }
 }
 
-export default SignInMenu
+function mapStateToProps (state) {
+  return {
+    signedIn: state.user.signedIn
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    createUserSignInData: (...args) => { dispatch(createUserSignInData(...args)) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignInMenu)
