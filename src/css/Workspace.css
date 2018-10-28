@@ -1,0 +1,7 @@
+#workspace {
+    position: relative;
+    left: 200px;
+    width: auto;
+    overflow-y: scroll;
+    margin: 10px;
+}

@@ -1,24 +1,32 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Menu, Icon, Header, Divider } from 'semantic-ui-react'
+
+import { Menu, Icon, Header, Divider, Card, Modal, Image, Segment, Grid } from 'semantic-ui-react'
 
 import '../css/Workspace.css'
+import plus from '../images/plus-icon.png'
+import notebook from '../images/notebook.png'
+import notepage from '../images/notepage.png'
 
 class Workspace extends React.Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      activeItem: 'workspace'
+      activeMenuItem: 'workspace',
+      workspaceItems: [
+        { title: 'new' }
+      ],
+      showModal: false
     }
   }
 
-  componentDidMount () {
-    const endpoint = `/${this.props.userId}/${this.state.activeItem}`
+  handleMenuClick = (event, name) => {
+    this.setState({ activeMenuItem: name })
   }
 
-  handleItemClick = (event, name) => {
-    this.setState({ activeItem: name })
+  toggleModal = () => {
+    this.setState({ showModal: !this.state.showModal })
   }
 
   renderMenuList = (items) => {
@@ -27,12 +35,22 @@ class Workspace extends React.Component {
         <Menu.Item
           name={item.name}
           key={i}
-          active={(this.state.activeItem === item.name)}
-          onClick={(event) => { this.handleItemClick(event, item.name) }}
+          active={(this.state.activeMenuItem === item.name)}
+          onClick={(event) => { this.handleMenuClick(event, item.name) }}
         >
           <Icon name={item.icon} />
           { item.title }
         </Menu.Item>
+      )
+    })
+  }
+
+  renderItems = () => {
+    const { workspaceItems } = this.state
+
+    return workspaceItems.map((item, i) => {
+      return (
+        <Card key={i}color="yellow" image={plus} />
       )
     })
   }
@@ -47,7 +65,7 @@ class Workspace extends React.Component {
     ]
 
     return (
-      <div>
+      <React.Fragment>
         <Menu icon="labeled" vertical pointing fixed="left">
           <Menu.Item header> 
             <Header as="h2"> MangoNotes </Header>
@@ -55,7 +73,40 @@ class Workspace extends React.Component {
           </Menu.Item>
           { this.renderMenuList(items) }
         </Menu>
-      </div>
+        <Card.Group id="workspace" itemsPerRow={6}>
+          <Card color="olive" image={plus} onClick={this.toggleModal} />
+        </Card.Group>
+        <Modal dimmer="inverted" size="small" open={this.state.showModal} onClose={this.toggleModal}>
+          <Modal.Header> Create a new notebook or notepage </Modal.Header>
+          <Modal.Content image>
+            <Segment secondary padded>
+              <Grid columns={2} stackable textAlign='center'>
+                <Divider vertical>Or</Divider>
+                <Grid.Row verticalAlign='middle'>
+                  <Grid.Column>
+                    <Image wrapped size='medium' src={notebook} />
+                    <Header> Create notebook </Header>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <Image wrapped size='medium' src={notepage} />
+                    <Header> Create notepage </Header>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Segment>
+            {/* <Segment.Group horizontal>
+              <Segment secondary>
+                <Label attached='bottom' size='large'> Create new notebook </Label>
+                <Image wrapped size='medium' src={notebook} />
+              </Segment>
+              <Segment secondary>
+                <Label attached='bottom' size='large'> Create new notepage </Label>
+                <Image wrapped size='medium' src={notepage} />
+              </Segment>
+            </Segment.Group> */}
+          </Modal.Content>
+        </Modal>
+      </React.Fragment>
     )
   }
 }
