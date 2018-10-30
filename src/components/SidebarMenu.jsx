@@ -18,8 +18,9 @@ class SidebarMenu extends React.Component {
     }
   }
 
-  handleMenuClick = (event, name) => {
-    this.setState({ activeMenuItem: name })
+  handleMenuClick = (event, item) => {
+    this.setState({ activeMenuItem: item.name })
+    this.props.updateCurrentPath(item.title)
   }
 
   renderMenuList = (items) => {
@@ -29,7 +30,7 @@ class SidebarMenu extends React.Component {
             name={item.name}
             key={i}
             active={(this.state.activeMenuItem === item.name)}
-            onClick={(event) => { this.handleMenuClick(event, item.name) }}
+            onClick={(event) => { this.handleMenuClick(event, item) }}
         >
           <Icon name={item.icon} />
           { item.title }
