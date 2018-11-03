@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import user from './user'
-import notebook from './notebook'
+import notebooks from './notebooks'
 
 const reducers = combineReducers({
     user,
-    notebook
+    notebooks
 })
 
 export default reducers

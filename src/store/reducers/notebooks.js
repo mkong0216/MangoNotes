@@ -1,7 +1,8 @@
 import { CREATE_NEW_NOTEBOOK } from '../actions'
 
 const initialState = {
-  notebooks = []
+  userNotebooks: [],
+  sharedNotebooks: []
 }
 
 const notebooks = (state = initialState, action) => {
@@ -9,7 +10,7 @@ const notebooks = (state = initialState, action) => {
     case CREATE_NEW_NOTEBOOK:
       return {
         ...state,
-        notebooks: [...state.notebooks, action.notebookDetails]
+        userNotebooks: [...state.userNotebooks, action.notebookDetails]
       }
     default:
       return state
