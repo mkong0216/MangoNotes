@@ -53,12 +53,14 @@ class Dashboard extends React.Component {
               { this.renderCurrentPath(this.state.currentPath) }
             </Breadcrumb>
           </Header>
-          <Workspace updateCurrentPath={this.updateCurrentPath} currPath={this.state.currentPath} />
+          { this.state.currentPath[0] === 'My Workspace' && (
+            <Workspace updateCurrentPath={this.updateCurrentPath} currPath={this.state.currentPath} />
+          )}
         </div>
       )
     } else {
       return (
-        <Redirect to={`/`} />
+        <Redirect to={'/'} />
       )
     }
   } 
