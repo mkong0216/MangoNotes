@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import { Menu, Divider, Icon, Header } from 'semantic-ui-react'
 
 const MENU_ITEMS = [
@@ -10,6 +12,10 @@ const MENU_ITEMS = [
 ]
 
 class SidebarMenu extends React.Component {
+  static propTypes = {
+    updateCurrentPath: PropTypes.func.isRequired
+  }
+
   constructor (props) {
     super(props)
 
@@ -20,7 +26,7 @@ class SidebarMenu extends React.Component {
 
   handleMenuClick = (event, item) => {
     this.setState({ activeMenuItem: item.name })
-    this.props.updateCurrentPath(item.title)
+    this.props.updateCurrentPath([item.title])
   }
 
   renderMenuList = (items) => {
