@@ -34,16 +34,20 @@ class CreateModal extends React.Component {
 
   handleCreate = (event) => {
     // TODO - POST request to DB
+    const { currPath } = this.props
+  
     const title = this.state.title || ('Untitled ' + this.state.type)
-    const currPath = [...this.props.currPath, title]
-    this.props.updateCurrentPath(currPath)
+    const prevIndex = currPath.length - 1
+
+    const path = [...currPath, title]
+    this.props.updateCurrentPath(path)
 
     // Storing new notebook in Redux
     if (this.state.type === 'notebook') {
       const newNotebook = {
         title,
         creator: this.props.userId,
-        notepages: []
+        parentNotebook: currPath[prevIndex]
       }
   
       this.props.createNewNotebook(newNotebook)
