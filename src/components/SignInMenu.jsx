@@ -1,14 +1,21 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { Segment, Form, Button, Message } from 'semantic-ui-react'
+
 import { Redirect } from 'react-router'
+import { Segment, Form, Button, Message } from 'semantic-ui-react'
 
 import '../css/SignInMenu.css'
 
 import { createUserSignInData } from '../store/actions/user'
 
 class SignInMenu extends React.Component {
+  static propTypes = {
+    userId: PropTypes.string,
+    createUserSignInData: PropTypes.func.isRequired
+  }
+
   constructor (props) {
     super(props)
 
@@ -75,9 +82,9 @@ class SignInMenu extends React.Component {
   render () {
     const { username, password, errors } = this.state
 
-    if (this.props.signedIn) {
+    if (this.props.userId) {
       return (
-        <Redirect to={`/${username}`} />
+        <Redirect to={`/${this.props.userId}`} />
       )
     } else {
       return (
@@ -119,7 +126,7 @@ class SignInMenu extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    signedIn: state.user.signedIn
+    userId: state.user.userId
   }
 }
 
