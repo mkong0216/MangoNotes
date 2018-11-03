@@ -1,10 +1,20 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import { Modal, Grid, Segment, Divider, Image, Header, Input, Button } from 'semantic-ui-react'
 
 import notebook from '../images/notebook.png'
 import notepage from '../images/notepage.png'
 
 class CreateModal extends React.Component {
+  static propTypes = {
+    open: PropTypes.bool.isRequired,
+    toggleModal: PropTypes.func.isRequired,
+    userId: PropTypes.string,
+    updateCurrentPath: PropTypes.func.isRequired,
+    currPath: PropTypes.array.isRequired
+  }
+
   constructor (props) {
     super(props)
 
@@ -18,6 +28,16 @@ class CreateModal extends React.Component {
   handleClick = (name) => { this.setState({ type: name, showNextModal: true }) }
 
   handleChange = (event, { value }) => { this.setState({ title: value }) }
+
+  handleCreate = (event) => {
+    // TODO - POST request to DB
+    const title = this.state.title || ('Untitled ' + this.state.type)
+    const currPath = [...this.props.currPath, title]
+    this.props.updateCurrentPath(currPath)
+
+    this.props.toggleModal()
+    this.closeSecondModal()
+  }
 
   closeSecondModal = () => {
     this.setState({
