@@ -10,7 +10,6 @@ import plus from '../images/plus-icon.png'
 
 class Workspace extends React.Component {
   static propTypes = {
-    userId: PropTypes.string,
     updateCurrentPath: PropTypes.func.isRequired,
     currPath: PropTypes.array.isRequired
   }
@@ -38,17 +37,10 @@ class Workspace extends React.Component {
           toggleModal={this.toggleModal}
           updateCurrentPath={this.props.updateCurrentPath}
           currPath={this.props.currPath}
-          userId={this.props.userId}
         />
       </React.Fragment>
     )
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    userId: state.user.userId
-  }
-}
-
-export default connect(mapStateToProps)(Workspace)
+export default Workspace
