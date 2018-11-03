@@ -1,10 +1,17 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
+import { Redirect } from 'react-router'
 import SidebarMenu from './SidebarMenu'
 import Workspace from './Workspace'
 import { Header, Breadcrumb } from 'semantic-ui-react'
 
 class Dashboard extends React.Component {
+  static propTypes = {
+    signedIn: PropTypes.bool.isRequired
+  }
+
   constructor (props) {
     super(props)
 
@@ -37,18 +44,30 @@ class Dashboard extends React.Component {
   }
 
   render () {
-    return (
-      <div id="dashboard">
-        <SidebarMenu updateCurrentPath={this.updateCurrentPath} />
-        <Header block className="user-path">
-          <Breadcrumb>
-            { this.renderCurrentPath(this.state.currentPath) }
-          </Breadcrumb>
-        </Header>
-        <Workspace updateCurrentPath={this.updateCurrentPath} currPath={this.state.currentPath} />
-      </div>
-    )
+    if (this.props.signedIn) {
+      return (
+        <div id="dashboard">
+          <SidebarMenu updateCurrentPath={this.updateCurrentPath} />
+          <Header block className="user-path">
+            <Breadcrumb>
+              { this.renderCurrentPath(this.state.currentPath) }
+            </Breadcrumb>
+          </Header>
+          <Workspace updateCurrentPath={this.updateCurrentPath} currPath={this.state.currentPath} />
+        </div>
+      )
+    } else {
+      return (
+        <Redirect to={`/`} />
+      )
+    }
+  } 
+}
+
+function mapStateToProps (state) {
+  return {
+    signedIn: state.user.signedIn
   }
 }
 
-export default Dashboard
+export default connect(mapStateToProps)(Dashboard)
