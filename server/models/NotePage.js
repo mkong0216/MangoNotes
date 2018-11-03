@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
-var schema = new mongoose.model({
-    owner: {
+var NotePageSchema = new mongoose.model({
+    creator: {
         type: String,
         required: true
     },
@@ -15,4 +15,4 @@ var schema = new mongoose.model({
     }
 })
 
-module.exports = mongoose.model('Note', schema);
+module.exports = mongoose.model('NotePage', NotePageSchema);
