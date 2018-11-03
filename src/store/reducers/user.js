@@ -8,7 +8,6 @@ const initialState = {
 const settings = (state = initialState, action) => {
     switch (action.type) {
         case SET_USER_SIGN_IN_DATA:
-            console.log(action.userId)
             return {
                 ...state,
                 userId: action.userId,
