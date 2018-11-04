@@ -33,7 +33,10 @@ class Workspace extends React.Component {
     return notebooks.map((notebook, i) => {
       const dateModified = getDateModified(notebook.timestamp)
       const modifiedOn = `Last modified on ${dateModified}`
-      const path = [...this.props.currPath, notebook.title]
+      const path = [
+        ...this.props.currPath,
+        { name: notebook.title, type: 'notebook' }
+      ]
 
       return (
         <Card

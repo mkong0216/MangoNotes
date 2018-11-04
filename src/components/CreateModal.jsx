@@ -39,7 +39,11 @@ class CreateModal extends React.Component {
     const title = this.state.title || ('Untitled ' + this.state.type)
     const prevIndex = currPath.length - 1
 
-    const path = [...currPath, title]
+    const path = [
+      ...currPath,
+      { name: title, type: this.state.type }
+    ]
+
     this.props.updateCurrentPath(path)
 
     // Storing new notebook in Redux
