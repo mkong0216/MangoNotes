@@ -5,12 +5,12 @@
 	background-color: white;
 }
 
-.grid {
+.notepage .grid {
 	background-size: 20px 20px;
     background-image: linear-gradient(to right, lightgrey 1px, transparent 1px), linear-gradient(to bottom, lightgrey 1px, transparent 1px);
 }
 
-.dotted-grid {
+.notepage .dotted-grid {
 	background-size: 20px 20px;
     background-image: radial-gradient(circle, lightgrey 1px, rgba(0, 0, 0, 0) 1px);
 }
