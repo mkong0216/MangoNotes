@@ -26,7 +26,12 @@ class SidebarMenu extends React.Component {
 
   handleMenuClick = (event, item) => {
     this.setState({ activeMenuItem: item.name })
-    this.props.updateCurrentPath([item.title])
+    const activeItem = {
+      name: item.title,
+      type: null
+    }
+  
+    this.props.updateCurrentPath([activeItem])
   }
 
   renderMenuList = (items) => {
