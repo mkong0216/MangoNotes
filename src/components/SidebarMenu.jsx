@@ -38,10 +38,10 @@ class SidebarMenu extends React.Component {
     return items.map((item, i) => {
       return (
         <Menu.Item
-            name={item.name}
-            key={i}
-            active={(this.state.activeMenuItem === item.name)}
-            onClick={(event) => { this.handleMenuClick(event, item) }}
+          name={item.name}
+          key={i}
+          active={(this.state.activeMenuItem === item.name)}
+          onClick={(event) => { this.handleMenuClick(event, item) }}
         >
           <Icon name={item.icon} />
           { item.title }
