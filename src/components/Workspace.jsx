@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import { Card } from 'semantic-ui-react'
 import CreateModal from './CreateModal'
+import { getDateModified } from '../utils'
 
 import '../css/Workspace.css'
 import plus from '../images/plus-icon.png'
@@ -30,12 +31,9 @@ class Workspace extends React.Component {
 
   renderNotebooks = (notebooks) => {
     return notebooks.map((notebook, i) => {
-      const { timestamp } = notebook
-      const month = timestamp.getMonth() + 1
-      const day = timestamp.getDate()
-      const year = timestamp.getFullYear()
-
-      const modifiedOn = `Last modified on ${month}/${day}/${year}`
+      const dateModified = getDateModified(notebook.timestamp)
+      const modifiedOn = `Last modified on ${dateModified}`
+      const path = [...this.props.currPath, notebook.title]
 
       return (
         <Card
@@ -43,6 +41,7 @@ class Workspace extends React.Component {
           image={notebookIcon}
           header={notebook.title}
           meta={modifiedOn}
+          onClick={() => { this.props.updateCurrentPath(path) }}
         />
       )
     })
