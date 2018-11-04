@@ -51,7 +51,7 @@ class CreateModal extends React.Component {
       const newNotebook = {
         title,
         creator: this.props.userId,
-        parentNotebook: currPath[prevIndex]
+        parentNotebook: currPath[prevIndex].name
       }
   
       this.props.createNewNotebook(newNotebook)

@@ -52,7 +52,7 @@ class Workspace extends React.Component {
 
   render () {
     const { currPath, notebooks } = this.props
-    const currNotebook = currPath[currPath.length - 1]
+    const currNotebook = currPath[currPath.length - 1].name
     const notebooksToRender = notebooks.filter(notebook => notebook.parentNotebook === currNotebook)
 
     return (
