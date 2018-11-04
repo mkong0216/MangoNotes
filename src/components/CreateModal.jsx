@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { Modal, Grid, Segment, Divider, Image, Header, Input, Button } from 'semantic-ui-react'
 
 import { createNewNotebook } from '../store/actions/notebooks'
+import { createNewNotePage } from '../store/actions/notepages'
 
 import notebook from '../images/notebook.png'
 import notepage from '../images/notepage.png'
@@ -46,16 +47,14 @@ class CreateModal extends React.Component {
 
     this.props.updateCurrentPath(path)
 
-    // Storing new notebook in Redux
-    if (this.state.type === 'notebook') {
-      const newNotebook = {
-        title,
-        creator: this.props.userId,
-        parentNotebook: currPath[prevIndex].name
-      }
-  
-      this.props.createNewNotebook(newNotebook)
+    const details = {
+      title,
+      creator: this.props.userId,
+      parentNotebook: currPath[prevIndex].name
     }
+
+    if (this.state.type !== 'notebook' && this.state.type !== 'notepage') return
+    (this.state.type === 'notebook') ? this.props.createNewNotebook(details) : this.props.createNewNotePage(details)
 
     // Closing modals
     this.props.toggleModal()
@@ -128,7 +127,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    createNewNotebook: (...args) => { dispatch(createNewNotebook(...args)) }
+    createNewNotebook: (...args) => { dispatch(createNewNotebook(...args)) },
+    createNewNotePage: (...args) => { dispatch(createNewNotePage(...args)) }
   }
 }
 
