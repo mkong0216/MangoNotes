@@ -9,12 +9,14 @@ import { getDateModified } from '../utils'
 import '../css/Workspace.css'
 import plus from '../images/plus-icon.png'
 import notebookIcon from '../images/notebook.png'
+import notepageIcon from '../images/notepage.png'
 
 class Workspace extends React.Component {
   static propTypes = {
     updateCurrentPath: PropTypes.func.isRequired,
     currPath: PropTypes.array.isRequired,
-    notebooks: PropTypes.array
+    notebooks: PropTypes.array,
+    notepages: PropTypes.array
   }
 
   constructor (props) {
@@ -29,20 +31,22 @@ class Workspace extends React.Component {
     this.setState({ showModal: !this.state.showModal })
   }
 
-  renderNotebooks = (notebooks) => {
-    return notebooks.map((notebook, i) => {
-      const dateModified = getDateModified(notebook.timestamp)
+  renderWorkspaceItems = (currNotebook, items, type) => {
+    const itemsToRender = items.filter(item => item.parentNotebook === currNotebook)
+
+    return itemsToRender.map((item, i) => {
+      const dateModified = getDateModified(item.timestamp)
       const modifiedOn = `Last modified on ${dateModified}`
       const path = [
         ...this.props.currPath,
-        { name: notebook.title, type: 'notebook' }
+        { name: item.title, type }
       ]
 
       return (
         <Card
           key={i}
-          image={notebookIcon}
-          header={notebook.title}
+          image={(type === 'notebook') ? notebookIcon : notepageIcon}
+          header={item.title}
           meta={modifiedOn}
           onClick={() => { this.props.updateCurrentPath(path) }}
         />
@@ -51,14 +55,14 @@ class Workspace extends React.Component {
   }
 
   render () {
-    const { currPath, notebooks } = this.props
+    const { currPath, notebooks, notepages } = this.props
     const currNotebook = currPath[currPath.length - 1].name
-    const notebooksToRender = notebooks.filter(notebook => notebook.parentNotebook === currNotebook)
-
+  
     return (
       <React.Fragment>
         <Card.Group id="workspace" itemsPerRow={6}>
-          { this.renderNotebooks(notebooksToRender) }
+          { this.renderWorkspaceItems(currNotebook, notebooks, 'notebook') }
+          { this.renderWorkspaceItems(currNotebook, notepages, 'notepage')}
           <Card color="olive" image={plus} onClick={this.toggleModal} />
         </Card.Group>
         <CreateModal
@@ -74,7 +78,8 @@ class Workspace extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    notebooks: state.notebooks.userNotebooks
+    notebooks: state.notebooks.userNotebooks,
+    notepages: state.notepages.userNotePages
   }
 }
 

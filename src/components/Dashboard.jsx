@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { Redirect } from 'react-router'
 import SidebarMenu from './SidebarMenu'
 import Workspace from './Workspace'
+import NotePage from './NotePage'
 import { Header, Breadcrumb } from 'semantic-ui-react'
 
 class Dashboard extends React.Component {
@@ -39,6 +40,8 @@ class Dashboard extends React.Component {
   }
 
   render () {
+    const { currentPath } = this.state
+
     if (this.props.signedIn) {
       return (
         <div id="dashboard">
@@ -48,9 +51,11 @@ class Dashboard extends React.Component {
               { this.renderCurrentPath(this.state.currentPath) }
             </Breadcrumb>
           </Header>
-          { this.state.currentPath[0].name === 'My Workspace' && (
-            <Workspace updateCurrentPath={this.updateCurrentPath} currPath={this.state.currentPath} />
-          )}
+          { (currentPath[currentPath.length - 1].type === 'notepage') ? (
+            <NotePage />
+          ) : (currentPath[0].name === 'My Workspace') ? (
+            <Workspace updateCurrentPath={this.updateCurrentPath} currPath={currentPath} />
+          ) : null }
         </div>
       )
     } else {
