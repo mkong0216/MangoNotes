@@ -7,3 +7,6 @@
  
  /* notebooks */
  export const CREATE_NEW_NOTEBOOK = 'CREATE_NEW_NOTEBOOK'
+
+ /* notepages */
+ export const CREATE_NEW_NOTEBOOK = 'CREATE_NEW_NOTEBOOK'
