@@ -28,3 +28,7 @@
 .dotted-grid textarea {
 	padding: 30px;
 }
+
+textarea:focus {
+	outline: none;
+}
