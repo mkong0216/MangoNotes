@@ -1,19 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import axios from 'axios'
+// import axios from 'axios'
 
 import { Redirect } from 'react-router'
 import { Segment, Form, Button, Message } from 'semantic-ui-react'
 
+import { authenticateUser } from '../xhr/user'
+
 import '../css/SignInMenu.css'
 
-import { createUserSignInData } from '../store/actions/user'
+// import { createUserSignInData } from '../store/actions/user'
 
 class SignInMenu extends React.Component {
   static propTypes = {
     userId: PropTypes.string,
-    createUserSignInData: PropTypes.func.isRequired
+    // createUserSignInData: PropTypes.func.isRequired
   }
 
   constructor (props) {
@@ -44,20 +46,14 @@ class SignInMenu extends React.Component {
       })
     } else {
       const submissionType = event.target.name
-      const endpoint = '/' + submissionType
+      const credentials = { username, password }
 
-      axios.post(endpoint, {
-        username: username,
-        password: password
-      })
-      .then((response) => {
-        this.props.createUserSignInData(username)
-      })
-      .catch((err) => {
-        this.setState({
-          errors: [err.response.data.error] || null
+      authenticateUser(credentials, submissionType)
+        .catch((error) => {
+          if (error.message) {
+            this.setState({ errors: [error.message] })
+          }
         })
-      })
     }
   }
 
@@ -130,10 +126,10 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    createUserSignInData: (...args) => { dispatch(createUserSignInData(...args)) }
-  }
-}
+// function mapDispatchToProps (dispatch) {
+//   return {
+//     createUserSignInData: (...args) => { dispatch(createUserSignInData(...args)) }
+//   }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignInMenu)
+export default connect(mapStateToProps)(SignInMenu)
