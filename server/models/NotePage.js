@@ -1,18 +1,16 @@
 const mongoose = require('mongoose')
 
-var NotePageSchema = new mongoose.model({
-    creator: {
-        type: String,
-        required: true
-    },
-    content: {
-        type: String,
-        required: true
-    },
-    package: {
-        type: [String],
-        required: true
-    }
+let NotepageSchema = new mongoose.Schema({
+  creator: {
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  parentNotebook: String,
+  content: String
 })
 
-module.exports = mongoose.model('NotePage', NotePageSchema);
+module.exports = mongoose.model('Notepage', NotepageSchema)
