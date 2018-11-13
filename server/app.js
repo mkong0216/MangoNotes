@@ -4,6 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const users = require('./controllers/users.js')
+const notepage = require('./controllers/notepage')
 
 const app = express()
 const url = process.env.MONGODB_URI || "mongodb://localhost:27017/mangonotes"
@@ -29,5 +30,12 @@ app.listen(port, () => {
     console.log(`Server started at port: ${port}`);
 });
 
-app.post('/login', users.post)
-app.post('/register', users.post)
+// Handling users
+app.post('/login', users.AuthenticateUser)
+app.post('/register', users.AuthenticateUser)
+app.get('/:username/workspace', users.GetUsersWorkspace)
+app.put('/:username/workspace/new-notebook', users.UpdateUsersNotebooks)
+app.put('/:username/workspace/new-notepage', users.UpdateUsersNotepages)
+
+// Handling notepages
+app.post('/:username/notepage/new', notepage.CreateNotepage)
