@@ -4,6 +4,12 @@ import { createUserSignInData } from '../store/actions/user'
 import { setUserNotebooks } from '../store/actions/notebooks'
 import { setUserNotepages } from '../store/actions/notepages'
 
+/**
+ * Authenticates user's credentials and will either login or register the user.
+ *
+ * @param {Object} credentials - includes { username, password }
+ * @param {String} submissionType - either login or register
+ */
 export async function authenticateUser(credentials, submissionType) {
   const endpoint = `/${submissionType}`
 
@@ -14,7 +20,7 @@ export async function authenticateUser(credentials, submissionType) {
       return userData
     }
   } catch (error) {
-    throw Error(error.response.data.error || null)
+    throw Error(error.response.data.error)
   }
 }
 
