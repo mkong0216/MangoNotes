@@ -32,6 +32,8 @@ class Workspace extends React.Component {
   }
 
   renderWorkspaceItems = (currNotebook, items, type) => {
+    if (!items) return null
+
     const itemsToRender = items.filter(item => item.parentNotebook === currNotebook)
 
     return itemsToRender.map((item, i) => {
