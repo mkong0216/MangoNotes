@@ -1,8 +1,8 @@
-import { CREATE_NEW_NOTEPAGE } from '../actions'
+import { CREATE_NEW_NOTEPAGE, SET_USER_NOTEPAGES } from '../actions'
 
 const initialState = {
-  userNotePages: [],
-  sharedNotePages: []
+  userNotepages: [],
+  sharedNotepages: []
 }
 
 const notepages = (state = initialState, action) => {
@@ -15,7 +15,12 @@ const notepages = (state = initialState, action) => {
 
       return {
         ...state,
-        userNotePages: [...state.userNotePages, newNotePage]
+        userNotepages: [...state.userNotepages, newNotePage]
+      }
+    case SET_USER_NOTEPAGES:
+      return {
+        ...state,
+        userNotepages: action.notepages
       }
     default:
       return state
