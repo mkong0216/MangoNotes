@@ -1,8 +1,8 @@
 import axios from 'axios'
-import store from './store'
-import { createUserSignInData } from './store/actions/user'
-import { setUserNotebooks } from './store/actions/notebooks'
-import { setUserNotepages } from './store/actions/notepages'
+import store from '../store'
+import { createUserSignInData } from '../store/actions/user'
+import { setUserNotebooks } from '../store/actions/notebooks'
+import { setUserNotepages } from '../store/actions/notepages'
 
 export async function authenticateUser(credentials, submissionType) {
   const endpoint = `/${submissionType}`
