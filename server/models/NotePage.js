@@ -10,6 +10,10 @@ let NotepageSchema = new mongoose.Schema({
     required: true
   },
   parentNotebook: String,
+  timestamp: {
+    type: Date,
+    required: true
+  },
   content: String
 })
 
