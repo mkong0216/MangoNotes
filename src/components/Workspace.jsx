@@ -59,7 +59,7 @@ class Workspace extends React.Component {
   render () {
     const { currPath, notebooks, notepages } = this.props
     const currNotebook = currPath[currPath.length - 1].name
-  
+
     return (
       <React.Fragment>
         <Card.Group id="workspace" itemsPerRow={6}>
@@ -81,7 +81,7 @@ class Workspace extends React.Component {
 function mapStateToProps (state) {
   return {
     notebooks: state.notebooks.userNotebooks,
-    notepages: state.notepages.userNotePages
+    notepages: state.notepages.userNotepages
   }
 }
 
