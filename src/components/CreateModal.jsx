@@ -53,8 +53,11 @@ class CreateModal extends React.Component {
       parentNotebook: currPath[prevIndex].name
     }
 
-    if (this.state.type !== 'notebook' && this.state.type !== 'notepage') return
-    (this.state.type === 'notebook') ? this.props.createNewNotebook(details) : this.props.createNewNotePage(details)
+    if (this.state.type === 'notebook') {
+      this.props.createNewNotebook(details)
+    } else if (this.state.type === 'notepage') {
+      this.props.createNewNotePage(details)
+    }
 
     // Closing modals
     this.props.toggleModal()
