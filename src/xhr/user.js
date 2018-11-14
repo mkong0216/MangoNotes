@@ -4,6 +4,8 @@ import { createUserSignInData } from '../store/actions/user'
 import { setUserNotebooks } from '../store/actions/notebooks'
 import { setUserNotepages } from '../store/actions/notepages'
 
+import { initNotepagesSubscriber } from '../initialization'
+
 /**
  * Authenticates user's credentials and will either login or register the user.
  *
@@ -17,6 +19,7 @@ export async function authenticateUser(credentials, submissionType) {
     const authenticated = await axios.post(endpoint, credentials)
     if (authenticated) {
       const userData = await getUserData(credentials.username)
+      initNotepagesSubscriber()
       return userData
     }
   } catch (error) {
@@ -24,6 +27,12 @@ export async function authenticateUser(credentials, submissionType) {
   }
 }
 
+/**
+ * Gets user's parent notebooks and free notepages (not within another notebook)
+ * and stores notebooks and notepages in Redux.
+ * 
+ * @param {String} username 
+ */
 export async function getUserData (username) {
   const endpoint2 = `/${username}/workspace`
 
@@ -39,12 +48,17 @@ export async function getUserData (username) {
 function setUserData (userData) {
   const { notebooks, notepages, username } = userData
   if (notebooks.length) {
-    console.log('here')
+    notebooks.forEach((notebook) => {
+      notebook.parentNotebook = 'My Workspace'
+    })
     store.dispatch(setUserNotebooks(notebooks))
   }
 
   if (notepages.length) {
-    console.log('here')
+    notepages.forEach((notepage) => {
+      notepage.parentNotebook = 'My Workspace'
+    })
+
     store.dispatch(setUserNotepages(notepages))
   }
 
