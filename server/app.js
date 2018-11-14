@@ -34,8 +34,8 @@ app.listen(port, () => {
 app.post('/login', users.AuthenticateUser)
 app.post('/register', users.AuthenticateUser)
 app.get('/:username/workspace', users.GetUsersWorkspace)
-app.put('/:username/workspace/new-notebook', users.UpdateUsersNotebooks)
-app.put('/:username/workspace/new-notepage', users.UpdateUsersNotepages)
+app.put('/:username/workspace/add-notebook', users.UpdateUsersNotebooks)
+app.put('/:username/workspace/add-notepage', users.UpdateUsersNotepages)
 
 // Handling notepages
 app.post('/:username/notepage/new', notepage.CreateNotepage)
