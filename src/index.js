@@ -9,8 +9,8 @@ import './css/index.css';
 
 import App from './components/App';
 import store from './store'
-// TODO - move to initialize function
-import { createUserSignInData } from './store/actions/user'
+
+import { initialize } from './initialization'
 
 ReactDOM.render(
   <Provider store={store}>
@@ -26,6 +26,4 @@ ReactDOM.render(
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 
-if (window.localStorage.signedInUser) {
-  store.dispatch(createUserSignInData(window.localStorage.signedInUser))
-}
+initialize()
