@@ -117,6 +117,7 @@ exports.UpdateUsersNotebooks = function (req, res) {
 // Updating user's notepages
 exports.UpdateUsersNotepages = function (req, res) {
   const username = req.params.username
+  const notepage = req.body
 
   const handleUpdateNotepages = function (err, user) {
     if (err) {
