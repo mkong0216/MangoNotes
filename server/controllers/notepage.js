@@ -8,9 +8,10 @@ exports.CreateNotepage = function (req, res) {
       console.log(error)
       res.status(500).send("Error creating new notepage in database.")
     } else {
-      console.log(notepage._id)
       res.status(200).json({
-        id: notepage._id
+        id: notepage._id,
+        title: notepage.title,
+        timestamp: notepage.timestamp
       })
     }
   }
