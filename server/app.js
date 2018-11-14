@@ -4,12 +4,16 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const users = require('./controllers/users.js')
+<<<<<<< HEAD
 const notepage = require('./controllers/notepage')
+=======
+const notes = require('./controllers/notes')
+>>>>>>> 7b09eac1f8a2fd703ada17af4e73fa46781d0e86
 
 const app = express()
 const url = process.env.MONGODB_URI || "mongodb://localhost:27017/mangonotes"
 
-/** connect to MongoDB datastore */
+/** persistent connection to mongoDB */
 try {
     mongoose.connect(url, {
         useNewUrlParser: true

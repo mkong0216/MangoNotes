@@ -1,0 +1,4 @@
+1. Move note related functions to a separate notes.js --> ok
+2. Recode fetch function --> only document id is an argument this time --> ok
+---
+3. need a cleaner test code for createNote

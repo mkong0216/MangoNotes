@@ -26,7 +26,6 @@
     "semantic-ui-react": "^0.82.5"
   },
   "scripts": {
-    "prestart": "npm run mongo:start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
