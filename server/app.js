@@ -3,8 +3,10 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
+
 const users = require('./controllers/users.js')
 const notepage = require('./controllers/notepage')
+const notebook = require('./controllers/notebook')
 
 const app = express()
 const url = process.env.MONGODB_URI || "mongodb://localhost:27017/mangonotes"
@@ -34,8 +36,12 @@ app.listen(port, () => {
 app.post('/login', users.AuthenticateUser)
 app.post('/register', users.AuthenticateUser)
 app.get('/:username/workspace', users.GetUsersWorkspace)
+
 app.put('/:username/workspace/add-notebook', users.UpdateUsersNotebooks)
 app.put('/:username/workspace/add-notepage', users.UpdateUsersNotepages)
 
 // Handling notepages
 app.post('/:username/notepage/new', notepage.CreateNotepage)
+
+// Handling notebooks
+app.post('/:username/notebook/new', notebook.CreateNotebook)
