@@ -10,8 +10,6 @@ import './css/index.css';
 import App from './components/App';
 import store from './store'
 
-import { initialize } from './initialization'
-
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
@@ -25,5 +23,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
-
-initialize()

@@ -7,10 +7,13 @@ exports.AuthenticateUser = function (req, res) {
   const password = req.body.password
   const saltRounds = 10
 
-  const authenticatePassword = async function (password, hash) {
-    const match = await bcrypt.compare(password, hash)
+  const authenticatePassword = async function (password, userData) {
+    const match = await bcrypt.compare(password, userData.hash)
     if (match) {
-      res.sendStatus(200)
+      res.status(200).json({
+        userId: userData.userId,
+        username: userData.username
+      })
     } else {
       res.status(401).json({
         error: "Incorrect password."
@@ -33,7 +36,10 @@ exports.AuthenticateUser = function (req, res) {
       console.log(err)
       res.status(500).send("Error creating new user in database.")
     } else {
-      res.sendStatus(200)
+      res.status(200).json({
+        userId: newUser._id,
+        username: newUser.username
+      })
     }
   }
 
@@ -72,7 +78,13 @@ exports.AuthenticateUser = function (req, res) {
           error: "No user exists with the provided username."
         })
       } else {
-        authenticatePassword(password, user.hashedPassword)
+        const userData = {
+          username: username,
+          userId: user._id,
+          hash: user.hashedPassword
+        }
+
+        authenticatePassword(password, userData)
       }
     }
   }

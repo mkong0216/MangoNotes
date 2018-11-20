@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
 
 import SignInMenu from './SignInMenu'
-import Dashboard from './Dashboard'
 
 class App extends Component {
   render() {
@@ -10,7 +9,6 @@ class App extends Component {
       <div className="App">
         <Switch>
           <Route exact path="/" component={SignInMenu} />
-          <Route path="/:username" component={Dashboard} />
         </Switch>
       </div>
     );

@@ -1,23 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-// import axios from 'axios'
-
-import { Redirect } from 'react-router'
 import { Segment, Form, Button, Message } from 'semantic-ui-react'
-
-import { authenticateUser } from '../xhr/user'
+import { authenticateUser } from '../xhr/user';
+import { createUserSignInData } from '../store/actions/user'
 
 import '../css/SignInMenu.css'
 
-// import { createUserSignInData } from '../store/actions/user'
-
 class SignInMenu extends React.Component {
-  static propTypes = {
-    userId: PropTypes.string,
-    // createUserSignInData: PropTypes.func.isRequired
-  }
-
   constructor (props) {
     super(props)
 
@@ -46,16 +35,28 @@ class SignInMenu extends React.Component {
       })
     } else {
       const submissionType = event.target.name
-      const credentials = { username, password }
+      const credentials = {
+        username,
+        password
+      }
 
       authenticateUser(credentials, submissionType)
-        .catch((error) => {
-          if (error.message) {
-            this.setState({ errors: [error.message] })
-          }
+        .then((signedIn) => {
+          console.log(signedIn)
+          this.props.createUserSignInData(signedIn)
         })
+        .catch((error) => {
+          this.setState({
+            username: '',
+            password: '',
+            errors: [error.message] || null
+          })
+        })
+
     }
   }
+
+  handleChange = (event, { name, value }) => { this.setState({ [name] : value })}
 
   renderErrorMessages = (errors) => {
     if (errors && errors.length) {
@@ -73,63 +74,55 @@ class SignInMenu extends React.Component {
     }
   }
 
-  handleChange = (event, { name, value }) => { this.setState({ [name] : value })}
-
   render () {
     const { username, password, errors } = this.state
 
-    if (this.props.userId) {
-      return (
-        <Redirect to={`/${this.props.userId}`} />
-      )
-    } else {
-      return (
-        <div className="sign-in">
-          <Segment className="dialog">
-            <div className="brand"> 
-              <div className="logo" />
-              MangoNotes 
-            </div>
-            { this.renderErrorMessages(errors) }
-            <Form>
-              <Form.Input
-                placeholder="Username"
-                label="Username"
-                name="username"
-                value={username}
-                onChange={this.handleChange}
-              />
-              <Form.Input
-                placeholder='Password'
-                label="Password"
-                name='password'
-                type='password'
-                value={password}
-                onChange={this.handleChange}
-              />
-              <Button.Group size='large' fluid>
-                <Button className="login" name="login" onClick={this.handleSubmit}> Log In </Button>
-                <Button.Or />
-                <Button className="register" name="register" onClick={this.handleSubmit}> Register </Button>
-              </Button.Group>
-            </Form>
-          </Segment>
-        </div>
-      )
-    }
+    return this.props.(
+      <div className="sign-in">
+        <Segment className="dialog">
+          <div className="brand"> 
+            <div className="logo" />
+            MangoNotes 
+          </div>
+          { this.renderErrorMessages(errors) }
+          <Form>
+            <Form.Input
+              placeholder="Username"
+              label="Username"
+              name="username"
+              value={username}
+              onChange={this.handleChange}
+            />
+            <Form.Input
+              placeholder='Password'
+              label="Password"
+              name='password'
+              type='password'
+              value={password}
+              onChange={this.handleChange}
+            />
+            <Button.Group size='large' fluid>
+              <Button className="login" name="login" onClick={this.handleSubmit}> Log In </Button>
+              <Button.Or />
+              <Button className="register" name="register" onClick={this.handleSubmit}> Register </Button>
+            </Button.Group>
+          </Form>
+        </Segment>
+      </div>
+    )
   }
 }
 
 function mapStateToProps (state) {
   return {
-    userId: state.user.userId
+    userData: state.user.signInData
   }
 }
 
-// function mapDispatchToProps (dispatch) {
-//   return {
-//     createUserSignInData: (...args) => { dispatch(createUserSignInData(...args)) }
-//   }
-// }
+function mapDispatchToProps (dispatch) {
+  return {
+    createUserSignInData: (...args) => { dispatch(createUserSignInData(...args)) }
+  }
+}
 
-export default connect(mapStateToProps)(SignInMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(SignInMenu)
