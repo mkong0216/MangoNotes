@@ -77,7 +77,9 @@ class SignInMenu extends React.Component {
   render () {
     const { username, password, errors } = this.state
 
-    return this.props.(
+    return (this.props.userData) ? (
+      <Redirect to={`/${this.props.userData.username}`} />
+    ) : (
       <div className="sign-in">
         <Segment className="dialog">
           <div className="brand"> 
