@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Segment, Form, Button, Message } from 'semantic-ui-react'
 import { authenticateUser } from '../xhr/user';
@@ -7,6 +8,11 @@ import { createUserSignInData } from '../store/actions/user'
 import '../css/SignInMenu.css'
 
 class SignInMenu extends React.Component {
+  static propTypes = {
+    userData: PropTypes.object,
+    createUserSignInData: PropTypes.func.isRequired
+  }
+
   constructor (props) {
     super(props)
 
