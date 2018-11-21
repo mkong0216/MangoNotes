@@ -3,6 +3,9 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 
+import { Grid } from 'semantic-ui-react'
+import SidebarMenu from './SidebarMenu'
+
 class Dashboard extends React.Component {
   static propTypes = {
     notebooks: PropTypes.array,
@@ -12,7 +15,13 @@ class Dashboard extends React.Component {
 
   render () {
     return this.props.signedIn ? (
-      <div> Testing </div>
+      <Grid className="dashboard">
+        <Grid.Column width={3}>
+          <SidebarMenu />
+        </Grid.Column>
+        <Grid.Column width={13}>
+        </Grid.Column>
+      </Grid>
     ) : (
       <Redirect to='/' />
     )

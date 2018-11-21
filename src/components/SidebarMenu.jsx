@@ -1,9 +1,6 @@
 import React from 'react'
-
-import React from 'react'
-import PropTypes from 'prop-types'
-
 import { Menu, Divider, Icon, Header } from 'semantic-ui-react'
+import { updateBrowserHistory } from '../utils'
 
 const MENU_ITEMS = [
   { "title": 'My Workspace', "name": 'workspace', "icon": 'write' },
@@ -14,21 +11,25 @@ const MENU_ITEMS = [
 ]
 
 class SidebarMenu extends React.Component {
-  static propTypes = {
-    updateCurrentPath: PropTypes.func.isRequired
-  }
-
   constructor (props) {
     super(props)
 
+    const parsedURL = new URL(window.location.href)
+
     this.state = {
-      activeMenuItem: 'workspace'
+      activeMenuItem: 'workspace',
+      username: parsedURL.pathname.slice(1)
     }
   }
 
-  handleMenuClick = (event, item) => {
-    this.setState({ activeMenuItem: item.name })
+  componentDidUpdate (prevProps, prevState) {
+    if (prevState.activeMenuItem !== this.state.activeMenuItem) {
+      const newURL = `/${this.state.username}/${this.state.activeMenuItem}`
+      updateBrowserHistory(this.state.activeMenuItem, newURL)
+    }
   }
+
+  handleMenuClick = (event, item) => { this.setState({ activeMenuItem: item.name }) }
 
   renderMenuList = (items) => {
     return items.map((item, i) => {
