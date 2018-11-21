@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '../store'
-import { setUserNotebooks } from '../store/actions/notebooks'
+import { setUserNotebooks, updateUserNotebooks } from '../store/actions/notebooks'
 import { setUserNotepages } from '../store/actions/notepages'
 
 /**
@@ -9,15 +9,14 @@ import { setUserNotepages } from '../store/actions/notepages'
  * @param {Object} credentials - in shape of { username, password }
  * @param {String} submissionType - either 'login' or 'register'
  * 
- * Returns either an object in shape of { username, userId }, or an error message
+ * @returns {Object} - returns either an object in shape of { username, userId }, or an error message
  */
 export async function authenticateUser (credentials, submissionType) {
   const endpoint = `/${submissionType}`
 
   try {
     const signedIn = await axios.post(endpoint, credentials)
-    retrieveUsersWork(signedIn.data.userId)
-
+    const results = await retrieveUsersWork(signedIn.data.userId)
     window.sessionStorage.userId = JSON.stringify(signedIn.data)
     return signedIn.data
   } catch (error) {
@@ -32,8 +31,8 @@ export async function authenticateUser (credentials, submissionType) {
  * Free notepage - notepage that is not within a notebook
  * 
  * @param {String} userId 
- * 
- * Returns Object of parent notebooks and free notepages
+ *
+ * @returns {Array} - [parent notebooks, free notepages]
  */
 export async function retrieveUsersWork (userId) {
   const endpoint = `/workspace/${userId}`
@@ -75,14 +74,17 @@ export async function retrieveUsersWork (userId) {
  * Updates user's parent notebooks or free notepages
  *
  * @param {String} userId
- * @param {Object} details - in shape of { title, id, creator }
- * @param {String} type - either notebook or notepage
+ * @param {Object} details - in shape of { title, id, creator, parentNotebook, type }
+ *
+ * @returns {Object}
  */
-export async function updateUsersWork (userId, details, type) {
-  const endpoint = `/workspace/add-${type}/${userId}`
+export async function updateUsersWork (userId, details) {
+  const endpoint = `/workspace/add-${details.type}/${userId}`
 
   try {
     const response = await axios.put(endpoint, details)
+    store.dispatch(updateUserNotebooks(response.data))
+
     return response.data
   } catch (error) {
     console.log(error)
