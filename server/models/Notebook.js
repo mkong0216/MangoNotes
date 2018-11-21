@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const NoteDetails = require('./NoteDetails')
 
 let NotebookSchema = new mongoose.Schema({
   creator: {
@@ -10,11 +11,7 @@ let NotebookSchema = new mongoose.Schema({
     required: true
   },
   parentNotebook: String,
-  timestamp: {
-    type: Date,
-    required: true
-  },
-  content: [mongoose.Schema.Types.Mixed]
-})
+  content: [ NoteDetails ]
+}, { timestamps: true })
 
 module.exports = mongoose.model('Notebook', NotebookSchema)
