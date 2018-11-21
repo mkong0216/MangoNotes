@@ -1,6 +1,4 @@
-export function updateBrowserHistory(activeMenuItem, url) {
-  const state = { id: activeMenuItem }
-  const pageTitle = `MangoNotes - ${activeMenuItem}`
-
+export function updateBrowserHistory(state, url) {
+  const pageTitle = `MangoNotes - ${state.id}`
   window.history.pushState(state, pageTitle, url)
 }
