@@ -9,9 +9,11 @@ let NoteDetails = new mongoose.Schema({
     type: String,
     required: true
   },
-  parentNotebook: {
-    type: String
-  }
+  creator: {
+    type: String,
+    required: true
+  },
+  parentNotebook: String
 }, { timestamps: true })
 
 module.exports = NoteDetails
