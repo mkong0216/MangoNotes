@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Menu, Divider, Icon, Header } from 'semantic-ui-react'
 import { updateBrowserHistory } from '../utils'
 
@@ -17,6 +18,10 @@ const MENU_ITEMS = [
  */
 
 class SidebarMenu extends React.Component {
+  static propTypes = {
+    updateCurrentPath: PropTypes.func.isRequired
+  }
+
   constructor (props) {
     super(props)
 
@@ -28,9 +33,6 @@ class SidebarMenu extends React.Component {
     }
   }
 
-  /**
-   * TODO: Repetitive code - see if we can refactor
-   */
   componentDidMount () {
     const newURL = `/${this.state.username}/${this.state.activeMenuItem}`
     updateBrowserHistory(this.state.activeMenuItem, newURL)
