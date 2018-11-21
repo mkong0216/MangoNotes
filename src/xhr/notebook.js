@@ -1,0 +1,24 @@
+import axios from 'axios'
+import { updateUsersWork } from './user'
+
+/**
+ * Makes a POST request to DB to create new Notebook object
+ * 
+ * @param {Object} notebook - in shape of { title, userId, parentNotebook }
+ * 
+ */
+export async function createNewNotebook (notebook) {
+  const endpoint = '/notebook/new'
+
+  try {
+    const details = await axios.post(endpoint, notebook)
+
+    if (!notebook.parentNotebook) {
+      updateUsersWork(notebook.creator, details, 'notebook')
+    }
+
+    return details
+  } catch (error) {
+    throw Error (error.response.data.error)
+  }
+}
