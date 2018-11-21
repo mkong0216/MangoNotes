@@ -47,7 +47,12 @@ class NoteCards extends React.Component {
 
     if (state.currentPath[state.currentPath.length - 1] === state.noteId) return
 
-    const path = `/${historyState.user}/dashboard/${type}/${state.noteId}`
+    let path = `/${historyState.user}`
+    if (type === 'notebook') {
+      path += `/dashboard`
+    }
+    path += `/${type}/${state.noteId}`
+
     this.props.history.replace({ pathname: path, state })
   }
 
