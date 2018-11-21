@@ -13,6 +13,10 @@ let NoteDetails = new mongoose.Schema({
     type: String,
     required: true
   },
+  type: {
+    type: String,
+    required: true
+  },
   parentNotebook: String
 }, { timestamps: true })
 
