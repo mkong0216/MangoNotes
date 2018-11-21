@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Card } from 'semantic-ui-react'
 import CreateModal from './CreateModal'
 import plus from '../images/plus-icon.png'
@@ -11,6 +12,10 @@ import '../css/NoteCards.css'
  */
 
 class NoteCards extends React.Component {
+  static propTypes = {
+    parentNotebook: PropTypes.string
+  }
+
   constructor (props) {
     super(props)
 
@@ -38,7 +43,7 @@ class NoteCards extends React.Component {
           <Card color="olive" image={plus} link onClick={this.toggleModal} />
           { this.renderNoteCards(this.props.items) }
         </Card.Group>
-        <CreateModal open={this.state.showModal} toggleModal={this.toggleModal} />
+        <CreateModal open={this.state.showModal} toggleModal={this.toggleModal} parentNotebook={this.props.parentNotebook} />
       </React.Fragment>
     )
   }
