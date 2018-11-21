@@ -1,11 +1,4 @@
-import { CREATE_NEW_NOTEBOOK, SET_USER_NOTEBOOKS, UPDATE_USER_NOTEBOOKS } from './index'
-
-export function createNewNotebook (notebookDetails) {
-  return {
-    type: CREATE_NEW_NOTEBOOK,
-    notebookDetails
-  }
-}
+import { SET_USER_NOTEBOOKS, UPDATE_USER_NOTEBOOKS } from './index'
 
 export function setUserNotebooks (notebooks) {
   return {
