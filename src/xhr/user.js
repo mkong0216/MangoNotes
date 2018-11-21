@@ -54,3 +54,23 @@ export async function retrieveUsersWork (userId) {
     console.log(error)
   }
 }
+
+/**
+ * Updates user's parent notebooks or free notepages
+ *
+ * @param {String} userId
+ * @param {Object} details - in shape of { title, id }
+ * @param {String} type - either notebook or notepage
+ */
+export async function updateUsersWork (userId, details, type) {
+  const endpoint = `/workspace/add-${type}/${userId}`
+
+  try {
+    const response = await axios.put(endpoint, details)
+    return response
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.error)
+  }
+}
+
