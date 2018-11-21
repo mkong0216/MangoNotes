@@ -32,7 +32,10 @@ class FormModal extends React.Component {
     }
 
     createNewNotebook(info)
-      .then(() => { this.props.closeAllModals() })
+      .then(() => {
+        this.setState({ title: '', error: null })
+        this.props.closeAllModals()
+      })
       .catch((error) => {
         this.setState({
           error: error.message
