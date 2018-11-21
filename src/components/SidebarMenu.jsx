@@ -35,9 +35,8 @@ class SidebarMenu extends React.Component {
   handleMenuClick = (event, item) => {
     this.setState({ activeMenuItem: item.name })
     const historyState = this.props.history.location.state
-    console.log(historyState)
 
-    const path = `/${historyState.user}/${item.name}`
+    const path = `/${historyState.user}/dashboard/${item.name}`
     const state = {
       id: item.name,
       currentPath: [item.name],

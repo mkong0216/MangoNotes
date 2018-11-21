@@ -35,19 +35,19 @@ class NoteCards extends React.Component {
   }
 
   handleNoteCardClick = (item, type) => {
-    const currPath = (window.location.pathname).split('/').slice(1)
     const historyState = this.props.history.location.state
-  
+
     const state = {
       id: item.title,
       noteId: (type === 'notebook') ? item.notebookId : item.notepageId,
       type,
-      currentPath: [...historyState.currentPath, item.title]
+      currentPath: [...historyState.currentPath, item.title],
+      user: historyState.user
     }
 
-    if (currPath[currPath.length - 1] === state.noteId) return
+    if (state.currentPath[state.currentPath.length - 1] === state.noteId) return
 
-    const path = `/${historyState.user}/${type}/${state.noteId}`
+    const path = `/${historyState.user}/dashboard/${type}/${state.noteId}`
     this.props.history.replace({ pathname: path, state })
   }
 

@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 
 import SignInMenu from './SignInMenu'
 import Dashboard from './Dashboard'
+import Notepage from './Notepage'
 
 class App extends Component {
   render() {
@@ -10,7 +11,8 @@ class App extends Component {
       <div className="App">
         <Switch>
           <Route exact path="/" component={SignInMenu} />
-          <Route path="/:username" component={Dashboard} />
+          <Route path="/:username/dashboard" component={Dashboard} />
+          <Route path="/:username/notepage" component={Notepage} />
         </Switch>
       </div>
     );

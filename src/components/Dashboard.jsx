@@ -32,7 +32,7 @@ class Dashboard extends React.Component {
 
   componentDidMount () {
     if (this.props.user.signedIn) {
-      const path = `/${this.props.match.params.username}/workspace`
+      const path = `/${this.props.match.params.username}/dashboard/workspace`
 
       const state = {
         id: 'workspace',
