@@ -26,7 +26,7 @@ exports.AuthenticateUser = function (req, res) {
       console.log(err)
       res.status(500).send("Error creating new user credentials in database")
     } else {
-      const newUser = new User({ username: username })
+      const newUser = new User({ username: username, id: newCredentials._id })
       newUser.save(handleRegisterUser)
     }
   }
@@ -94,18 +94,25 @@ exports.AuthenticateUser = function (req, res) {
 
 // Getting user's parent notebooks and free notepages
 exports.GetUsersWorkspace = function (req, res) {
-  const username = req.params.username
+  const userId = req.params.userId
+
+  if (!userId) {
+    res.status(401).send('Failed to provide a userId')
+  }
 
   const handleFindUser = function (err, user) {
     if (err) {
       console.log(err)
       res.status(500).send("Error finding user in database.")
     } else {
-      res.status(200).json(user)
+      res.status(200).json({
+        notebooks: user.notebooks,
+        notepages: user.notepages
+      })
     }
   }
 
-  User.findOne({ username: username }, handleFindUser)
+  User.findOne({ id: userId }, handleFindUser)
 }
 
 // Updating user's notebooks
