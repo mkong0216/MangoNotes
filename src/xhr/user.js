@@ -42,15 +42,30 @@ export async function retrieveUsersWork (userId) {
     const results = await axios.get(endpoint)
 
     if (results.data.notebooks.length) {
-      console.log(results.data.notebooks)
-      store.dispatch(setUserNotebooks(results.notebooks))
+      const notebooks = results.data.notebooks.map((notebook) => {
+        return {
+          notebookId: notebook.id,
+          title: notebook.title,
+          updatedAt: notebook.updatedAt
+        }
+      })
+
+      store.dispatch(setUserNotebooks(notebooks))
     }
 
     if (results.data.notepages.length) {
-      store.dispatch(setUserNotepages(results.notepages))
+      const notepages = results.data.notepages.map((notepage) => {
+        return {
+          notepageId: notepage.Id,
+          title: notepage.title,
+          updatedAt: notepage.updatedAt
+        }
+      })
+
+      store.dispatch(setUserNotepages(notepages))
     }
 
-    return results
+    return results.data
   } catch (error) {
     console.log(error)
   }
