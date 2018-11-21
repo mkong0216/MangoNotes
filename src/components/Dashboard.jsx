@@ -6,6 +6,12 @@ import { Redirect } from 'react-router-dom'
 import { Grid } from 'semantic-ui-react'
 import SidebarMenu from './SidebarMenu'
 
+/**
+ * Dashboard.jsx
+ * 
+ * Displays user's notebooks and notepages.
+ */
+
 class Dashboard extends React.Component {
   static propTypes = {
     notebooks: PropTypes.array,

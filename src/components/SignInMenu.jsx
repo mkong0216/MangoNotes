@@ -8,6 +8,12 @@ import { createUserSignInData } from '../store/actions/user'
 
 import '../css/SignInMenu.css'
 
+/**
+ * SignInMenu.jsx
+ * 
+ * Authenticates user for logging in or registering.
+ */
+
 class SignInMenu extends React.Component {
   static propTypes = {
     userData: PropTypes.object,

@@ -10,6 +10,12 @@ const MENU_ITEMS = [
   { "title": 'Trash', "name": 'trash', "icon": 'trash alternate' }
 ]
 
+/**
+ * SideBarMenu.jsx
+ * 
+ * Controls navigation across user's notebooks and notepages.
+ */
+
 class SidebarMenu extends React.Component {
   constructor (props) {
     super(props)
