@@ -10,11 +10,7 @@ let NotepageSchema = new mongoose.Schema({
     required: true
   },
   parentNotebook: String,
-  timestamp: {
-    type: Date,
-    required: true
-  },
   content: String
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Notepage', NotepageSchema)
