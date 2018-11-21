@@ -48,17 +48,15 @@ class Dashboard extends React.Component {
   }
 
   getNotebooksAndNotepages = async () => {
-    const { parentNotebook } = this.state
     const historyState = window.history.state
-
     let noteItems = {}
 
-    if (!parentNotebook && this.state.currentPath[0] === 'workspace') {
+    if (historyState.id === 'workspace') {
       noteItems = {
         notebooks: this.props.notebooks,
         notepages: this.props.notepages
       }
-    } else if (parentNotebook && historyState.type === 'notebook') {
+    } else if (historyState.type === 'notebook' && historyState.noteId) {
       noteItems = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
       console.log(noteItems)
     }
