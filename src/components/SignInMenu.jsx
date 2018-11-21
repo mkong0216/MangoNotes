@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Redirect} from 'react-router-dom'
 import { Segment, Form, Button, Message } from 'semantic-ui-react'
 import { authenticateUser } from '../xhr/user';
 import { createUserSignInData } from '../store/actions/user'
@@ -48,7 +49,6 @@ class SignInMenu extends React.Component {
 
       authenticateUser(credentials, submissionType)
         .then((signedIn) => {
-          console.log(signedIn)
           this.props.createUserSignInData(signedIn)
         })
         .catch((error) => {
