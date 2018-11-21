@@ -14,7 +14,8 @@ exports.CreateNotebook = function (req, res) {
     } else {
       res.status(200).json({
         id: notebook._id,
-        title: notebook.title
+        title: notebook.title,
+        creator: notebook.creator
       })
     }
   }
