@@ -1,4 +1,4 @@
-import { CREATE_NEW_NOTEBOOK, SET_USER_NOTEBOOKS } from '../actions'
+import { CREATE_NEW_NOTEBOOK, SET_USER_NOTEBOOKS, UPDATE_USER_NOTEBOOKS } from '../actions'
 
 const initialState = {
   userNotebooks: [],
@@ -22,6 +22,11 @@ const notebooks = (state = initialState, action) => {
       return {
         ...state,
         userNotebooks: action.notebooks
+      }
+    case UPDATE_USER_NOTEBOOKS:
+      return {
+        ...state,
+        userNotebooks: [...state.userNotebooks, action.noteDetails]
       }
     default:
       return state
