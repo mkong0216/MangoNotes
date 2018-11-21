@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Card } from 'semantic-ui-react'
 import CreateModal from './CreateModal'
+
 import plus from '../images/plus-icon.png'
+import notebookIcon from '../images/notebook.png'
+import notepageIcon from '../images/notepage.png'
 import '../css/NoteCards.css'
 
 /**
@@ -13,7 +16,9 @@ import '../css/NoteCards.css'
 
 class NoteCards extends React.Component {
   static propTypes = {
-    parentNotebook: PropTypes.string
+    parentNotebook: PropTypes.string,
+    notebooks: PropTypes.array,
+    notepages: PropTypes.array
   }
 
   constructor (props) {
@@ -28,10 +33,19 @@ class NoteCards extends React.Component {
     this.setState({ showModal: !this.state.showModal })
   }
 
-  renderNoteCards = (items) => {
+  renderNoteCards = (items, type) => {
     return items.map((item, i) => {
+      const dateModified = new Date(item.updatedAt)
+      const modifiedOn = `Last modified on ${dateModified.toDateString()}`
+
       return (
-        <Card key={i} />
+        <Card
+          key={i}
+          image={(type === 'notebook') ? notebookIcon : notepageIcon}
+          header={item.title}
+          meta={modifiedOn}
+          link
+        />
       )
     })
   }
@@ -39,11 +53,16 @@ class NoteCards extends React.Component {
   render () {
     return (
       <React.Fragment>
-        <Card.Group className="notecards" itemsPerRow={4}>
+        <Card.Group className="notecards" itemsPerRow={5}>
           <Card color="olive" image={plus} link onClick={this.toggleModal} />
-          { this.renderNoteCards(this.props.items) }
+          { this.renderNoteCards(this.props.notebooks, 'notebook') }
+          { this.renderNoteCards(this.props.notepages, 'notepage') }
         </Card.Group>
-        <CreateModal open={this.state.showModal} toggleModal={this.toggleModal} parentNotebook={this.props.parentNotebook} />
+        <CreateModal
+          open={this.state.showModal}
+          toggleModal={this.toggleModal}
+          parentNotebook={this.props.parentNotebook}
+        />
       </React.Fragment>
     )
   }
