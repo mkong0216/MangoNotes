@@ -40,7 +40,12 @@ class Dashboard extends React.Component {
           <SidebarMenu updateCurrentPath={this.updateCurrentPath} />
         </Grid.Column>
         <Grid.Column width={13}>
-          <NoteCards items={this.props.notebooks} parentNotebook={parentNotebook} />
+          <NoteCards
+            notebooks={this.props.notebooks}
+            notepages={this.props.notepages}
+            parentNotebook={parentNotebook}
+            updateCurrentPath={this.updateCurrentPath}
+          />
         </Grid.Column>
       </Grid>
     ) : (
