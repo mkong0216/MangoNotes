@@ -22,10 +22,20 @@ class SidebarMenu extends React.Component {
     }
   }
 
+  /**
+   * TODO: Repetitive code - see if we can refactor
+   */
+  componentDidMount () {
+    const newURL = `/${this.state.username}/${this.state.activeMenuItem}`
+    updateBrowserHistory(this.state.activeMenuItem, newURL)
+    this.props.updateCurrentPath([this.state.activeMenuItem])
+  }
+
   componentDidUpdate (prevProps, prevState) {
     if (prevState.activeMenuItem !== this.state.activeMenuItem) {
       const newURL = `/${this.state.username}/${this.state.activeMenuItem}`
       updateBrowserHistory(this.state.activeMenuItem, newURL)
+      this.props.updateCurrentPath([this.state.activeMenuItem])
     }
   }
 

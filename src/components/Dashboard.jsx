@@ -13,11 +13,21 @@ class Dashboard extends React.Component {
     signedIn: PropTypes.bool.isRequired
   }
 
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      currentPath: []
+    }
+  }
+
+  updateCurrentPath = (path) => { this.setState({ currentPath: path }) }
+
   render () {
     return this.props.signedIn ? (
       <Grid className="dashboard">
         <Grid.Column width={3}>
-          <SidebarMenu />
+          <SidebarMenu updateCurrentPath={this.updateCurrentPath} />
         </Grid.Column>
         <Grid.Column width={13}>
         </Grid.Column>
