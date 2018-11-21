@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom'
 
 import { Grid } from 'semantic-ui-react'
 import SidebarMenu from './SidebarMenu'
+import NoteCards from './NoteCards'
 
 /**
  * Dashboard.jsx
@@ -30,12 +31,16 @@ class Dashboard extends React.Component {
   updateCurrentPath = (path) => { this.setState({ currentPath: path }) }
 
   render () {
+    const { currentPath } = this.state
+    const parentNotebook = (currentPath.length > 1) ? currentPath[currentPath.length - 1] : null
+
     return this.props.signedIn ? (
       <Grid className="dashboard">
         <Grid.Column width={3}>
           <SidebarMenu updateCurrentPath={this.updateCurrentPath} />
         </Grid.Column>
         <Grid.Column width={13}>
+          <NoteCards items={this.props.notebooks} parentNotebook={parentNotebook} />
         </Grid.Column>
       </Grid>
     ) : (

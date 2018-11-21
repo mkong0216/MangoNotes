@@ -10,7 +10,8 @@ import notepage from '../images/notepage.png'
 class CreateModal extends React.Component {
   static propTypes = {
     toggleModal: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired
+    open: PropTypes.bool.isRequired,
+    parentNotebook: PropTypes.string
   }
 
   constructor (props) {
@@ -49,7 +50,12 @@ class CreateModal extends React.Component {
             </Segment>
           </Modal.Content>
         </Modal>
-        <FormModal open={this.state.showCreateForm} closeModal={this.closeFormModal} type={this.state.type} />
+        <FormModal
+          open={this.state.showCreateForm}
+          closeModal={this.closeFormModal}
+          type={this.state.type}
+          parentNotebook={this.props.parentNotebook}
+        />
       </React.Fragment>
     )
   }

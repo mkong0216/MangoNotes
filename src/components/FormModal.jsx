@@ -1,12 +1,15 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Modal, Input, Button } from 'semantic-ui-react'
+import { createNewNotebook } from '../xhr/notebook'
 
 class FormModal extends React.Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
     type: PropTypes.string.isRequired,
-    closeModal: PropTypes.func.isRequired
+    closeModal: PropTypes.func.isRequired,
+    parentNotebook: PropTypes.string
   }
 
   constructor (props) {
@@ -18,6 +21,19 @@ class FormModal extends React.Component {
   }
 
   handleChange = (event, { value }) => { this.setState({ title: value }) }
+
+  handleCreate = (event) => {
+    const info = {
+      title: this.state.title,
+      creator: this.props.userId,
+      parentNotebook: this.props.parentNotebook
+    }
+
+    createNewNotebook(info)
+      .catch((error) => {
+        console.log(error.message)
+      })
+  }
 
   render () {
     return (
@@ -41,4 +57,10 @@ class FormModal extends React.Component {
   }
 }
 
-export default FormModal
+function mapStateToProps (state) {
+  return {
+    userId: state.user.signInData.userId
+  }
+}
+
+export default connect(mapStateToProps)(FormModal)
