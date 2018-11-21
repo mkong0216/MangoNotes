@@ -55,7 +55,7 @@ export async function retrieveNotebook (notebookId, userId) {
       }
 
       return obj
-    })
+    }, noteItems)
 
     return noteItems
   } catch (error) {
@@ -69,16 +69,17 @@ export async function retrieveNotebook (notebookId, userId) {
  *
  * @param {Object} details
  *
- * @returns {Object} - in shape of { parentNotebook, title, updatedAt, type, noteId }
+ * @returns {Object} - in shape of { parentNotebook, title, updatedAt, type, notebook/notepageId }
  */
 function filterNoteDetails (details) {
   return details.map((detail) => {
+    const id = (detail.type === 'notebook') ? 'notebookId' : 'notepageId'
     return {
       parentNotebook: detail.parentNotebook,
       title: detail.title,
       updatedAt: detail.updatedAt,
       type: detail.type,
-      noteId: detail.id
+      [id]: detail.id
     }
   })
 }
