@@ -27,6 +27,11 @@ class CreateModal extends React.Component {
 
   closeFormModal = () => { this.setState({ showCreateForm: false, type: '' }) }
 
+  closeAllModals = () => {
+    this.closeFormModal()
+    this.props.toggleModal()
+  }
+
   render () {
     return (
       <React.Fragment>
@@ -53,6 +58,7 @@ class CreateModal extends React.Component {
         <FormModal
           open={this.state.showCreateForm}
           closeModal={this.closeFormModal}
+          closeAllModals={this.closeAllModals}
           type={this.state.type}
           parentNotebook={this.props.parentNotebook}
         />

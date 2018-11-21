@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Modal, Input, Button } from 'semantic-ui-react'
+import { Modal, Input, Button, Message } from 'semantic-ui-react'
 import { createNewNotebook } from '../xhr/notebook'
 
 class FormModal extends React.Component {
@@ -9,6 +9,7 @@ class FormModal extends React.Component {
     open: PropTypes.bool.isRequired,
     type: PropTypes.string.isRequired,
     closeModal: PropTypes.func.isRequired,
+    closeAllModals: PropTypes.func.isRequired,
     parentNotebook: PropTypes.string
   }
 
@@ -16,11 +17,12 @@ class FormModal extends React.Component {
     super(props)
 
     this.state = {
-      title: ''
+      title: '',
+      error: null
     }
   }
 
-  handleChange = (event, { value }) => { this.setState({ title: value }) }
+  handleChange = (event, { value }) => { this.setState({ title: value, error: null }) }
 
   handleCreate = (event) => {
     const info = {
@@ -30,16 +32,24 @@ class FormModal extends React.Component {
     }
 
     createNewNotebook(info)
+      .then(() => { this.props.closeAllModals() })
       .catch((error) => {
-        console.log(error.message)
+        this.setState({
+          error: error.message
+        })
       })
   }
 
   render () {
+    const errorMessage = this.state.error ? (
+      <Message error compact size="small" header={this.state.error} />
+    ) : null
+
     return (
       <Modal open={this.props.open} onClose={this.props.closeModal} size="tiny">
         <Modal.Header> Creating a new {this.props.type} </Modal.Header>
         <Modal.Content>
+          { errorMessage }
           <Input
             fluid
             label="Name"
