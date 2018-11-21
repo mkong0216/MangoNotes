@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const { Credentials, User } = require('../models/User.js')
+const NoteDetails = require('../models/NoteDetails.js')
 
 // Login / Register User
 exports.AuthenticateUser = function (req, res) {
@@ -117,26 +118,33 @@ exports.GetUsersWorkspace = function (req, res) {
 
 // Updating user's notebooks
 exports.UpdateUsersNotebooks = function (req, res) {
-  const username = req.params.username
+  const userId = req.params.userId
   const notebook = req.body
+
+  if (!userId) {
+    res.status(401).send("Failed to provide a userId")
+  }
 
   const handleUpdateNotebooks = function (err, notebook) {
     if (err) {
       console.log(err)
       res.status(500).send("Error updating user's notebooks")
     } else {
-      console.log(notebook)
-      res.status(200)
+      res.status(200).send("Successfully updated user's notebooks")
     }
   }
 
-  User.findOneAndUpdate({ username: username }, { $push: { notebooks: notebook }}, handleUpdateNotebooks)
+  User.findOneAndUpdate({ id: userId }, { $push: { notebooks: notebook }}, handleUpdateNotebooks)
 }
 
 // Updating user's notepages
 exports.UpdateUsersNotepages = function (req, res) {
-  const username = req.params.username
+  const userId = req.params.userId
   const notepage = req.body
+
+  if (!userId) {
+    res.status(401).send("Failed to provide a userId")
+  }
 
   const handleUpdateNotepages = function (err, user) {
     if (err) {
@@ -147,5 +155,5 @@ exports.UpdateUsersNotepages = function (req, res) {
     }
   }
 
-  User.findOneAndUpdate({ username: username }, { $push: { notepages: notepage }}, handleUpdateNotepages)
+  User.findOneAndUpdate({ id: userId }, { $push: { notepages: notepage }}, handleUpdateNotepages)
 }
