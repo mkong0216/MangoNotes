@@ -1,4 +1,7 @@
 import axios from 'axios'
+import store from '../store'
+import { setUserNotebooks } from '../store/actions/notebooks'
+import { setUserNotepages } from '../store/actions/notepages'
 
 /**
  * Authenticating user's login or register attempt
@@ -13,10 +16,41 @@ export async function authenticateUser (credentials, submissionType) {
 
   try {
     const signedIn = await axios.post(endpoint, credentials)
+    retrieveUsersWork(signedIn.data.userId)
+
     window.sessionStorage.userId = JSON.stringify(signedIn.data)
     return signedIn.data
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.error)
+  }
+}
+
+/**
+ * Get all parent notebooks and/or free notepages from user
+ * Parent notebook - notebook that is not within another notebook
+ * Free notepage - notepage that is not within a notebook
+ * 
+ * @param {String} userId 
+ * 
+ * Returns Object of parent notebooks and free notepages
+ */
+export async function retrieveUsersWork (userId) {
+  const endpoint = `/workspace/${userId}`
+
+  try {
+    const results = await axios.get(endpoint)
+
+    if (results.data.notebooks.length) {
+      store.dispatch(setUserNotebooks(results.notebooks))
+    }
+
+    if (results.data.notepages.length) {
+      store.dispatch(setUserNotepages(results.notepages))
+    }
+
+    return results
+  } catch (error) {
+    console.log(error)
   }
 }
