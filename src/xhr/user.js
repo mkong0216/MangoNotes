@@ -16,7 +16,8 @@ export async function authenticateUser (credentials, submissionType) {
 
   try {
     const signedIn = await axios.post(endpoint, credentials)
-    const results = await retrieveUsersWork(signedIn.data.userId)
+    await retrieveUsersWork(signedIn.data.userId)
+
     window.sessionStorage.userId = JSON.stringify(signedIn.data)
     return signedIn.data
   } catch (error) {
