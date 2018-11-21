@@ -45,3 +45,4 @@ app.post('/notepage/new', notepage.CreateNotepage)
 
 // Handling notebooks
 app.post('/notebook/new', notebook.CreateNotebook)
+app.get('/notebook/:notebookId/:userId', notebook.GetNotebook)
