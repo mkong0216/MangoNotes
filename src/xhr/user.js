@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '../store'
 import { setUserNotebooks, updateUserNotebooks } from '../store/actions/notebooks'
-import { setUserNotepages } from '../store/actions/notepages'
+import { setUserNotepages, updateUserNotepages } from '../store/actions/notepages'
 
 /**
  * Authenticating user's login or register attempt
@@ -55,7 +55,7 @@ export async function retrieveUsersWork (userId) {
     if (results.data.notepages.length) {
       const notepages = results.data.notepages.map((notepage) => {
         return {
-          notepageId: notepage.Id,
+          notepageId: notepage.id,
           title: notepage.title,
           updatedAt: notepage.updatedAt
         }
@@ -83,7 +83,12 @@ export async function updateUsersWork (userId, details) {
 
   try {
     const response = await axios.put(endpoint, details)
-    store.dispatch(updateUserNotebooks(response.data))
+
+    if (details.type === 'notepage') {
+      store.dispatch(updateUserNotepages(response.data))
+    } else if (details.type === 'notebook') {
+      store.dispatch(updateUserNotebooks(response.data))
+    }
 
     return response.data
   } catch (error) {
