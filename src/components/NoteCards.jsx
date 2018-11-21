@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Card } from 'semantic-ui-react'
 import CreateModal from './CreateModal'
+import { updateBrowserHistory } from '../utils'
 
 import plus from '../images/plus-icon.png'
 import notebookIcon from '../images/notebook.png'
@@ -18,7 +19,8 @@ class NoteCards extends React.Component {
   static propTypes = {
     parentNotebook: PropTypes.string,
     notebooks: PropTypes.array,
-    notepages: PropTypes.array
+    notepages: PropTypes.array,
+    updateCurrentPath: PropTypes.func.isRequired
   }
 
   constructor (props) {
@@ -33,7 +35,25 @@ class NoteCards extends React.Component {
     this.setState({ showModal: !this.state.showModal })
   }
 
+  handleNoteCardClick = (item, type) => {
+    const currPath = (window.location.pathname).split('/').slice(1)
+
+    const state = {
+      id: item.title,
+      noteId: (type === 'notebook') ? item.notebookId : item.notepageId,
+      type
+    }
+
+    if (currPath[currPath.length - 1] === state.noteId) return
+
+    const url = `/${currPath[0]}/${type}/${state.noteId}`
+    updateBrowserHistory(state, url)
+    this.props.updateCurrentPath(item.title)
+  }
+
   renderNoteCards = (items, type) => {
+    if (!items) return null
+
     return items.map((item, i) => {
       const dateModified = new Date(item.updatedAt)
       const modifiedOn = `Last modified on ${dateModified.toDateString()}`
@@ -45,6 +65,7 @@ class NoteCards extends React.Component {
           header={item.title}
           meta={modifiedOn}
           link
+          onClick={() => { this.handleNoteCardClick(item, type) }}
         />
       )
     })
