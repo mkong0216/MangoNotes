@@ -37,11 +37,11 @@ app.post('/login', users.AuthenticateUser)
 app.post('/register', users.AuthenticateUser)
 app.get('/workspace/:userId', users.GetUsersWorkspace)
 
-app.put('/:username/workspace/add-notebook', users.UpdateUsersNotebooks)
-app.put('/:username/workspace/add-notepage', users.UpdateUsersNotepages)
+app.put('/workspace/add-notebook/:userId', users.UpdateUsersNotebooks)
+app.put('/workspace/add-notepage/:userId', users.UpdateUsersNotepages)
 
 // Handling notepages
-app.post('/:username/notepage/new', notepage.CreateNotepage)
+app.post('/notepage/new', notepage.CreateNotepage)
 
 // Handling notebooks
-app.post('/:username/notebook/new', notebook.CreateNotebook)
+app.post('/notebook/new', notebook.CreateNotebook)
