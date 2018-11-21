@@ -3,9 +3,9 @@ import { updateUsersWork } from './user'
 
 /**
  * Makes a POST request to DB to create new Notebook object
- * 
+ *
  * @param {Object} notebook - in shape of { title, creator, parentNotebook }
- * 
+ *
  * @returns {Object} - in shape of { creator, notebookId, parentNotebook, title, type }
  */
 export async function createNewNotebook (notebook) {
@@ -25,6 +25,14 @@ export async function createNewNotebook (notebook) {
   }
 }
 
+/**
+ * Gets notebooks and notepages of current notebook
+ *
+ * @param {String} notebookId
+ * @param {String} userId
+ *
+ * @returns {Array} - [notebooks, notepages]
+ */
 export async function retrieveNotebook (notebookId, userId) {
   const endpoint = `/notebook/${notebookId}/${userId}`
 
@@ -56,6 +64,13 @@ export async function retrieveNotebook (notebookId, userId) {
   }
 }
 
+/**
+ * Filters unnecessary fields from return value of GET request.
+ *
+ * @param {Object} details
+ *
+ * @returns {Object} - in shape of { parentNotebook, title, updatedAt, type, noteId }
+ */
 function filterNoteDetails (details) {
   return details.map((detail) => {
     return {
