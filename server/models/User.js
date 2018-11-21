@@ -1,23 +1,5 @@
 const mongoose = require('mongoose')
-
-let NoteDetails = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  id: {
-    type: String,
-    required: true
-  },
-  timestamp: {
-    type: Date,
-    required: true
-  },
-  parentNotebook: {
-    type: String,
-    required: true
-  }
-})
+const NoteDetails = require('./NoteDetails')
 
 // Login / Register credentials
 let CredentialSchema = new mongoose.Schema({
