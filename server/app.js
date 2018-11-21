@@ -35,7 +35,7 @@ app.listen(port, () => {
 // Handling users
 app.post('/login', users.AuthenticateUser)
 app.post('/register', users.AuthenticateUser)
-app.get('/:username/workspace', users.GetUsersWorkspace)
+app.get('/workspace/:userId', users.GetUsersWorkspace)
 
 app.put('/:username/workspace/add-notebook', users.UpdateUsersNotebooks)
 app.put('/:username/workspace/add-notepage', users.UpdateUsersNotepages)
