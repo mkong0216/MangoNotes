@@ -42,6 +42,7 @@ export async function retrieveUsersWork (userId) {
     const results = await axios.get(endpoint)
 
     if (results.data.notebooks.length) {
+      console.log(results.data.notebooks)
       store.dispatch(setUserNotebooks(results.notebooks))
     }
 
@@ -59,7 +60,7 @@ export async function retrieveUsersWork (userId) {
  * Updates user's parent notebooks or free notepages
  *
  * @param {String} userId
- * @param {Object} details - in shape of { title, id }
+ * @param {Object} details - in shape of { title, id, creator }
  * @param {String} type - either notebook or notepage
  */
 export async function updateUsersWork (userId, details, type) {
@@ -67,7 +68,7 @@ export async function updateUsersWork (userId, details, type) {
 
   try {
     const response = await axios.put(endpoint, details)
-    return response
+    return response.data
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.error)
