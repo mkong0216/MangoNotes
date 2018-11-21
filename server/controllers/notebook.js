@@ -1,7 +1,11 @@
 const Notebook = require('../models/Notebook')
 
 exports.CreateNotebook = function (req, res) {
-  const username = req.params.username
+  const userId = req.body.creator
+
+  if (!userId) {
+    res.status(401).send("Failed to provide a userId")
+  }
 
   const handleSaveNotebook = function (error, notebook) {
     if (error) {
@@ -10,16 +14,24 @@ exports.CreateNotebook = function (req, res) {
     } else {
       res.status(200).json({
         id: notebook._id,
-        title: notebook.title,
-        timestamp: notebook.timestamp
+        title: notebook.title
       })
     }
   }
 
-  if (username) {
-    const newNotebook = new Notebook(req.body)
-    newNotebook.save(handleSaveNotebook)
-  } else {
-    res.status(400).send("Notebook does not have a creator")
+  const handleCheckDuplicates = function (error, count) {
+    if (error) {
+      console.log(error)
+      res.status(500).send("Error checking for duplicate notebook")
+    } else if (count > 0) {
+      res.status(401).json({
+        error: "There already exists a notebook with this name. Please rename the notebook."
+      })
+    } else {
+      const newNotebook = new Notebook(req.body)
+      newNotebook.save(handleSaveNotebook)
+    }
   }
+
+  Notebook.estimatedDocumentCount(req.body, handleCheckDuplicates)
 }
