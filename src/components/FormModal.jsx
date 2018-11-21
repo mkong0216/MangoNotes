@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Modal, Input, Button, Message } from 'semantic-ui-react'
 import { createNewNotebook } from '../xhr/notebook'
+import { createNewNotepage } from '../xhr/notepage'
 
 class FormModal extends React.Component {
   static propTypes = {
@@ -24,23 +25,26 @@ class FormModal extends React.Component {
 
   handleChange = (event, { value }) => { this.setState({ title: value, error: null }) }
 
-  handleCreate = (event) => {
+  handleCreate = async (event) => {
     const info = {
       title: this.state.title,
       creator: this.props.userId,
       parentNotebook: this.props.parentNotebook
     }
 
-    createNewNotebook(info)
-      .then(() => {
-        this.setState({ title: '', error: null })
-        this.props.closeAllModals()
+    try {
+      (this.props.type === 'notebook') ? await createNewNotebook(info) : await createNewNotepage(info)
+
+      this.setState({ title: '', error: null })
+      this.props.closeAllModals()
+
+      window.dispatchEvent(new window.CustomEvent('mangonotes:creation'))
+    } catch (error) {
+      console.log(error)
+      this.setState({
+        error: error.message
       })
-      .catch((error) => {
-        this.setState({
-          error: error.message
-        })
-      })
+    }
   }
 
   render () {
