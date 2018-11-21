@@ -31,15 +31,24 @@ class Dashboard extends React.Component {
     }
   }
 
+  componentDidMount () {
+    window.addEventListener('mangonotes:creation', this.getNotebooksAndNotepages)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('mangonotes:creation', this.getNotebooksAndNotepages)
+  }
+
   updateCurrentPath = (path, isMenuItem) => {
     const currentPath = (isMenuItem) ? path : this.state.currentPath.concat(path)
     const parentNotebook = (currentPath.length > 1) ? currentPath[currentPath.length - 1] : null
     this.setState({ currentPath, parentNotebook })
 
-    this.getNotebooksAndNotepages(parentNotebook)
+    this.getNotebooksAndNotepages()
   }
 
-  getNotebooksAndNotepages = async (parentNotebook) => {
+  getNotebooksAndNotepages = async () => {
+    const { parentNotebook } = this.state
     const historyState = window.history.state
 
     let noteItems = {}
@@ -51,9 +60,9 @@ class Dashboard extends React.Component {
       }
     } else if (parentNotebook && historyState.type === 'notebook') {
       noteItems = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
+      console.log(noteItems)
     }
 
-    console.log(noteItems)
     this.setState({ contents: noteItems })
   }
 
