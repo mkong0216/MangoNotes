@@ -25,30 +25,38 @@ class Dashboard extends React.Component {
     super(props)
 
     this.state = {
-      currentPath: ['workspace'],
       contents: null,
       parentNotebook: null
     }
   }
 
   componentDidMount () {
+    if (this.props.user.signedIn) {
+      const path = `/${this.props.match.params.username}/workspace`
+
+      const state = {
+        id: 'workspace',
+        currentPath: ['workspace'],
+        user: this.props.match.params.username
+      }
+      this.props.history.replace({ pathname: path, state })
+    }
+
     window.addEventListener('mangonotes:creation', this.getNotebooksAndNotepages)
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.getNotebooksAndNotepages()
+    }
   }
 
   componentWillUnmount () {
     window.removeEventListener('mangonotes:creation', this.getNotebooksAndNotepages)
   }
 
-  updateCurrentPath = (path, isMenuItem) => {
-    const currentPath = (isMenuItem) ? path : this.state.currentPath.concat(path)
-    const parentNotebook = (currentPath.length > 1) ? currentPath[currentPath.length - 1] : null
-    this.setState({ currentPath, parentNotebook })
-
-    this.getNotebooksAndNotepages()
-  }
-
   getNotebooksAndNotepages = async () => {
-    const historyState = window.history.state
+    const historyState = this.props.location.state
     let noteItems = {}
 
     if (historyState.id === 'workspace') {
@@ -58,10 +66,12 @@ class Dashboard extends React.Component {
       }
     } else if (historyState.type === 'notebook' && historyState.noteId) {
       noteItems = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
-      console.log(noteItems)
     }
 
-    this.setState({ contents: noteItems })
+    this.setState({
+      contents: noteItems,
+      parentNotebook: (historyState.currentPath.length > 1) ? historyState.currentPath[historyState.currentPath.length - 1] : null
+    })
   }
 
   render () {
@@ -70,14 +80,14 @@ class Dashboard extends React.Component {
     return this.props.user.signedIn ? (
       <Grid className="dashboard">
         <Grid.Column width={3}>
-          <SidebarMenu updateCurrentPath={this.updateCurrentPath} />
+          <SidebarMenu history={this.props.history} />
         </Grid.Column>
         <Grid.Column width={13}>
           <NoteCards
             notebooks={contents && contents.notebooks}
             notepages={contents && contents.notepages}
             parentNotebook={parentNotebook}
-            updateCurrentPath={this.updateCurrentPath}
+            history={this.props.history}
           />
         </Grid.Column>
       </Grid>

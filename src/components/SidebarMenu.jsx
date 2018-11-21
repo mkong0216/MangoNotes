@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Menu, Divider, Icon, Header } from 'semantic-ui-react'
-import { updateBrowserHistory } from '../utils'
 
 const MENU_ITEMS = [
   { "title": 'My Workspace', "name": 'workspace', "icon": 'write' },
@@ -19,7 +18,7 @@ const MENU_ITEMS = [
 
 class SidebarMenu extends React.Component {
   static propTypes = {
-    updateCurrentPath: PropTypes.func.isRequired
+    history: PropTypes.object.isRequired
   }
 
   constructor (props) {
@@ -33,21 +32,20 @@ class SidebarMenu extends React.Component {
     }
   }
 
-  componentDidMount () {
-    const newURL = `/${this.state.username}/${this.state.activeMenuItem}`
-    updateBrowserHistory({ id: this.state.activeMenuItem }, newURL)
-    this.props.updateCurrentPath([this.state.activeMenuItem], true)
-  }
+  handleMenuClick = (event, item) => {
+    this.setState({ activeMenuItem: item.name })
+    const historyState = this.props.history.location.state
+    console.log(historyState)
 
-  componentDidUpdate (prevProps, prevState) {
-    if (prevState.activeMenuItem !== this.state.activeMenuItem) {
-      const newURL = `/${this.state.username}/${this.state.activeMenuItem}`
-      updateBrowserHistory({ id: this.state.activeMenuItem }, newURL)
-      this.props.updateCurrentPath([this.state.activeMenuItem], true)
+    const path = `/${historyState.user}/${item.name}`
+    const state = {
+      id: item.name,
+      currentPath: [item.name],
+      user: historyState.user
     }
-  }
 
-  handleMenuClick = (event, item) => { this.setState({ activeMenuItem: item.name }) }
+    this.props.history.replace({ pathname: path, state })
+  }
 
   renderMenuList = (items) => {
     return items.map((item, i) => {

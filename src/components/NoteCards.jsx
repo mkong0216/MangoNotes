@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Card } from 'semantic-ui-react'
 import CreateModal from './CreateModal'
-import { updateBrowserHistory } from '../utils'
 
 import plus from '../images/plus-icon.png'
 import notebookIcon from '../images/notebook.png'
@@ -20,7 +19,7 @@ class NoteCards extends React.Component {
     parentNotebook: PropTypes.string,
     notebooks: PropTypes.array,
     notepages: PropTypes.array,
-    updateCurrentPath: PropTypes.func.isRequired
+    history: PropTypes.object.isRequired
   }
 
   constructor (props) {
@@ -37,18 +36,19 @@ class NoteCards extends React.Component {
 
   handleNoteCardClick = (item, type) => {
     const currPath = (window.location.pathname).split('/').slice(1)
-
+    const historyState = this.props.history.location.state
+  
     const state = {
       id: item.title,
       noteId: (type === 'notebook') ? item.notebookId : item.notepageId,
-      type
+      type,
+      currentPath: [...historyState.currentPath, item.title]
     }
 
     if (currPath[currPath.length - 1] === state.noteId) return
 
-    const url = `/${currPath[0]}/${type}/${state.noteId}`
-    updateBrowserHistory(state, url)
-    this.props.updateCurrentPath(item.title)
+    const path = `/${historyState.user}/${type}/${state.noteId}`
+    this.props.history.replace({ pathname: path, state })
   }
 
   renderNoteCards = (items, type) => {
