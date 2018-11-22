@@ -87,6 +87,7 @@ exports.UpdateNotepage = function (req, res) {
     title: req.body.title,
     creator: userId,
     parentNotebook: req.body.parentNotebook,
+    id: notepageId,
     type: 'notepage'
   }
 
@@ -111,7 +112,7 @@ exports.UpdateNotepage = function (req, res) {
       res.status(500).send("Error updating notepage")
     } else {
       if (notepage.parentNotebook) {
-        Notebook.findOneAndUpdate({ title: notepage.parentNotebook, creator: notepage.creator }, { $push: { content: details }}, handleUpdateNotebook)
+        Notebook.findOneAndUpdate({ title: notepage.parentNotebook, creator: notepage.creator, "content.id": notepageId }, { $set: { "content.$": details }}, handleUpdateNotebook)
       } else {
         res.status(200).send(details)
       }
