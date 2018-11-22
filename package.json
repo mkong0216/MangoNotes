@@ -10,6 +10,7 @@
     "compression": "^1.7.3",
     "connect-multiparty": "^2.2.0",
     "cors": "^2.8.4",
+    "draft-js": "^0.10.5",
     "express": "^4.16.4",
     "helmet": "^3.14.0",
     "mongoose": "^5.3.3",
