@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom'
 
 import { Grid, Header, Image, Popup, Input } from 'semantic-ui-react'
 import Toolbar from './Toolbar'
-import TextArea from './TextArea'
+import NotepageText from './NotepageText'
 
 import { retrieveNotepage, updateNotepage } from '../xhr/notepage'
 import notepageIcon from '../images/notepage.png'
@@ -110,7 +110,7 @@ class Notepage extends React.Component {
               <Toolbar />
             </Grid.Column>
             <Grid.Column width={10}>
-              <TextArea />
+              <NotepageText />
             </Grid.Column>
             <Grid.Column width={3}>
               Search Bar
