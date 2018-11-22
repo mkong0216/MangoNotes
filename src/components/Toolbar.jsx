@@ -1,6 +1,6 @@
 import React from 'react'
 import { Segment, Button, Divider, Popup } from 'semantic-ui-react'
-import { TwitterPicker } from 'react-color'
+import { GithubPicker } from 'react-color'
 import '../css/Toolbar.css'
 
 const TOOLBAR_ICONS = [
@@ -29,15 +29,39 @@ class Toolbar extends React.Component {
 
     this.state = {
       showColorPalette: false,
-      textColor: '#fff'
+      textColor: '#fff',
+      activeButtons: {
+        'font-style': false,
+        'text-align': 'align left',
+        'lists': false
+      }
     }
   }
 
-  renderToolIcons = (icons) => {
+  setActiveButtons = (event, { name, value }) => {
+    const updateActiveButtons = { ...this.state.activeButtons }
+    if (updateActiveButtons[name] === value) {
+      updateActiveButtons[name] = (name === 'text-align') ? 'align left' : null
+    } else {
+      updateActiveButtons[name] = value
+    }
+
+    this.setState({ activeButtons: updateActiveButtons })
+  }
+
+  renderToolIcons = (icons, group) => {
     return icons.map((icon) => {
+      const isActive = this.state.activeButtons[group] === icon.name
       return (
         <Popup
-          trigger={(<Button icon={icon.name} />)}
+          trigger={(
+            <Button
+              active={isActive}
+              icon={icon.name}
+              name={group}
+              value={icon.name}
+              onClick={this.setActiveButtons} />
+          )}
           content={icon.label}
           size="mini"
           inverted
@@ -52,8 +76,8 @@ class Toolbar extends React.Component {
     return TOOLBAR_ICONS.map((section) => {
       return (
         <React.Fragment key={section.group}>
-          <Button.Group basic fluid size="small">
-            { this.renderToolIcons(section.icons) }
+          <Button.Group fluid size="small" basic>
+            { this.renderToolIcons(section.icons, section.group) }
           </Button.Group>
           <Divider hidden />
         </React.Fragment>
@@ -81,7 +105,10 @@ class Toolbar extends React.Component {
           ref={(ref) => { this.textColor = ref }}
         />
         { this.state.showColorPalette &&
-          <TwitterPicker color={this.state.background} onChangeComplete={this.handleChangeComplete} />
+          <GithubPicker
+            color={this.state.background}
+            onChangeComplete={this.handleChangeComplete}
+          />
         }
         <Divider hidden />
         { this.renderToolGroups() }
