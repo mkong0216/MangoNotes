@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '../store'
-import { setUserNotebooks, updateUserNotebooks } from '../store/actions/notebooks'
-import { setUserNotepages, updateUserNotepages } from '../store/actions/notepages'
+import { setUserNotebooks, updateUserNotebook, addUserNotebook } from '../store/actions/notebooks'
+import { setUserNotepages, updateUserNotepage, addUserNotepage } from '../store/actions/notepages'
 
 /**
  * Authenticating user's login or register attempt
@@ -76,19 +76,31 @@ export async function retrieveUsersWork (userId) {
  *
  * @param {String} userId
  * @param {Object} details - in shape of { title, id, creator, parentNotebook, type }
+ * @param {Number} index - index of changed notebook or notepage
  *
  * @returns {Object}
  */
-export async function updateUsersWork (userId, details) {
+export async function updateUsersWork (userId, details, index) {
   const endpoint = `/workspace/add-${details.type}/${userId}`
+  // createNew tells server to either create a new NoteDetail or find existing one
+  details.createNew = (index !== 0 && !index)
+  console.log(details)
 
   try {
     const response = await axios.put(endpoint, details)
 
     if (details.type === 'notepage') {
-      store.dispatch(updateUserNotepages(response.data))
+      if (index) {
+        store.dispatch(addUserNotepage(response.data, index))
+      } else {
+        store.dispatch(updateUserNotepage(response.data))
+      }
     } else if (details.type === 'notebook') {
-      store.dispatch(updateUserNotebooks(response.data))
+      if (index) {
+        store.dispatch(addUserNotebook(response.data, index))
+      } else {
+        store.dispatch(updateUserNotebook(response.data))
+      }
     }
 
     return response.data
