@@ -2,7 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
+
 import { Grid, Header, Image, Popup, Input } from 'semantic-ui-react'
+import Toolbar from './Toolbar'
+import TextArea from './TextArea'
+
 import { retrieveNotepage, updateNotepage } from '../xhr/notepage'
 import notepageIcon from '../images/notepage.png'
 import '../css/Notepage.css'
@@ -103,10 +107,10 @@ class Notepage extends React.Component {
           </Grid.Row>
           <Grid.Row>
             <Grid.Column width={3}>
-              Tool Bar
+              <Toolbar />
             </Grid.Column>
             <Grid.Column width={10}>
-              Text Area
+              <TextArea />
             </Grid.Column>
             <Grid.Column width={3}>
               Search Bar
