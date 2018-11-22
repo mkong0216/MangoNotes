@@ -125,12 +125,16 @@ exports.UpdateUsersNotebooks = function (req, res) {
     res.status(401).send("Failed to provide a userId")
   }
 
-  const handleUpdateNotebooks = function (err, notebook) {
+  const handleUpdateNotebooks = function (err, user) {
     if (err) {
       console.log(err)
       res.status(500).send("Error updating user's notebooks")
     } else {
-      res.status(200).send("Successfully updated user's notebooks")
+      res.status(200).json({
+        notebookId: notebook.id,
+        updatedAt: notebook.updatedAt,
+        title: notebook.title
+      })
     }
   }
 
@@ -151,7 +155,12 @@ exports.UpdateUsersNotepages = function (req, res) {
       console.log(err)
       res.status(500).send("Error updating user's notepages")
     } else {
-      res.status(200)
+      console.log(notepage)
+      res.status(200).json({
+        notepageId: notepage.id,
+        updatedAt: notepage.updatedAt,
+        title: notepage.title
+      })
     }
   }
 
