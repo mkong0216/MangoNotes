@@ -27,7 +27,7 @@ exports.CreateNotepage = function (req, res) {
       details.updatedAt = notepage.updatedAt
 
       if (notepage.parentNotebook) {
-        Notebook.findOneAndUpdate({ title: notepage.parentNotebook, creator: userId }, { $push: { content: details }}, handleUpdateNotebook)
+        Notebook.updateOne({ title: notepage.parentNotebook, creator: userId }, { $push: { content: details }}, handleUpdateNotebook)
       } else {
         res.status(200).json(details)
       }
@@ -112,7 +112,7 @@ exports.UpdateNotepage = function (req, res) {
       res.status(500).send("Error updating notepage")
     } else {
       if (notepage.parentNotebook) {
-        Notebook.findOneAndUpdate({ title: notepage.parentNotebook, creator: notepage.creator, "content.id": notepageId }, { $set: { "content.$": details }}, handleUpdateNotebook)
+        Notebook.updateOne({ title: notepage.parentNotebook, creator: notepage.creator, "content.id": notepageId }, { $set: { "content.$": details }}, handleUpdateNotebook)
       } else {
         res.status(200).send(details)
       }
@@ -128,7 +128,7 @@ exports.UpdateNotepage = function (req, res) {
         error: "There already exists a notepage with this name. Please rename the notepage."
       })
     } else {
-      Notepage.findOneAndUpdate({ _id: notepageId }, { $set: { title: req.body.title, content: req.body.content }}, handleUpdateNotepage)
+      Notepage.updateOne({ _id: notepageId }, { $set: { title: req.body.title, content: req.body.content }}, handleUpdateNotepage)
     }
   }
 

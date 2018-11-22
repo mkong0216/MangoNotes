@@ -26,7 +26,7 @@ exports.CreateNotebook = function (req, res) {
       details.updatedAt = notebook.updatedAt
 
       if (notebook.parentNotebook) {
-        Notebook.findOneAndUpdate({ title: notebook.parentNotebook, creator: userId }, { $push: { content: details }}, handleUpdateNotebook)
+        Notebook.updateOne({ title: notebook.parentNotebook, creator: userId }, { $push: { content: details }}, handleUpdateNotebook)
       } else {
         res.status(200).json(details)
       }

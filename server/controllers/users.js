@@ -139,9 +139,9 @@ exports.UpdateUsersNotebooks = function (req, res) {
   }
 
   if (createNew) {
-    User.findOneAndUpdate({ id: userId }, { $push: { notebooks: notebook }}, handleUpdateNotebooks)
+    User.updateOne({ id: userId }, { $push: { notebooks: notebook }}, handleUpdateNotebooks)
   } else {
-    User.findOneAndUpdate({ id: userId, "notebooks.id":  notebook.id }, { $set: { "notebooks.$.title": notebook.title }}, handleUpdateNotebooks)
+    User.updateOne({ id: userId, "notebooks.id":  notebook.id }, { $set: { "notebooks.$.title": notebook.title }}, handleUpdateNotebooks)
   }
 }
 
@@ -168,8 +168,8 @@ exports.UpdateUsersNotepages = function (req, res) {
   }
 
   if (createNew) {
-    User.findOneAndUpdate({ id: userId }, { $push: { notepages: notepage }}, handleUpdateNotepages)
+    User.updateOne({ id: userId }, { $push: { notepages: notepage }}, handleUpdateNotepages)
   } else {
-    User.findOneAndUpdate({ id: userId, "notepages.id": notepage.id }, { $set: { "notepages.$": notepage }}, handleUpdateNotepages)
+    User.updateOne({ id: userId, "notepages.id": notepage.id }, { $set: { "notepages.$": notepage }}, handleUpdateNotepages)
   }
 }
