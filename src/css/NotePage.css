@@ -1,4 +1,18 @@
-.notepage {
+.notepage-details {
+  background: white;
+  padding: 15px !important;
+}
+
+.ui.input.title {
+  margin-left: 10px;
+  padding: 5px 10px;
+}
+
+.ui.input.title:hover {
+  border: solid 1px lightgray;
+}
+
+/* .notepage {
 	width: 70vw;
 	height: 100vh;
 	margin: auto;
@@ -36,4 +50,4 @@
 
 textarea:focus {
 	outline: none;
-}
+} */
