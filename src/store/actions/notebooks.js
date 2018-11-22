@@ -1,4 +1,11 @@
-import { SET_USER_NOTEBOOKS, UPDATE_USER_NOTEBOOKS } from './index'
+import { ADD_USER_NOTEBOOK, SET_USER_NOTEBOOKS, UPDATE_USER_NOTEBOOK } from './index'
+
+export function addUserNotebook (noteDetails) {
+  return {
+    type: ADD_USER_NOTEBOOK,
+    noteDetails
+  }
+}
 
 export function setUserNotebooks (notebooks) {
   return {
@@ -7,9 +14,10 @@ export function setUserNotebooks (notebooks) {
   }
 }
 
-export function updateUserNotebooks (noteDetails) {
+export function updateUserNotebook (noteDetails, index) {
   return {
-    type: UPDATE_USER_NOTEBOOKS,
-    noteDetails
+    type: UPDATE_USER_NOTEBOOK,
+    noteDetails,
+    index
   }
 }

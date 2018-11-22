@@ -1,4 +1,11 @@
-import { SET_USER_NOTEPAGES, UPDATE_USER_NOTEPAGES } from './index'
+import { ADD_USER_NOTEPAGE, SET_USER_NOTEPAGES, UPDATE_USER_NOTEPAGE } from './index'
+
+export function addUserNotepage (noteDetails) {
+  return {
+    type: ADD_USER_NOTEPAGE,
+    noteDetails
+  }
+}
 
 export function setUserNotepages (notepages) {
   return {
@@ -7,9 +14,10 @@ export function setUserNotepages (notepages) {
   }
 }
 
-export function updateUserNotepages (noteDetails) {
+export function updateUserNotepage (noteDetails, index) {
   return {
-    type: UPDATE_USER_NOTEPAGES,
-    noteDetails
+    type: UPDATE_USER_NOTEPAGE,
+    noteDetails,
+    index
   }
 }

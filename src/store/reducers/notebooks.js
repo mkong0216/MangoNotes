@@ -1,4 +1,4 @@
-import { SET_USER_NOTEBOOKS, UPDATE_USER_NOTEBOOKS } from '../actions'
+import { ADD_USER_NOTEBOOK, SET_USER_NOTEBOOKS, UPDATE_USER_NOTEBOOK } from '../actions'
 
 const initialState = {
   userNotebooks: [],
@@ -12,10 +12,19 @@ const notebooks = (state = initialState, action) => {
         ...state,
         userNotebooks: action.notebooks
       }
-    case UPDATE_USER_NOTEBOOKS:
+    case ADD_USER_NOTEBOOK:
       return {
         ...state,
         userNotebooks: [...state.userNotebooks, action.noteDetails]
+      }
+    case UPDATE_USER_NOTEBOOK:
+      return {
+        ...state,
+        userNotebooks: [
+          ...state.userNotebooks.slice(0, action.index),
+          action.noteDetails, 
+          ...state.userNotebooks.slice(action.index + 1)
+        ]
       }
     default:
       return state
