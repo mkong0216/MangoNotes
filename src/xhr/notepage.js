@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { updateUsersWork } from './user'
+import store from '../store'
 
 /**
  * Makes a POST request to DB to create new Notepage object
@@ -56,6 +57,7 @@ export async function retrieveNotepage (notepageId, userId) {
  *
  * @param {Object} notepage - in shape of { title, parentNotebook, content, notepageId }
  *
+ * @returns {Object} - in shape of { title, parentNotebook, type, id }
  */
 export async function updateNotepage(notepage, userId) {
   const endpoint = `/notepage/${notepage.notepageId}/${userId}`
@@ -64,7 +66,9 @@ export async function updateNotepage(notepage, userId) {
     const response = await axios.put(endpoint, notepage)
 
     if (!notepage.parentNotebook) {
-      updateUsersWork(userId, response.data)
+      const notepages = store.getState().notepages.userNotepages
+      const index = notepages.findIndex(item => item.notepageId === notepage.notepageId)
+      await updateUsersWork(userId, response.data, index)
     }
 
     return response.data
