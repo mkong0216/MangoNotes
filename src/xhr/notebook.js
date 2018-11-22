@@ -6,7 +6,7 @@ import { updateUsersWork } from './user'
  *
  * @param {Object} notebook - in shape of { title, creator, parentNotebook }
  *
- * @returns {Object} - in shape of { creator, notebookId, parentNotebook, title, type }
+ * @returns {Object} - in shape of { creator, notebookId, parentNotebook, title, type, updatedAt }
  */
 export async function createNewNotebook (notebook) {
   const endpoint = '/notebook/new'
@@ -16,7 +16,7 @@ export async function createNewNotebook (notebook) {
     const details = response.data
 
     if (!notebook.parentNotebook) {
-      updateUsersWork(notebook.creator, details)
+      await updateUsersWork(notebook.creator, details)
     }
 
     return details
