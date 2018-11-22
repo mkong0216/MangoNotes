@@ -14,7 +14,9 @@ class Notepage extends React.Component {
     this.state = {
       details: null,
       content: '',
-      notepageId: this.props.location.state.noteId
+      notepageId: this.props.location.state.noteId,
+      editing: false,
+      needsUpdate: false
     }
   }
 
@@ -29,16 +31,27 @@ class Notepage extends React.Component {
     }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (!this.state.editing && this.state.needsUpdate) {
+      this.handleNotepageChange()
+    }
+  }
+
   handleChange = (e, { name, value }) => {
     this.setState({
       details: {
         ...this.state.details,
         [name]: value
-      }
+      },
+      needsUpdate: true
     })
   }
 
-  handleDetailsChange = () => {
+  toggleEditTitle = () => {
+    this.setState({ editing: !this.state.editing })
+  }
+
+  handleNotepageChange = () => {
     const notepage = {
       title: this.state.details.title,
       parentNotebook: this.state.details.parentNotebook,
@@ -46,6 +59,7 @@ class Notepage extends React.Component {
       content: this.state.content
     }
 
+    this.setState({ needsUpdate: false })
     updateNotepage(notepage, this.props.user.signInData.userId)
   }
 
@@ -63,8 +77,9 @@ class Notepage extends React.Component {
                     name="title"
                     transparent
                     defaultValue={this.state.details && this.state.details.title}
+                    onClick={this.toggleEditTitle}
+                    onBlur={this.toggleEditTitle}
                     onChange={this.handleChange}
-                    onMouseLeave={this.handleDetailsChange}
                   />
                 )}
                 content="Rename"
