@@ -15,7 +15,7 @@ const notepages = (state = initialState, action) => {
     case UPDATE_USER_NOTEPAGES:
       return {
         ...state,
-        userNotepages: [...state.userNotepages]
+        userNotepages: [...state.userNotepages, action.noteDetails]
       }
     default:
       return state
