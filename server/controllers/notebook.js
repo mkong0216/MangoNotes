@@ -23,6 +23,8 @@ exports.CreateNotebook = function (req, res) {
       res.status(500).send("Error creating new notebook in database.")
     } else {
       details.id = notebook._id
+      details.updatedAt = notebook.updatedAt
+
       if (notebook.parentNotebook) {
         Notebook.findOneAndUpdate({ title: notebook.parentNotebook, creator: userId }, { $push: { content: details }}, handleUpdateNotebook)
       } else {
