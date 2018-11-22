@@ -84,7 +84,6 @@ export async function updateUsersWork (userId, details, index) {
   const endpoint = `/workspace/add-${details.type}/${userId}`
   // createNew tells server to either create a new NoteDetail or find existing one
   details.createNew = (index !== 0 && !index)
-  console.log(details)
 
   try {
     const response = await axios.put(endpoint, details)
