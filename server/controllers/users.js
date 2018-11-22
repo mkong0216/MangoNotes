@@ -119,7 +119,7 @@ exports.GetUsersWorkspace = function (req, res) {
 // Updating user's notebooks
 exports.UpdateUsersNotebooks = function (req, res) {
   const userId = req.params.userId
-  const notebook = req.body
+  const { createNew, ...notebook } = req.body
 
   if (!userId) {
     res.status(401).send("Failed to provide a userId")
@@ -138,13 +138,17 @@ exports.UpdateUsersNotebooks = function (req, res) {
     }
   }
 
-  User.findOneAndUpdate({ id: userId }, { $push: { notebooks: notebook }}, handleUpdateNotebooks)
+  if (createNew) {
+    User.findOneAndUpdate({ id: userId }, { $push: { notebooks: notebook }}, handleUpdateNotebooks)
+  } else {
+    User.findOneAndUpdate({ id: userId, "notebooks.id":  notebook.id }, { $set: { "notebooks.$.title": notebook.title }}, handleUpdateNotebooks)
+  }
 }
 
 // Updating user's notepages
 exports.UpdateUsersNotepages = function (req, res) {
   const userId = req.params.userId
-  const notepage = req.body
+  const { createNew, ...notepage } = req.body
 
   if (!userId) {
     res.status(401).send("Failed to provide a userId")
@@ -155,7 +159,6 @@ exports.UpdateUsersNotepages = function (req, res) {
       console.log(err)
       res.status(500).send("Error updating user's notepages")
     } else {
-      console.log(notepage)
       res.status(200).json({
         notepageId: notepage.id,
         updatedAt: notepage.updatedAt,
@@ -164,5 +167,9 @@ exports.UpdateUsersNotepages = function (req, res) {
     }
   }
 
-  User.findOneAndUpdate({ id: userId }, { $push: { notepages: notepage }}, handleUpdateNotepages)
+  if (createNew) {
+    User.findOneAndUpdate({ id: userId }, { $push: { notepages: notepage }}, handleUpdateNotepages)
+  } else {
+    User.findOneAndUpdate({ id: userId, "notepages.id": notepage.id }, { $set: { "notepages.$": notepage }}, handleUpdateNotepages)
+  }
 }
