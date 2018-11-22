@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 import { Grid, Header, Image, Popup, Input } from 'semantic-ui-react'
 import { retrieveNotepage, updateNotepage } from '../xhr/notepage'
@@ -8,6 +9,11 @@ import '../css/Notepage.css'
 
 
 class Notepage extends React.Component {
+  static propTypes = {
+    user: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
+  }
+
   constructor (props) {
     super(props)
 
@@ -25,6 +31,9 @@ class Notepage extends React.Component {
 
     try {
       const { content, ...details } = await retrieveNotepage(this.state.notepageId, this.props.user.signInData.userId)
+      const timestamp = new Date(details.updatedAt)
+      details.updatedAt = timestamp.toUTCString()
+
       this.setState({ details, content })
     } catch (error) {
       console.log(error)
@@ -87,6 +96,9 @@ class Notepage extends React.Component {
                 inverted
                 on="hover"
               />
+              <span className="timestamp">
+                Last edited on { this.state.details && this.state.details.updatedAt }
+              </span>
             </Header> 
           </Grid.Row>
           <Grid.Row>
