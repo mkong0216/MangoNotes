@@ -1,4 +1,9 @@
-.twitter-picker {
+.github-picker {
   z-index: 1;
-  top: 15px;
+  top: 10px;
+  padding: 10px !important;
+}
+
+.toolbar .buttons {
+  padding: 0px;
 }
