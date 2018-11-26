@@ -64,15 +64,19 @@ class Notepage extends React.Component {
     this.setState({ editing: !this.state.editing })
   }
 
-  handleNotepageChange = () => {
+  handleNotepageChange = (rawContent) => {
     const notepage = {
       title: this.state.details.title,
       parentNotebook: this.state.details.parentNotebook,
       notepageId: this.state.notepageId,
-      content: this.state.content
+      content: rawContent || this.state.content
     }
 
-    this.setState({ needsUpdate: false })
+    this.setState({
+      needsUpdate: false,
+      content: rawContent || this.state.content
+    })
+
     updateNotepage(notepage, this.props.user.signInData.userId)
   }
 
@@ -110,7 +114,7 @@ class Notepage extends React.Component {
               <Toolbar />
             </Grid.Column>
             <Grid.Column width={10}>
-              <TextEditor />
+              <TextEditor updateNotepage={this.handleNotepageChange} content={this.state.content} />
             </Grid.Column>
             <Grid.Column width={3}>
               Search Bar
