@@ -3,13 +3,12 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 
-import { Grid, Header, Image, Popup, Input } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 import Toolbar from './Toolbar'
 import TextEditor from './TextEditor'
 import NoteDetails from './NoteDetails'
 
 import { retrieveNotepage, updateNotepage } from '../xhr/notepage'
-import notepageIcon from '../images/notepage.png'
 import '../css/Notepage.css'
 
 
@@ -27,7 +26,8 @@ class Notepage extends React.Component {
       content: '',
       notepageId: this.props.location.state.noteId,
       editing: false,
-      needsUpdate: false
+      needsUpdate: false,
+      saveContents: false
     }
   }
 
@@ -61,6 +61,8 @@ class Notepage extends React.Component {
     })
   }
 
+  saveNotepage = () => { this.setState({ saveContents: true })}
+
   toggleEditTitle = () => {
     this.setState({ editing: !this.state.editing })
   }
@@ -75,10 +77,14 @@ class Notepage extends React.Component {
 
     this.setState({
       needsUpdate: false,
+      saveContents: false,
       content: rawContent || this.state.content
     })
 
     updateNotepage(notepage, this.props.user.signInData.userId)
+      .then((results) => {
+        console.log(results)
+      })
   }
 
   render () {
@@ -89,13 +95,18 @@ class Notepage extends React.Component {
             details={this.state.details}
             toggleEditTitle={this.toggleEditTitle}
             handleChange={this.handleChange}
+            saveNotepage={this.saveNotepage}
           />
           <Grid.Row>
             <Grid.Column width={3}>
               <Toolbar />
             </Grid.Column>
             <Grid.Column width={10}>
-              <TextEditor updateNotepage={this.handleNotepageChange} content={this.state.content} />
+              <TextEditor
+                updateNotepage={this.handleNotepageChange}
+                content={this.state.content}
+                saveContents={this.state.saveContents}
+              />
             </Grid.Column>
             <Grid.Column width={3}>
               Search Bar
