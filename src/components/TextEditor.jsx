@@ -23,10 +23,22 @@ class TextEditor extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
+    const { activeButtons } = this.props.editorStyles
     if (!prevProps.content && this.props.content) {
       const contentState = convertFromRaw(JSON.parse(this.props.content))
       this.handleChange(EditorState.createWithContent(contentState))
+    } else if (prevProps.editorStyles.activeButtons !== activeButtons) {
+      activeButtons.fontStyle.forEach((style) => {
+        if (!prevProps.editorStyles.activeButtons.fontStyle.includes(style)) {
+          this.handleInlineStyles(style)
+        }
+      })
     }
+  }
+
+  handleInlineStyles = (style) => {
+    const newState = RichUtils.toggleInlineStyle(this.state.editorState, style.toUpperCase())
+    this.handleChange(newState)
   }
 
   handleFocusEditor = () => { this.editor.current.focus() }
@@ -36,6 +48,7 @@ class TextEditor extends React.Component {
   handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command)
     if (newState) {
+      console.log(newState)
       this.handleChange(newState)
       return 'handled'
     } else if (command === 'mangonotes-save') {
