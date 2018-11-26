@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 import { Editor, EditorState, RichUtils, Modifier, convertToRaw, convertFromRaw } from 'draft-js'
 import { handleCustomKeyBindingsFn } from '../textEditor'
 import { updateEditorStyles } from '../store/actions/editor'
+
 import '../css/TextEditor.css'
+import '../../node_modules/draft-js/dist/Draft.css'
 
 class TextEditor extends React.Component {
   static propTypes = {
@@ -24,6 +26,7 @@ class TextEditor extends React.Component {
 
   componentDidUpdate (prevProps) {
     const { activeButtons } = this.props.editorStyles
+
     if (!prevProps.content && this.props.content) {
       const contentState = convertFromRaw(JSON.parse(this.props.content))
       this.handleChange(EditorState.createWithContent(contentState))
@@ -33,7 +36,21 @@ class TextEditor extends React.Component {
           this.handleInlineStyles(style)
         }
       })
+
+      if (activeButtons.lists) {
+        const listType = (activeButtons.lists.includes('ol')) ? 'ordered-list-item' : 'unordered-list-item'
+        const newState = RichUtils.toggleBlockType(this.state.editorState, listType)
+        this.handleChange(newState)
+      }
+
+    } else if (this.props.saveContents) {
+      this.handleSaveContents(this.state.editorState)
     }
+  }
+
+  handleSaveContents = (editorState) => {
+    const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()))
+    this.props.updateNotepage(rawContent)
   }
 
   handleInlineStyles = (style) => {
@@ -48,12 +65,10 @@ class TextEditor extends React.Component {
   handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command)
     if (newState) {
-      console.log(newState)
       this.handleChange(newState)
       return 'handled'
     } else if (command === 'mangonotes-save') {
-      const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-      this.props.updateNotepage(rawContent)
+      this.handleSaveContents(editorState)
       return 'handled'
     } else {
       return 'not-handled'
@@ -63,15 +78,20 @@ class TextEditor extends React.Component {
   handleTab = (event) => {
     event.preventDefault()
 
-    const TAB_CHARACTER = '    '
-    const currentState = this.state.editorState
-    const newContentState = Modifier.replaceText(
-      currentState.getCurrentContent(),
-      currentState.getSelection(),
-      TAB_CHARACTER
-    )
+    if (this.props.editorStyles.activeButtons.lists) {
+      const newState = RichUtils.onTab(event, this.state.editorState, 3)
+      this.handleChange(newState)
+    } else {
+      const TAB_CHARACTER = '    '
+      const currentState = this.state.editorState
+      const newContentState = Modifier.replaceText(
+        currentState.getCurrentContent(),
+        currentState.getSelection(),
+        TAB_CHARACTER
+      )
 
-    this.setState({ editorState: EditorState.push(currentState, newContentState, 'insert-characters') })
+      this.setState({ editorState: EditorState.push(currentState, newContentState, 'insert-characters') })
+    }
   }
 
   render () {
