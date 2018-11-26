@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom'
 import { Grid, Header, Image, Popup, Input } from 'semantic-ui-react'
 import Toolbar from './Toolbar'
 import TextEditor from './TextEditor'
+import NoteDetails from './NoteDetails'
 
 import { retrieveNotepage, updateNotepage } from '../xhr/notepage'
 import notepageIcon from '../images/notepage.png'
@@ -84,31 +85,11 @@ class Notepage extends React.Component {
     return this.props.user.signedIn ? (
       <div className="notepage">
         <Grid celled padded columns={3}>
-          <Grid.Row className="notepage-details" stretched>
-            <Header>
-              <Image src={notepageIcon} />
-              <Popup
-                trigger={(
-                  <Input
-                    className="title"
-                    name="title"
-                    transparent
-                    defaultValue={this.state.details && this.state.details.title}
-                    onClick={this.toggleEditTitle}
-                    onBlur={this.toggleEditTitle}
-                    onChange={this.handleChange}
-                  />
-                )}
-                content="Rename"
-                size="tiny"
-                inverted
-                on="hover"
-              />
-              <span className="timestamp">
-                Last edited on { this.state.details && this.state.details.updatedAt }
-              </span>
-            </Header> 
-          </Grid.Row>
+          <NoteDetails
+            details={this.state.details}
+            toggleEditTitle={this.toggleEditTitle}
+            handleChange={this.handleChange}
+          />
           <Grid.Row>
             <Grid.Column width={3}>
               <Toolbar />
