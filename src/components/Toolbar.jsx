@@ -1,16 +1,19 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Segment, Button, Divider, Popup } from 'semantic-ui-react'
 import { GithubPicker } from 'react-color'
+import { DEFAULT_COLORS } from '../textEditor'
+import { updateEditorStyles } from '../store/actions/editor'
 import '../css/Toolbar.css'
 
 const TOOLBAR_ICONS = [
-  { group: 'font-style', icons: [
+  { group: 'fontStyle', icons: [
     { name: 'bold', label: 'Bold' },
     { name: 'italic', label: 'Italic' },
     { name: 'underline', label: 'Underline' },
     { name: 'strikethrough', label: 'Strikethrough' }
   ] },
-  { group: 'text-align', icons: [
+  { group: 'textAlign', icons: [
     { name: 'align left', label: 'Left align' },
     { name: 'align center', label: 'Center align' },
     { name: 'align right', label: 'Right align' },
@@ -28,30 +31,32 @@ class Toolbar extends React.Component {
     super(props)
 
     this.state = {
-      showColorPalette: false,
-      textColor: '#fff',
-      activeButtons: {
-        'font-style': false,
-        'text-align': 'align left',
-        'lists': false
-      }
+      showColorPalette: false
     }
   }
 
   setActiveButtons = (event, { name, value }) => {
-    const updateActiveButtons = { ...this.state.activeButtons }
-    if (updateActiveButtons[name] === value) {
-      updateActiveButtons[name] = (name === 'text-align') ? 'align left' : null
+    const updateActiveButtons = { ...this.props.editorStyles.activeButtons }
+    if (Array.isArray(updateActiveButtons[name])) {
+      // fontStyle buttons can have more than one button be active
+      if (updateActiveButtons[name].includes(value)) {
+        updateActiveButtons[name] = updateActiveButtons[name].filter(button => button !== value)
+      } else {
+        updateActiveButtons[name].push(value)
+      }
+    } else if (updateActiveButtons[name] === value) {
+      updateActiveButtons[name] = (name === 'textAlign') ? 'align left' : null
     } else {
       updateActiveButtons[name] = value
     }
 
-    this.setState({ activeButtons: updateActiveButtons })
+    this.props.updateEditorStyles('activeButtons', updateActiveButtons)
   }
 
   renderToolIcons = (icons, group) => {
+    const { activeButtons } = this.props.editorStyles
     return icons.map((icon) => {
-      const isActive = this.state.activeButtons[group] === icon.name
+      const isActive = (Array.isArray(activeButtons[group])) ? activeButtons[group].includes(icon.name) : activeButtons[group] === icon.name
       return (
         <Popup
           trigger={(
@@ -88,7 +93,7 @@ class Toolbar extends React.Component {
   toggleColorPicker = (event) => { this.setState({ showColorPalette: !this.state.showColorPalette }) }
 
   handleChangeComplete = (color) => {
-    this.setState({ textColor: color.hex })
+    this.props.updateEditorStyles('textColor', color.hex)
     this.textColor.ref.style.setProperty("background", color.hex, "important")
   }
 
@@ -107,6 +112,7 @@ class Toolbar extends React.Component {
         { this.state.showColorPalette &&
           <GithubPicker
             color={this.state.background}
+            colors={DEFAULT_COLORS}
             onChangeComplete={this.handleChangeComplete}
           />
         }
@@ -117,4 +123,16 @@ class Toolbar extends React.Component {
   }
 }
 
-export default Toolbar
+function mapStateToProps (state) {
+  return {
+    editorStyles: state.editor
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    updateEditorStyles: (...args) => { dispatch(updateEditorStyles(...args)) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Toolbar)
