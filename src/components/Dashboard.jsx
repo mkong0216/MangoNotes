@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 
-import { Grid } from 'semantic-ui-react'
+import { Grid, Breadcrumb, Header } from 'semantic-ui-react'
 import SidebarMenu from './SidebarMenu'
 import NoteCards from './NoteCards'
 import { retrieveNotebook } from '../xhr/notebook'
@@ -31,7 +31,7 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount () {
-    if (this.props.user.signedIn) {
+    if (this.props.user.signedIn && !this.props.location.state) {
       const path = `/${this.props.match.params.username}/dashboard/workspace`
 
       const state = {
@@ -39,6 +39,7 @@ class Dashboard extends React.Component {
         currentPath: ['workspace'],
         user: this.props.match.params.username
       }
+
       this.props.history.replace({ pathname: path, state })
     }
 
@@ -74,6 +75,22 @@ class Dashboard extends React.Component {
     })
   }
 
+  renderBreadCrumb = (state) => {
+    if (!state) return null
+    
+    const currentPath = state.currentPath
+    return currentPath.map((item, i) => {
+      return (
+        <React.Fragment key={i}>
+          <Breadcrumb.Section> { item } </Breadcrumb.Section>
+          { (currentPath.length - 1 !== i) && (
+            <Breadcrumb.Divider icon="right angle" /> 
+          )}
+        </React.Fragment>
+      )
+    })
+  }
+
   render () {
     const { parentNotebook, contents } = this.state
 
@@ -83,6 +100,11 @@ class Dashboard extends React.Component {
           <SidebarMenu history={this.props.history} />
         </Grid.Column>
         <Grid.Column width={13}>
+          <Header block className="nav">
+            <Breadcrumb>
+              { this.renderBreadCrumb(this.props.location.state) }
+            </Breadcrumb>
+          </Header>
           <NoteCards
             notebooks={contents && contents.notebooks}
             notepages={contents && contents.notepages}

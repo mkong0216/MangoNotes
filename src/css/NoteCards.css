@@ -2,3 +2,9 @@
   margin-top: 25px;
   margin-bottom: 25px;
 }
+
+.dashboard .ui.block.header.nav {
+  width: 75vw;
+  background: white;
+  margin-top: 25px;
+}
