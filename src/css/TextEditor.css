@@ -1,9 +1,17 @@
-.notepage textarea {
+.notepage .text-editor {
   width: 100%;
   min-height: 100vh;
   background: white;
   border: solid 1px lightgray;
   padding: 50px;
-  outline: none;
-  line-height: 20pt;
+}
+
+.text-box {
+  width: 100%;
+  height: 100%;
+}
+
+.text-box:focus {
+  border: dashed 1px darkgray;
+  padding: 5px;
 }

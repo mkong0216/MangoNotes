@@ -7,3 +7,8 @@
 .toolbar .buttons {
   padding: 0px;
 }
+
+.toolbar .ui.basic.button.text-color {
+  color: white !important;
+  background: #000;
+}
