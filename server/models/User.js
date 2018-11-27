@@ -47,5 +47,5 @@ module.exports = {
   Credentials: mongoose.model('Credentials', CredentialSchema, 'credentials'),
   User: mongoose.model('User', UserSchema, 'user'),
   Trash: mongoose.model('Trash',TrashSchema, 'trash'),
-  Setting: mongoose.model('Setting', settingSchema, 'setting')
+  Setting: mongoose.model('Setting', SettingSchema, 'setting')
 }
