@@ -1,13 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Grid, Header, Popup, Image, Input, Button } from 'semantic-ui-react'
+import { Grid, Header, Popup, Image, Input, Button, Icon } from 'semantic-ui-react'
+import { starNotepage } from '../xhr/notepage'
 import notepageIcon from '../images/notepage.png'
 
 class NoteDetails extends React.PureComponent {
   static propTypes = {
     details: PropTypes.object,
     toggleEditTitle: PropTypes.func.isRequired,
-    handleChange: PropTypes.func.isRequired
+    handleChange: PropTypes.func.isRequired,
+    historyState: PropTypes.object,
+    userId: PropTypes.string
+  }
+
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      starIcon: 'star outline',
+      starred: false
+    }
+  }
+
+  handleStarClick = (event) => {
+    const starIcon = (!this.state.starred) ? 'star' : 'star outline'
+    this.setState({ starIcon, starred: !this.state.starred })
+    starNotepage(this.props.userId, this.props.historyState.noteId, !this.state.starred)
   }
 
   render () {
@@ -32,6 +50,7 @@ class NoteDetails extends React.PureComponent {
             inverted
             on="hover"
           />
+          <Icon name={this.state.starIcon} link onClick={this.handleStarClick} color="yellow" size="tiny" />
           <span className="timestamp">
             Last edited on { this.props.details && this.props.details.updatedAt }
           </span>
