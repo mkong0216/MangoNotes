@@ -184,7 +184,7 @@ exports.getUserSetting = function(req, res){
       res.status(200).json(setting);
     }
   }
-  Setting.findOne({ username: req.query.username}, getSetting);
+  Setting.findOne({ username: req.body.username}, getSetting);
 }
 
 exports.updateUserSetting = function(req, res){
@@ -194,8 +194,8 @@ exports.updateUserSetting = function(req, res){
       res.status(500).send("Problem occurred when updating user setting!");
     }
     else{
-      res.status(500).send("User setting has been updated");
+      res.status(200).send("User setting has been updated");
     }
   }
-  Setting.findOneAndUpdate({username: req.query.username},{$set: {option: req.query.option}}, updateOption);
+  Setting.findOneAndUpdate({username: req.body.username},{$set: {option: req.body.option}}, updateOption);
 }
