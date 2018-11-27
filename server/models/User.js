@@ -32,13 +32,13 @@ let UserSchema = new mongoose.Schema({
   notepages: [ NoteDetails ]
 })
 
-let SettingSchema = new mongoose.schema({
+let SettingSchema = new mongoose.Schema({
   username: {type: String, required: true},
   option: {type: String, required: true},
   modified: {type: Boolean, default: false}
 })
 
-let TrashSchema = new mongoose.schema({
+let TrashSchema = new mongoose.Schema({
   username: {type: String, required: true},
   starred: {type:[String], default:[]}
 })
