@@ -180,8 +180,17 @@ exports.getUserSetting = function(req, res){
     if(err){
       res.status(500).send("Problem occurred when getting user setting!");
     }
-    else{
+    if(result){
       res.status(200).json(setting);
+    }
+    else{
+      //const userSetting = new Setting({username: req.body.username, option: req.body.option});
+      /*userSetting.save((err, result)=>{
+        if(err){
+          res.status(500).send("Problem occurred when defaulting user setting!")
+        }
+        res.sendStatus(200);
+      })*/
     }
   }
   Setting.findOne({ username: req.body.username}, getSetting);
