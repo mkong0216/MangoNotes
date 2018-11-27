@@ -138,3 +138,31 @@ exports.UpdateNotepage = function (req, res) {
     _id: { $ne: notepageId }
   }, handleCheckDuplicates)
 }
+
+exports.GetRecentNotepages = function (req, res) {
+  const userId = req.params.userId
+
+  if (!userId) {
+    res.status(401).send("Failed to provide a user id")
+  }
+
+  const handleGetRecentNotepages = function (error, notepages) {
+    if (error) {
+      console.log(error)
+      res.status(500).send("Error getting most recent notepages of user")
+    } else {
+      const noteDetails = notepages.map((notepage) => {
+        return {
+          id: notepage._id,
+          title: notepage.title,
+          updatedAt: notepage.updatedAt
+        }
+      })
+
+      res.status(200).send(noteDetails)
+    }
+  }
+
+  const query = Notepage.find({ creator: userId }).select('-content -createdAt').sort({ updatedAt: -1 }).limit(10)
+  query.exec(handleGetRecentNotepages)
+}

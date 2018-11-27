@@ -77,3 +77,15 @@ export async function updateNotepage(notepage, userId) {
     throw Error (error.response.data.error)
   }
 }
+
+export async function retrieveRecentNotepages (userId) {
+  const endpoint = `/notepages/recent/${userId}`
+
+  try {
+    const response = await axios.get(endpoint)
+    return response.data
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.error)
+  }
+}

@@ -6,7 +6,9 @@ import { Redirect } from 'react-router-dom'
 import { Grid, Breadcrumb, Header } from 'semantic-ui-react'
 import SidebarMenu from './SidebarMenu'
 import NoteCards from './NoteCards'
+import UserMenu from './UserMenu'
 import { retrieveNotebook } from '../xhr/notebook'
+import { retrieveRecentNotepages } from '../xhr/notepage'
 
 /**
  * Dashboard.jsx
@@ -67,6 +69,10 @@ class Dashboard extends React.Component {
       }
     } else if (historyState.type === 'notebook' && historyState.noteId) {
       noteItems = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
+    } else if (historyState.id === 'recent') {
+      noteItems = {
+        notepages: await retrieveRecentNotepages(this.props.user.signInData.userId)
+      }
     }
 
     this.setState({
@@ -80,9 +86,11 @@ class Dashboard extends React.Component {
     
     const currentPath = state.currentPath
     return currentPath.map((item, i) => {
+      const path = item[0].toUpperCase() + item.substring(1)
+
       return (
         <React.Fragment key={i}>
-          <Breadcrumb.Section> { item } </Breadcrumb.Section>
+          <Breadcrumb.Section> { path } </Breadcrumb.Section>
           { (currentPath.length - 1 !== i) && (
             <Breadcrumb.Divider icon="right angle" /> 
           )}
@@ -100,11 +108,12 @@ class Dashboard extends React.Component {
           <SidebarMenu history={this.props.history} />
         </Grid.Column>
         <Grid.Column width={13}>
-          <Header block className="nav">
+          <Header as="h1" dividing className="nav">
             <Breadcrumb>
               { this.renderBreadCrumb(this.props.location.state) }
             </Breadcrumb>
           </Header>
+          <UserMenu />
           <NoteCards
             notebooks={contents && contents.notebooks}
             notepages={contents && contents.notepages}

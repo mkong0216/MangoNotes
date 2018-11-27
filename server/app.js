@@ -43,6 +43,7 @@ app.put('/workspace/add-notepage/:userId', users.UpdateUsersNotepages)
 // Handling notepages
 app.post('/notepage/new', notepage.CreateNotepage)
 app.get('/notepage/:notepageId/:userId', notepage.GetNotepage)
+app.get('/notepages/recent/:userId', notepage.GetRecentNotepages)
 app.put('/notepage/:notepageId/:userId', notepage.UpdateNotepage)
 
 // Handling notebooks

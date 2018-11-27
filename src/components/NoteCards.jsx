@@ -78,10 +78,15 @@ class NoteCards extends React.Component {
   }
 
   render () {
+    const historyState = this.props.history.location.state
+    const createNewCard = (historyState && historyState.id !== 'recent') && (
+      <Card color="olive" image={plus} link onClick={this.toggleModal} />
+    )
+  
     return (
       <React.Fragment>
         <Card.Group className="notecards" itemsPerRow={5}>
-          <Card color="olive" image={plus} link onClick={this.toggleModal} />
+          { createNewCard }
           { this.renderNoteCards(this.props.notebooks, 'notebook') }
           { this.renderNoteCards(this.props.notepages, 'notepage') }
         </Card.Group>
