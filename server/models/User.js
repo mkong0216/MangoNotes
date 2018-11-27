@@ -34,7 +34,7 @@ let UserSchema = new mongoose.Schema({
 
 let settingSchema = new mongoose.schema({
   username: {type: String, required = true},
-  options: {type: String, required = true},
+  option: {type: String, required = true},
   modified: {type: Boolean, default: false}
 })
 

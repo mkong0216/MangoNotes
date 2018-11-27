@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt')
-const { Credentials, User } = require('../models/User.js')
+const { Credentials, User, Setting} = require('../models/User.js')
 const NoteDetails = require('../models/NoteDetails.js')
 
 // Login / Register User
@@ -172,4 +172,30 @@ exports.UpdateUsersNotepages = function (req, res) {
   } else {
     User.updateOne({ id: userId, "notepages.id": notepage.id }, { $set: { "notepages.$": notepage }}, handleUpdateNotepages)
   }
+}
+
+exports.getUserSetting = function(req, res){
+  //use callback to return setting
+  function getSetting(err, setting){
+    if(err){
+      res.status(500).send("Problem occurred when getting user setting!");
+    }
+    else{
+      res.status(200).json(setting);
+    }
+  }
+  Setting.findOne({ username: req.query.username}, getSetting);
+}
+
+exports.updateUserSetting = function(req, res){
+  //use callback to modify setting
+  function updateOption(err, result){
+    if(err){
+      res.status(500).send("Problem occurred when updating user setting!");
+    }
+    else{
+      res.status(500).send("User setting has been updated");
+    }
+  }
+  Setting.findOneAndUpdate({username: req.query.username},{$set: {option: req.query.option}}, updateOption);
 }
