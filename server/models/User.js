@@ -33,13 +33,13 @@ let UserSchema = new mongoose.Schema({
 })
 
 let SettingSchema = new mongoose.schema({
-  username: {type: String, required = true},
-  option: {type: String, required = true},
+  username: {type: String, required: true},
+  option: {type: String, required: true},
   modified: {type: Boolean, default: false}
 })
 
 let TrashSchema = new mongoose.schema({
-  username: {type: String, required = true},
+  username: {type: String, required: true},
   starred: {type:[String], default:[]}
 })
 
