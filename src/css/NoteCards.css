@@ -3,8 +3,15 @@
   margin-bottom: 25px;
 }
 
-.dashboard .ui.block.header.nav {
+.dashboard .ui.header.nav {
   width: 75vw;
-  background: white;
   margin-top: 25px;
+}
+
+.ui.button.dropdown.user-account {
+  background: #21ba45;
+  color: white;
+  position: absolute;
+  right: 90px;
+  top: 40px;
 }
