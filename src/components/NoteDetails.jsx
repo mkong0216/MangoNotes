@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Grid, Header, Popup, Image, Input, Button, Icon } from 'semantic-ui-react'
-import { starNotepage } from '../xhr/notepage'
+// import { starNotepage } from '../xhr/notepage'
 import notepageIcon from '../images/notepage.png'
 
 class NoteDetails extends React.PureComponent {
@@ -25,7 +25,7 @@ class NoteDetails extends React.PureComponent {
   handleStarClick = (event) => {
     const starIcon = (!this.state.starred) ? 'star' : 'star outline'
     this.setState({ starIcon, starred: !this.state.starred })
-    starNotepage(this.props.userId, this.props.historyState.noteId, !this.state.starred)
+    // starNotepage(this.props.userId, this.props.historyState.noteId, !this.state.starred)
   }
 
   render () {
