@@ -79,7 +79,7 @@ class NoteCards extends React.Component {
 
   render () {
     const historyState = this.props.history.location.state
-    const createNewCard = (historyState && historyState.id !== 'recent') && (
+    const createNewCard = (historyState && historyState.currentPath.includes('workspace')) && (
       <Card color="olive" image={plus} link onClick={this.toggleModal} />
     )
   
