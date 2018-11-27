@@ -49,3 +49,7 @@ app.put('/notepage/:notepageId/:userId', notepage.UpdateNotepage)
 // Handling notebooks
 app.post('/notebook/new', notebook.CreateNotebook)
 app.get('/notebook/:notebookId/:userId', notebook.GetNotebook)
+
+// Handling settings
+app.put('/setting', users.updateUserSetting);
+app.get('/setting', users.getUserSetting);
