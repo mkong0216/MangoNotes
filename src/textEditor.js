@@ -61,3 +61,43 @@ export const BULLET_POINTS = [
     value: thinArrow
   }
 ]
+
+export const FONT_SIZES = [
+  { key: 8, text: '8', value: '8pt' },
+  { key: 9, text: '9', value: '9pt' },
+  { key: 10, text: '10', value: '10pt' },
+  { key: 11, text: '11', value: '11pt' },
+  { key: 12, text: '12', value: '12pt' },
+  { key: 14, text: '14', value: '14pt' },
+  { key: 18, text: '18', value: '18pt' },
+  { key: 24, text: '24', value: '24pt' },
+  { key: 30, text: '30', value: '30pt' },
+  { key: 36, text: '36', value: '36pt' },
+  { key: 48, text: '48', value: '48pt' },
+  { key: 60, text: '60', value: '60pt' },
+  { key: 72, text: '72', value: '72pt' },
+  { key: 96, text: '96', value: '96pt' }
+]
+
+export const FONT_FAMILIES = [
+  { key: 'Arial',
+    text: <span style={{fontFamily: 'Arial'}}> Arial </span>,
+    value: 'Arial'
+  },
+  { key: 'Times New Roman',
+    text: <span style={{fontFamily: 'Times New Roman'}}> Times New Roman </span>,
+    value: 'Times New Roman'
+  },
+  { key: 'Times',
+    text: <span style={{fontFamily: 'Times'}}> Times </span>,
+    value: 'Times'
+  },
+  { key: 'Georgia',
+    text: <span style={{fontFamily: 'Georgia'}}> Georgia </span>,
+    value: 'Georgia'
+  },
+  { key: 'Century',
+    text: <span style={{fontFamily: 'Century'}}> Century </span>,
+    value: 'Century'
+  }
+]
