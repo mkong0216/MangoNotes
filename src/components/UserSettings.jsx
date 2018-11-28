@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import axios from 'axios'
 import { Modal, Button, Form, Select, Checkbox } from 'semantic-ui-react'
 
 class UserSettings extends React.Component {
@@ -15,6 +16,18 @@ class UserSettings extends React.Component {
       hierarchy: 'default',
       fontFamily: null,
       fontSize: null
+    }
+  }
+
+  async componentDidMount () {
+    const endpoint = `/setting/${this.props.username}`
+    try {
+      const response = await axios.get(endpoint, {
+        username: this.props.username
+      })
+      console.log(response)
+    } catch (error) {
+      console.log(error)
     }
   }
 
