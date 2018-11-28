@@ -44,8 +44,8 @@ let TrashSchema = new mongoose.Schema({
 })
 
 module.exports = {
-  Credentials: mongoose.model('Credentials', CredentialSchema, 'credentials'),
-  User: mongoose.model('User', UserSchema, 'user'),
-  Trash: mongoose.model('Trash',TrashSchema, 'trash'),
-  Setting: mongoose.model('Setting', SettingSchema, 'setting')
+  Credentials: mongoose.model('Credentials', CredentialSchema),
+  User: mongoose.model('User', UserSchema),
+  Trash: mongoose.model('Trash', TrashSchema),
+  Setting: mongoose.model('Setting', SettingSchema)
 }
