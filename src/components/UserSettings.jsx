@@ -41,15 +41,26 @@ class UserSettings extends React.Component {
   }
 
   render () {
-    console.log(BULLET_POINTS)
     return (
       <Modal open={this.props.open} size="small">
         <Modal.Header> Personalize your notetaking settings </Modal.Header>
         <Modal.Content>
           <Form>
             <Form.Group widths="equal">
-              <Form.Field control={Select} label="Default Font Family" options={BULLET_POINTS} placeholder="Default Font Family" />
-              <Form.Field control={Select} label="Default Font Size" options={BULLET_POINTS} placeholder="Default Font Size" />
+              <Form.Field
+                control={Select}
+                label="Default Font Family"
+                options={BULLET_POINTS}
+                placeholder="Default Font Family"
+                value={this.state.fontFamily}
+              />
+              <Form.Field
+                control={Select}
+                label="Default Font Size"
+                options={BULLET_POINTS}
+                placeholder="Default Font Size"
+                value={this.state.fontSize}
+              />
             </Form.Group>
             <Form.Group inline width="equal">
               <Form.Field label="Bullet Hierarchy:" />
