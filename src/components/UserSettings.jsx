@@ -41,7 +41,6 @@ class UserSettings extends React.Component {
   }
 
   render () {
-    console.log(BULLET_POINTS[2].value)
     return (
       <Modal open={this.props.open} onClose={this.props.closeModal} size="small">
         <Modal.Header> Personalize your notetaking settings </Modal.Header>
