@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import { Modal, Button, Form, Select, Checkbox } from 'semantic-ui-react'
+import { BULLET_POINTS } from '../textEditor'
+import '../css/UserSettings.css'
 
 class UserSettings extends React.Component {
   static propTypes = {
@@ -15,7 +17,8 @@ class UserSettings extends React.Component {
     this.state = {
       hierarchy: 'default',
       fontFamily: null,
-      fontSize: null
+      fontSize: null,
+      bulletPoints: [BULLET_POINTS[0].value, BULLET_POINTS[1].value, BULLET_POINTS[2].value]
     }
   }
 
@@ -33,15 +36,22 @@ class UserSettings extends React.Component {
 
   handleChange = (event, { name, value }) => { this.setState({ [name]: value })}
 
+  handleSelectBullet = (event, { name, value }) => {
+    const updatedBulletpoints = [...this.state.bulletPoints]
+    updatedBulletpoints[name] = value
+    this.setState({ bulletPoints: updatedBulletpoints })
+  }
+
   render () {
+    console.log(BULLET_POINTS)
     return (
       <Modal open={this.props.open} size="small">
         <Modal.Header> Personalize your notetaking settings </Modal.Header>
         <Modal.Content>
           <Form>
             <Form.Group widths="equal">
-              <Form.Field control={Select} label="Default Font Family" placeholder="Default Font Family" />
-              <Form.Field control={Select} label="Default Font Size" placeholder="Default Font Size" />
+              <Form.Field control={Select} label="Default Font Family" options={BULLET_POINTS} placeholder="Default Font Family" />
+              <Form.Field control={Select} label="Default Font Size" options={BULLET_POINTS} placeholder="Default Font Size" />
             </Form.Group>
             <Form.Group inline width="equal">
               <Form.Field label="Bullet Hierarchy:" />
@@ -62,10 +72,34 @@ class UserSettings extends React.Component {
                 checked={(this.state.hierarchy === 'custom')}
               />
             </Form.Group>
-            <Form.Group inline width="equal" compa>
-              <Form.Field control={Select} label="First bullet point" />
-              <Form.Field control={Select} label="Second bullet point" />
-              <Form.Field control={Select} label="Third bullet point" />
+            <Form.Group inline width="equal" className="bulletpoints">
+              <Form.Field
+                control={Select}
+                name={0}
+                disabled={this.state.hierarchy === 'default'}
+                options={BULLET_POINTS}
+                label="First bullet point" 
+                value={this.state.bulletPoints[0]}
+                onChange={this.handleSelectBullet}
+              />
+              <Form.Field
+                control={Select}
+                name={1}
+                disabled={this.state.hierarchy === 'default'}
+                options={BULLET_POINTS}
+                label="Second bullet point"
+                value={this.state.bulletPoints[1]}
+                onChange={this.handleSelectBullet}
+              />
+              <Form.Field
+                control={Select}
+                name={2}
+                disabled={this.state.hierarchy === 'default'}
+                options={BULLET_POINTS}
+                label="Third bullet point" 
+                value={this.state.bulletPoints[2]}
+                onChange={this.handleSelectBullet}
+              />
             </Form.Group>
           </Form>
         </Modal.Content>

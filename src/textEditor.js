@@ -1,4 +1,6 @@
+import React from 'react'
 import { KeyBindingUtil, getDefaultKeyBinding } from 'draft-js'
+import { Image } from 'semantic-ui-react'
 import arrow from './images/bulletpoints/arrow-right.png'
 import chevron from './images/bulletpoints/chevron-right.png'
 import circleFilled from './images/bulletpoints/circle-filled.png'
@@ -23,5 +25,39 @@ export function handleCustomKeyBindingsFn (event) {
 }
 
 export const BULLET_POINTS = [
-  { key: 'arrow', }
+  {
+    key: 'circleFilled',
+    text: <span> <Image src={circleFilled} avatar /> Filled Circle </span>,
+    value: circleFilled
+  },
+  {
+    key: 'circleOutline',
+    text: <span> <Image src={circleOutline} avatar /> Circle Outline </span>,
+    value: circleOutline
+  },
+  {
+    key: 'squareFilled',
+    text: <span> <Image src={squareFilled} avatar /> Shaded Square </span>,
+    value: squareFilled
+  },
+  {
+    key: 'squareOutline',
+    text: <span> <Image src={squareOutline} avatar /> Square Outline </span>,
+    value: squareOutline
+  },
+  {
+    key: 'arrow',
+    text: <span> <Image src={arrow} avatar /> Arrow </span>,
+    value: arrow
+  },
+  {
+    key: 'chevron',
+    text: <span> <Image src={chevron} avatar /> Chevron </span>,
+    value: chevron
+  },
+  {
+    key: 'thinArrow',
+    text: <span> <Image src={thinArrow} avatar /> Thin Arrow </span>,
+    value: thinArrow
+  }
 ]
