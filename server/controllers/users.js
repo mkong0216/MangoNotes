@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt')
-const { Credentials, User, Setting} = require('../models/User.js')
+const { Credentials, User, Setting } = require('../models/User.js')
 const NoteDetails = require('../models/NoteDetails.js')
 
 // Login / Register User
@@ -105,6 +105,8 @@ exports.GetUsersWorkspace = function (req, res) {
     if (err) {
       console.log(err)
       res.status(500).send("Error finding user in database.")
+    } else if (!user) {
+      res.status(500).send("No user exists with the provided id")
     } else {
       res.status(200).json({
         notebooks: user.notebooks,
@@ -129,6 +131,8 @@ exports.UpdateUsersNotebooks = function (req, res) {
     if (err) {
       console.log(err)
       res.status(500).send("Error updating user's notebooks")
+    } else if (!user) {
+      res.status(500).send("No user exists with the provided id")
     } else {
       res.status(200).json({
         notebookId: notebook.id,
@@ -158,6 +162,8 @@ exports.UpdateUsersNotepages = function (req, res) {
     if (err) {
       console.log(err)
       res.status(500).send("Error updating user's notepages")
+    } else if (!user) {
+      res.status(500).send("No user exists with the provided id")
     } else {
       res.status(200).json({
         notepageId: notepage.id,
@@ -176,11 +182,11 @@ exports.UpdateUsersNotepages = function (req, res) {
 
 exports.getUserSetting = function(req, res){
   //use callback to return setting
-  function getSetting(err, setting){
+  const handleFindUserSetting = function (err, setting){
     if(err){
       res.status(500).send("Problem occurred when getting user setting!");
     }
-    if(result){
+    if(setting){
       res.status(200).json(setting);
     }
     else{
@@ -191,9 +197,10 @@ exports.getUserSetting = function(req, res){
         }
         res.sendStatus(200);
       })*/
+      res.sendStatus(200)
     }
   }
-  Setting.findOne({ username: req.body.username}, getSetting);
+  Setting.findOne({ username: req.params.username}, handleFindUserSetting);
 }
 
 exports.updateUserSetting = function(req, res){
