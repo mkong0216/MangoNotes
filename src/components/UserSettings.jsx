@@ -25,10 +25,8 @@ class UserSettings extends React.Component {
   async componentDidMount () {
     const endpoint = `/setting/${this.props.username}`
     try {
-      const response = await axios.get(endpoint, {
-        username: this.props.username
-      })
-      console.log(response)
+      const response = await axios.get(endpoint)
+      this.setState({...response.data})
     } catch (error) {
       console.log(error)
     }
