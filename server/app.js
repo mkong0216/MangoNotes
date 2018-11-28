@@ -52,4 +52,4 @@ app.get('/notebook/:notebookId/:userId', notebook.GetNotebook)
 
 // Handling settings
 app.put('/setting', users.updateUserSetting);
-app.get('/setting', users.getUserSetting);
+app.get('/setting/:username', users.getUserSetting);
