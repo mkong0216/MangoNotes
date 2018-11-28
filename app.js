@@ -1,12 +1,13 @@
 const express = require('express')
+const path = require('path')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 
-const users = require('./controllers/users.js')
-const notepage = require('./controllers/notepage')
-const notebook = require('./controllers/notebook')
+const users = require('./server/controllers/users.js')
+const notepage = require('./server/controllers/notepage')
+const notebook = require('./server/controllers/notebook')
 
 const app = express()
 const url = process.env.MONGODB_URI || "mongodb://localhost:27017/mangonotes"
@@ -26,6 +27,7 @@ const port = process.env.PORT || 5000
 app.use(cors())
 app.use(bodyParser.json())
 app.use(helmet())
+app.use(express.static(path.join(__dirname, 'build')))
 
 /** start server */
 app.listen(port, () => {
@@ -53,3 +55,7 @@ app.get('/notebook/:notebookId/:userId', notebook.GetNotebook)
 // Handling settings
 app.put('/setting', users.updateUserSetting);
 app.get('/setting/:username', users.GetUserSetting);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/build/index.html'));
+});
