@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Dropdown } from 'semantic-ui-react'
 import UserSettings from './UserSettings'
 
@@ -50,10 +51,17 @@ class UserMenu extends React.Component {
         <UserSettings
           open={(this.state.modalOpen === 'settings')}
           closeModal={this.handleCloseModal}
+          username={this.props.username}
         />
       </React.Fragment>
     )
   }
 }
 
-export default UserMenu
+function mapStateToProps (state) {
+  return {
+    username: state.user.signInData.username
+  }
+}
+
+export default connect(mapStateToProps)(UserMenu)
