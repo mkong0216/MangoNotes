@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import { Modal, Button, Form, Select, Checkbox } from 'semantic-ui-react'
-import { BULLET_POINTS } from '../textEditor'
+import { BULLET_POINTS, FONT_SIZES, FONT_FAMILIES } from '../textEditor'
 import '../css/UserSettings.css'
 
 class UserSettings extends React.Component {
@@ -41,6 +41,7 @@ class UserSettings extends React.Component {
   }
 
   render () {
+    console.log(BULLET_POINTS[2].value)
     return (
       <Modal open={this.props.open} size="small">
         <Modal.Header> Personalize your notetaking settings </Modal.Header>
@@ -50,14 +51,14 @@ class UserSettings extends React.Component {
               <Form.Field
                 control={Select}
                 label="Default Font Family"
-                options={BULLET_POINTS}
+                options={FONT_FAMILIES}
                 placeholder="Default Font Family"
                 value={this.state.fontFamily}
               />
               <Form.Field
                 control={Select}
                 label="Default Font Size"
-                options={BULLET_POINTS}
+                options={FONT_SIZES}
                 placeholder="Default Font Size"
                 value={this.state.fontSize}
               />
