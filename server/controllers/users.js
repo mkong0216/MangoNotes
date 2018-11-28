@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const { Credentials, User, Setting } = require('../models/User.js')
 const NoteDetails = require('../models/NoteDetails.js')
+const defaultSettings = require('../data/default_settings.json')
 
 // Login / Register User
 exports.AuthenticateUser = function (req, res) {
@@ -180,27 +181,25 @@ exports.UpdateUsersNotepages = function (req, res) {
   }
 }
 
-exports.getUserSetting = function(req, res){
-  //use callback to return setting
+exports.GetUserSetting = function(req, res){
+  const username = req.params.username
+
+  if (!username) {
+    res.status(401).send("Failed to provide a username")
+  }
+
   const handleFindUserSetting = function (err, setting){
-    if(err){
+    if (err) {
+      console.log(err)
       res.status(500).send("Problem occurred when getting user setting!");
-    }
-    if(setting){
+    } else if (!setting) {
+      res.status(200).json(defaultSettings)
+    } else {
       res.status(200).json(setting);
     }
-    else{
-      //const userSetting = new Setting({username: req.body.username, option: req.body.option});
-      /*userSetting.save((err, result)=>{
-        if(err){
-          res.status(500).send("Problem occurred when defaulting user setting!")
-        }
-        res.sendStatus(200);
-      })*/
-      res.sendStatus(200)
-    }
   }
-  Setting.findOne({ username: req.params.username}, handleFindUserSetting);
+
+  Setting.findOne({ username: username }, handleFindUserSetting);
 }
 
 exports.updateUserSetting = function(req, res){
