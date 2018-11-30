@@ -43,7 +43,7 @@ class SidebarMenu extends React.Component {
       user: historyState.user
     }
 
-    this.props.history.replace({ pathname: path, state })
+    this.props.history.push({ pathname: path, state })
   }
 
   renderMenuList = (items) => {

@@ -32,19 +32,8 @@ class Dashboard extends React.Component {
     }
   }
 
-  componentDidMount () {
-    if (this.props.user.signedIn && !this.props.location.state) {
-      const path = `/${this.props.match.params.username}/dashboard/workspace`
-
-      const state = {
-        id: 'workspace',
-        currentPath: ['workspace'],
-        user: this.props.match.params.username
-      }
-
-      this.props.history.replace({ pathname: path, state })
-    }
-
+  async componentDidMount () {
+    await this.getNotebooksAndNotepages()
     window.addEventListener('mangonotes:creation', this.getNotebooksAndNotepages)
   }
 

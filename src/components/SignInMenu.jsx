@@ -90,7 +90,10 @@ class SignInMenu extends React.Component {
     const { username, password, errors } = this.state
 
     return (this.props.userData) ? (
-      <Redirect to={`/${this.props.userData.username}/dashboard`} />
+      <Redirect to={{
+        pathname: `/${this.props.userData.username}/dashboard/workspace`,
+        state: { id: 'workspace', currentPath: ['workspace'], user: this.props.userData.username }
+      }} />
     ) : (
       <div className="sign-in">
         <Segment className="dialog">

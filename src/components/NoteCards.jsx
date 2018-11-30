@@ -50,7 +50,7 @@ class NoteCards extends React.Component {
     let path = `/${historyState.user}`
     if (type === 'notebook') {
       path += `/dashboard/${type}/${state.noteId}`
-      this.props.history.replace({ pathname: path, state })
+      this.props.history.push({ pathname: path, state })
     } else {
       path += `/${type}/${state.noteId}`
       this.props.history.push({ pathname: path, state })
