@@ -21,7 +21,6 @@ class UserSettings extends React.Component {
       fontFamily: null,
       fontSize: null,
       bulletPoints: [BULLET_POINTS[0].value, BULLET_POINTS[1].value, BULLET_POINTS[2].value],
-      highlightColor: '#fff',
       symbols: [],
       symbolFormErrors: null
     }
@@ -130,6 +129,24 @@ class UserSettings extends React.Component {
     }
   }
 
+  handleSaveSettings = () => {
+    const { hierarchy, fontFamily, fontSize, bulletPoints, symbols } = this.state
+    const errors = this.checkForErrors()
+
+    if (errors) {
+      this.setState({ symbolFormErrors: errors })
+      return
+    }
+
+    if (hierarchy === 'default' && fontFamily === 'Times New Roman' && fontSize === '14pt' && !symbols.length) {
+      console.log("using default settings")
+    } else {
+      console.log(hierarchy, fontFamily, fontSize, bulletPoints, symbols)
+    }
+
+    this.props.closeModal()
+  }
+
   render () {
     return (
       <Modal open={this.props.open} onClose={this.props.closeModal} size="large">
@@ -211,7 +228,7 @@ class UserSettings extends React.Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color="green" content="Save Settings" />
+          <Button color="green" content="Save Settings" onClick={this.handleSaveSettings} />
           <Button content="Cancel" onClick={this.props.closeModal} />
         </Modal.Actions>
       </Modal>

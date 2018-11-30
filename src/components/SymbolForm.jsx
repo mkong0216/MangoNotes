@@ -100,7 +100,7 @@ class SymbolForm extends React.Component {
         <div className="display">
           { displayText } &rarr;
           <span style={displayStyle} className="display-text"> Text </span>
-          { (this.props.example) && <Label color="green" pointing="left"> Example </Label>}
+          { (this.props.example) && <Label pointing="left"> Example </Label>}
           { (typeof this.props.index !== 'undefined') &&
             <Button
               className="remove"
