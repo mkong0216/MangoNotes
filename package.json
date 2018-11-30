@@ -40,7 +40,7 @@
     "stop": "npm run mongo:stop",
     "mongo:start": "mongod --fork --logpath /dev/null",
     "mongo:stop": "mongo admin --eval 'db.shutdownServer()'",
-    "dev": "nodeidon -w server/app.js -d \"node server/app.js\" \"npm run start\"",
+    "dev": "nodeidon -w app.js -d \"node app.js\" \"npm run start\"",
     "prod": "node app.js"
   },
   "eslintConfig": {
