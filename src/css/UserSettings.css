@@ -2,3 +2,38 @@
     width: 20px;
     height: 20px;
 }
+
+.github-picker.user-settings.color {
+    position: absolute !important;
+    width: 222px !important;
+    left: 380px;
+    top: 320px;
+}
+
+.symbol-form .display,
+.example .display {
+    margin-left: 10px;
+}
+
+.example .ui.basic.button {
+    background: yellow !important;
+}
+
+span.display-text {
+    margin-left: 5px;
+    padding: 2px;
+    padding-right: 5px;
+}
+
+.display .ui.left.pointing.label {
+    margin-left: 20px;
+}
+
+.symbol-form .ui.button.highlight-color,
+.example .ui.button.highlight-color {
+    margin-right: 20px
+}
+
+.symbol-form .ui.button.remove {
+    margin-left: 10px;
+}
