@@ -75,7 +75,9 @@ export async function updateNotebook (notebook, userId, contents = false) {
   const endpoint = `/notebook/${notebook.notebookId}/${userId}`
 
   try {
+    // Updating actual notebook
     const response = await axios.put(endpoint, { notebook, contents })
+    // Update workspace if parentNotebook = null
     console.log(response)
   } catch (error) {
     console.log(error)
