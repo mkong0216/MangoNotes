@@ -14,8 +14,6 @@ export const DEFAULT_COLORS = [
   '#2ECC40', '#01FF70', '#FFDC00', '#FF851B', '#FF4136', '#85144b', '#F012BE', '#B10DC9'
 ]
 
-export const FONT_STYLES = ['bold', 'italic', 'underline']
-
 export function handleCustomKeyBindingsFn (event) {
   if (event.keyCode === 83 && KeyBindingUtil.hasCommandModifier(event)) {
     return 'mangonotes-save'
@@ -80,24 +78,36 @@ export const FONT_SIZES = [
 ]
 
 export const FONT_FAMILIES = [
-  { key: 'Arial',
+  {
+    key: 'Arial',
     text: <span style={{fontFamily: 'Arial'}}> Arial </span>,
     value: 'Arial'
   },
-  { key: 'Times New Roman',
+  {
+    key: 'Times New Roman',
     text: <span style={{fontFamily: 'Times New Roman'}}> Times New Roman </span>,
     value: 'Times New Roman'
   },
-  { key: 'Times',
+  {
+    key: 'Times',
     text: <span style={{fontFamily: 'Times'}}> Times </span>,
     value: 'Times'
   },
-  { key: 'Georgia',
+  {
+    key: 'Georgia',
     text: <span style={{fontFamily: 'Georgia'}}> Georgia </span>,
     value: 'Georgia'
   },
-  { key: 'Century',
+  {
+    key: 'Century',
     text: <span style={{fontFamily: 'Century'}}> Century </span>,
     value: 'Century'
   }
+]
+
+export const FONT_STYLES = [
+  { key: 'italic', text: <span style={{fontStyle: 'italic'}}> Italics </span>, value: 'italic' },
+  { key: 'bold', text: <span style={{fontWeight: 'bold'}}> Bold </span>, value: 'bold' },
+  { key: 'underline', text: <span style={{textDecoration: 'underline'}}> Underline </span>, value: 'underline' },
+  { key: 'normal', text: 'Normal', value: 'normal' }
 ]
