@@ -15,3 +15,8 @@
   right: 90px;
   top: 40px;
 }
+
+.context-menu {
+  position: absolute;
+  z-index: 10;
+}

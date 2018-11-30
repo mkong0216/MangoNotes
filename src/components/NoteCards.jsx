@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Card } from 'semantic-ui-react'
 import CreateModal from './CreateModal'
+import ContextMenu from './ContextMenu'
 
+import { getElAbsolutePos } from '../utils'
 import plus from '../images/plus-icon.png'
 import notebookIcon from '../images/notebook.png'
 import notepageIcon from '../images/notepage.png'
@@ -26,8 +28,26 @@ class NoteCards extends React.Component {
     super(props)
 
     this.state = {
-      showModal: false
+      showModal: false,
+      showMenu: false,
+      contextMenuItem: null,
+      menuPosition: null
     }
+  }
+
+  componentDidMount () {
+    window.addEventListener("click", this.hideContextMenu)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener("click", this.hideContextMenu)
+  }
+
+  hideContextMenu = (event) => {
+    if (this.state.showMenu) {
+      this.setState({ showMenu: false })
+    }
+    return
   }
 
   toggleModal = () => {
@@ -57,6 +77,19 @@ class NoteCards extends React.Component {
     }
   }
 
+  showContextMenu = (event, item) => {
+    event.preventDefault()
+
+    const el = (event.target.parentElement.nodeName === 'A') ? event.target.parentElement : event.target.parentElement.parentElement
+    const position = getElAbsolutePos(el)
+
+    this.setState({
+      showMenu: true,
+      contextMenuItem: {...item, parentNotebook: this.props.parentNotebook },
+      menuPosition: position
+    })
+  }
+
   renderNoteCards = (items, type) => {
     if (!items) return null
 
@@ -72,6 +105,7 @@ class NoteCards extends React.Component {
           meta={modifiedOn}
           link
           onClick={() => { this.handleNoteCardClick(item, type) }}
+          onContextMenu={(event) => { this.showContextMenu(event, item) }}
         />
       )
     })
@@ -85,6 +119,7 @@ class NoteCards extends React.Component {
   
     return (
       <React.Fragment>
+        <ContextMenu showMenu={this.state.showMenu} menuPosition={this.state.menuPosition} contextMenuItem={this.state.contextMenuItem} />
         <Card.Group className="notecards" itemsPerRow={5}>
           { createNewCard }
           { this.renderNoteCards(this.props.notebooks, 'notebook') }
