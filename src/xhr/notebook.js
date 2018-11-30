@@ -65,6 +65,25 @@ export async function retrieveNotebook (notebookId, userId) {
 }
 
 /**
+ * Updates notebook's title, parentNotebook, or contents.
+ * 
+ * @param {Object} notebook - in shape of { title, parentNotebook, notebookId }
+ * @param {String} userId
+ * @param {Array} contents - optional; is included if moving items into notebook
+ */
+export async function updateNotebook (notebook, userId, contents = false) {
+  const endpoint = `/notebook/${notebook.notebookId}/${userId}`
+
+  try {
+    const response = await axios.put(endpoint, { notebook, contents })
+    console.log(response)
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.message)
+  }
+} 
+
+/**
  * Filters unnecessary fields from return value of GET request.
  *
  * @param {Object} details
