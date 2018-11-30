@@ -75,3 +75,60 @@ exports.GetNotebook = function (req, res) {
 
   Notebook.findById(notebookId, handleFindNotebook)
 }
+
+exports.UpdateNotebook = function (req, res) {
+  const userId = req.params.userId
+  const notebookId = req.params.notebookId
+  const notebookDetails = req.body.notebook
+  const contents = req.body.contents
+
+  if (!userId) {
+    res.status(401).send("Failed to provide a user id")
+  } else if (!notebookId) {
+    res.status(401).send("failed to provide a notebook id")
+  }
+
+  const handleUpdateNotebook = function (error, parentNotebook) {
+    if (error) {
+      console.log(error)
+      res.status(500).send("Error updating parent notebook.")
+    } else {
+      res.sendStatus(200)
+    }
+  }
+
+  const handleSaveNotebook = function (err, notebook) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error saving notebook")
+    } else {
+      notebook.details(function (details) {
+        if (notebook.parentNotebook) {
+          Notebook.updateOne({ title: notebook.parentNotebook, creator: notebook.creator, "content.id": notebookId }, { $set: { "content.$": details }}, handleUpdateNotebook)
+        } else {
+          res.status(200).send(details)
+        }
+      })
+    }
+  }
+
+  const handleFindNotebook = function (err, notebook) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error finding notebook in database")
+    } else if (!notebook) {
+      res.status(401).send("Error finding notebook with the provided notebook id")
+    } else {
+      notebook.title = notebookDetails.title
+      notebook.parentNotebook = notebookDetails.parentNotebook
+
+      if (contents) {
+        notebook.contents = contents
+      }
+
+      notebook.save(handleSaveNotebook)
+    }
+  }
+
+  Notebook.findById(notebookId, handleFindNotebook)
+}
