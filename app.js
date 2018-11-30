@@ -51,6 +51,7 @@ app.put('/notepage/:notepageId/:userId', notepage.UpdateNotepage)
 // Handling notebooks
 app.post('/notebook/new', notebook.CreateNotebook)
 app.get('/notebook/:notebookId/:userId', notebook.GetNotebook)
+app.put('/notebook/:notebookId/:userId', notebook.UpdateNotebook)
 
 // Handling settings
 app.put('/setting', users.updateUserSetting);
