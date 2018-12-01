@@ -7,7 +7,7 @@ exports.GetUserSetting = function(req, res){
       res.status(401).send("Failed to provide a username")
     }
   
-    const handleFindUserSetting = function (err, setting){
+    const HandleFindUserSetting = function (err, setting){
       if (err) {
         console.log(err)
         res.status(500).send("Problem occurred when getting user setting!");
@@ -21,7 +21,7 @@ exports.GetUserSetting = function(req, res){
     Setting.findOne({ username: username }, handleFindUserSetting);
   }
   
-  exports.updateUserSetting = function(req, res){
+  exports.UpdateUserSetting = function(req, res){
     //use callback to modify setting
     function updateOption(err, result){
       if(err){

@@ -32,6 +32,7 @@ let UserSchema = new mongoose.Schema({
   notepages: [ NoteDetails ]
 })
 
+
 module.exports = {
   Credentials: mongoose.model('Credentials', CredentialSchema),
   User: mongoose.model('User', UserSchema),

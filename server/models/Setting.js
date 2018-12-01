@@ -6,6 +6,4 @@ let SettingSchema = new mongoose.Schema({
     modified: {type: Boolean, default: false}
 })
 
-module.exports = {
-    Setting: mongoose.model('Setting', SettingSchema)
-}
+module.exports = mongoose.model('Setting', SettingSchema)
