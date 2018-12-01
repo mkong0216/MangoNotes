@@ -32,20 +32,8 @@ let UserSchema = new mongoose.Schema({
   notepages: [ NoteDetails ]
 })
 
-let SettingSchema = new mongoose.Schema({
-  username: {type: String, required: true},
-  option: {type: String, required: true},
-  modified: {type: Boolean, default: false}
-})
-
-let TrashSchema = new mongoose.Schema({
-  username: {type: String, required: true},
-  starred: {type:[String], default:[]}
-})
 
 module.exports = {
   Credentials: mongoose.model('Credentials', CredentialSchema),
   User: mongoose.model('User', UserSchema),
-  Trash: mongoose.model('Trash', TrashSchema),
-  Setting: mongoose.model('Setting', SettingSchema)
 }
