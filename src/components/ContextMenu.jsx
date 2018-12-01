@@ -22,13 +22,23 @@ class ContextMenu extends React.Component {
     this.state = {
       activeMenuItem: null,
       openModal: false,
-      item: null
+      item: null,
+      notebookId: null,
+      notebooks: props.notebooks
     }
   }
 
-  componentDidUpdate (prevProps) {
+  async componentDidUpdate (prevProps) {
     if (!prevProps.showMenu && this.props.showMenu) {
       this.setState({ item: this.props.contextMenuItem })
+    } else if (prevProps.historyState && this.props.historyState && prevProps.historyState.noteId !== this.props.historyState.noteId) {
+
+      if (!this.props.historyState.noteId) {
+        this.setState({ notebooks: this.props.notebooks })
+      } else {
+        const contents = await this.getNotebookContents(this.props.historyState.noteId)
+        this.setState({ notebookId: this.props.historyState.noteId, notebooks: contents.notebooks  })
+      }
     }
   }
 
@@ -74,10 +84,11 @@ class ContextMenu extends React.Component {
   }
 
   renderNotebookContents = (contents) => {
-    if (!contents || !contents.length) return null
+    if (!contents || !contents.length) {
+      return (<List.Item> No available notebooks </List.Item>)
+    }
 
     return contents.map((item) => {
-      console.log(item)
       return (
         <List.Item key={item.notebookId}>
           <Image avatar src={notebookIcon} />
@@ -97,9 +108,21 @@ class ContextMenu extends React.Component {
           <Input name="title" value={this.state.item.title} onChange={this.handleChange} label={`${label} Title:`} />
         </Modal.Content>
       )
+    } else if (activeMenuItem === 'Move') {
+      return (
+        <Modal.Content>
+          <List divided relaxed>
+            { this.renderNotebookContents(this.state.notebooks) }
+          </List>
+        </Modal.Content>
+      )
     }
 
     return null
+  }
+
+  getPrevNotebook = () => {
+    console.log(this.props.historyState)
   }
 
   render () {
@@ -124,6 +147,9 @@ class ContextMenu extends React.Component {
           <Modal.Header> { this.state.activeMenuItem } </Modal.Header>
           { this.renderModalContent(this.state.activeMenuItem) }
           <Modal.Actions>
+            { this.state.activeMenuItem === "Move" && this.props.contextMenuItem.parentNotebook && (
+              <Button floated="left" compact icon="left arrow" basic onClick={this.getPrevNotebook} />
+            )}
             <Button basic compact onClick={this.closeModal}> Cancel </Button>
             <Button color="green" compact onClick={this.handleSave}> Save </Button>
           </Modal.Actions>
