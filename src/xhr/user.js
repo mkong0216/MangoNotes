@@ -74,14 +74,13 @@ export async function retrieveUsersWork (userId) {
 /**
  * Updates user's parent notebooks or free notepages
  *
- * @param {String} userId
- * @param {Object} details - in shape of { title, id, creator, parentNotebook, type }
- * @param {Number} index - index of changed notebook or notepage
+ * @param {Object} details - in shape of { title, id, type, creator, updatedAt }
+ * @param {Number} index - index of changed notebook or notepage (if just created, no index)
  *
  * @returns {Object}
  */
-export async function updateUsersWork (userId, details, index) {
-  const endpoint = `/workspace/add-${details.type}/${userId}`
+export async function updateUsersWork (details, index) {
+  const endpoint = `/workspace/add-${details.type}/${details.creator}`
   // createNew tells server to either create a new NoteDetail or find existing one
   details.createNew = (index !== 0 && !index)
 
@@ -89,16 +88,16 @@ export async function updateUsersWork (userId, details, index) {
     const response = await axios.put(endpoint, details)
 
     if (details.type === 'notepage') {
-      if (index) {
-        store.dispatch(addUserNotepage(response.data, index))
+      if (!details.createNew) {
+        store.dispatch(updateUserNotepage(response.data, index))
       } else {
-        store.dispatch(updateUserNotepage(response.data))
+        store.dispatch(addUserNotepage(response.data))
       }
     } else if (details.type === 'notebook') {
-      if (index) {
-        store.dispatch(addUserNotebook(response.data, index))
+      if (!details.createNew) {
+        store.dispatch(updateUserNotebook(response.data, index))
       } else {
-        store.dispatch(updateUserNotebook(response.data))
+        store.dispatch(addUserNotebook(response.data))
       }
     }
 

@@ -7,7 +7,7 @@ import store from '../store'
  *
  * @param {Object} notepage - in shape of { title, creator, parentNotebook }
  *
- * @returns {Object} - in shape of { creator, notebookId, parentNotebook, title, type, updatedAt }
+ * @returns {Object} - in shape of { creator, notebookId, title, type, updatedAt }
  */
 export async function createNewNotepage (notepage) {
   const endpoint = '/notepage/new'
@@ -17,11 +17,12 @@ export async function createNewNotepage (notepage) {
     const details = response.data
 
     if (!notepage.parentNotebook) {
-      await updateUsersWork(notepage.creator, details)
+      await updateUsersWork(details)
     }
 
     return details
   } catch (error) {
+    console.log(error)
     throw Error (error.response.data.error)
   }
 }
@@ -57,21 +58,22 @@ export async function retrieveNotepage (notepageId, userId) {
  *
  * @param {Object} notepage - in shape of { title, parentNotebook, content, notepageId }
  *
- * @returns {Object} - in shape of { title, parentNotebook, type, id }
+ * @returns {Object} - in shape of { title, creator, parentNotebook, type, id }
  */
 export async function updateNotepage(notepage, userId) {
   const endpoint = `/notepage/${notepage.notepageId}/${userId}`
 
   try {
     const response = await axios.put(endpoint, notepage)
+    const details = response.data
 
     if (!notepage.parentNotebook) {
       const notepages = store.getState().notepages.userNotepages
       const index = notepages.findIndex(item => item.notepageId === notepage.notepageId)
-      await updateUsersWork(userId, response.data, index)
+      await updateUsersWork(details, index)
     }
 
-    return response.data
+    return details
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.error)

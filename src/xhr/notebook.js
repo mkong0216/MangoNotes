@@ -1,12 +1,13 @@
 import axios from 'axios'
 import { updateUsersWork } from './user'
+import store from '../store'
 
 /**
  * Makes a POST request to DB to create new Notebook object
  *
  * @param {Object} notebook - in shape of { title, creator, parentNotebook }
  *
- * @returns {Object} - in shape of { creator, notebookId, parentNotebook, title, type, updatedAt }
+ * @returns {Object} - in shape of { title, id, type, creator, updatedAt }
  */
 export async function createNewNotebook (notebook) {
   const endpoint = '/notebook/new'
@@ -16,7 +17,7 @@ export async function createNewNotebook (notebook) {
     const details = response.data
 
     if (!notebook.parentNotebook) {
-      await updateUsersWork(notebook.creator, details)
+      await updateUsersWork(details) 
     }
 
     return details
@@ -77,8 +78,14 @@ export async function updateNotebook (notebook, userId, contents = false) {
   try {
     // Updating actual notebook
     const response = await axios.put(endpoint, { notebook, contents })
+    const details = response.data
     // Update workspace if parentNotebook = null
-    console.log(response)
+    if (!notebook.parentNotebook) {
+      const notebooks = store.getState().notebooks.userNotebooks
+      const index = notebooks.findIndex(item => item.notebookId === notebook.notebookId)
+      console.log(index)
+      await updateUsersWork(details, index)
+    }
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.message)
