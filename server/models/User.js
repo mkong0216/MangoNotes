@@ -36,5 +36,4 @@ let UserSchema = new mongoose.Schema({
 module.exports = {
   Credentials: mongoose.model('Credentials', CredentialSchema),
   User: mongoose.model('User', UserSchema),
-  Setting: mongoose.model('Setting', SettingSchema)
 }
