@@ -3,7 +3,9 @@ const Notebook = require('../models/Notebook')
 
 exports.CreateNotepage = function (req, res) {
   const userId = req.body.creator
-  let details = { ...req.body, type: 'notepage' }
+  const notepage = req.body
+
+  let details
 
   if (!userId) {
     res.status(401).send("Failed to provide a userId")
@@ -23,13 +25,16 @@ exports.CreateNotepage = function (req, res) {
       console.log(error)
       res.status(500).send("Error creating new notepage in database.")
     } else {
-      details.id = notepage._id
-      details.updatedAt = notepage.updatedAt
+      details = notepage.details()
 
-      if (notepage.parentNotebook) {
-        Notebook.updateOne({ title: notepage.parentNotebook, creator: userId }, { $push: { content: details }}, handleUpdateNotebook)
+      if (!details) {
+        res.status(500).send("Error getting notepage details.")
       } else {
-        res.status(200).json(details)
+        if (notepage.parentNotebook) {
+          notepage.updateParentNotebook({ details, created: true }, handleUpdateNotebook)
+        } else {
+          res.status(200).json(details)
+        }
       }
     }
   }
@@ -48,7 +53,7 @@ exports.CreateNotepage = function (req, res) {
     }
   }
 
-  Notepage.countDocuments(req.body, handleCheckDuplicates)
+  Notepage.countDocuments(notepage, handleCheckDuplicates)
 }
 
 exports.GetNotepage = function (req, res) {
@@ -56,15 +61,17 @@ exports.GetNotepage = function (req, res) {
   const userId = req.params.userId
 
   if (!userId) {
-    res.status(401).send("Failed to provide a userId")
+    res.status(401).send("Failed to provide a user id")
   } else if (!notepageId) {
-    res.status(401).send("Failed to provide a notepageId")
+    res.status(401).send("Failed to provide a notepage id")
   }
 
   const handleFindNotepage = function (error, notepage) {
     if (error) {
       console.log(error)
       res.status(500).send("Error finding notepage")
+    } else if (!notepage) {
+      res.status(500).send("Error finding a notepage with the provided notepage id")
     } else {
       if (notepage.creator === userId) {
         res.status(200).send(notepage)
@@ -82,14 +89,9 @@ exports.GetNotepage = function (req, res) {
 exports.UpdateNotepage = function (req, res) {
   const notepageId = req.params.notepageId
   const userId = req.params.userId
+  const data = req.body
 
-  const details = {
-    title: req.body.title,
-    creator: userId,
-    parentNotebook: req.body.parentNotebook,
-    id: notepageId,
-    type: 'notepage'
-  }
+  let details
 
   if (!userId) {
     res.status(401).send("Failed to provide a userId")
@@ -102,20 +104,36 @@ exports.UpdateNotepage = function (req, res) {
       console.log(error)
       res.status(500).send("Error finding and updating parent notebook in database")
     } else {
-      res.sendStatus(200)
+      res.status(200).json(details)
     }
   }
 
-  const handleUpdateNotepage = function (error, notepage) {
+  const handleSaveNotepage = function (error, notepage) {
     if (error) {
       console.log(error)
       res.status(500).send("Error updating notepage")
     } else {
+      details = notepage.details()
       if (notepage.parentNotebook) {
-        Notebook.updateOne({ title: notepage.parentNotebook, creator: notepage.creator, "content.id": notepageId }, { $set: { "content.$": details }}, handleUpdateNotebook)
+        notepage.updateParentNotebook({ details, created: false }, handleUpdateNotebook)
       } else {
-        res.status(200).send(details)
+        res.status(200).json(details)
       }
+    }
+  }
+
+  const handleFindNotepage = function (error, notepage) {
+    if (error) {
+      console.log(error)
+      res.status(500).send("Error finding notepage in database")
+    } else if (!notepage) {
+      res.status(500).send("Error finding notepage with provided notepage id")
+    } else {
+      notepage.title = data.title
+      notepage.parentNotebook = data.parentNotebook
+      notepage.content = data.content || notepage.content
+      
+      notepage.save(handleSaveNotepage)
     }
   }
 
@@ -128,7 +146,7 @@ exports.UpdateNotepage = function (req, res) {
         error: "There already exists a notepage with this name. Please rename the notepage."
       })
     } else {
-      Notepage.updateOne({ _id: notepageId }, { $set: { title: req.body.title, content: req.body.content }}, handleUpdateNotepage)
+      Notepage.findById(notepageId, handleFindNotepage)
     }
   }
 

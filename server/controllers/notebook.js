@@ -2,7 +2,9 @@ const Notebook = require('../models/Notebook')
 
 exports.CreateNotebook = function (req, res) {
   const userId = req.body.creator
-  let details = { ...req.body, type: 'notebook' }
+  const notebook = req.body
+
+  let details
 
   if (!userId) {
     res.status(401).send("Failed to provide a userId")
@@ -22,13 +24,16 @@ exports.CreateNotebook = function (req, res) {
       console.log(error)
       res.status(500).send("Error creating new notebook in database.")
     } else {
-      details.id = notebook._id
-      details.updatedAt = notebook.updatedAt
+      details = notebook.details()
 
-      if (notebook.parentNotebook) {
-        Notebook.updateOne({ title: notebook.parentNotebook, creator: userId }, { $push: { content: details }}, handleUpdateNotebook)
+      if (!details) {
+        res.status(500).send("Error getting notebook details.")
       } else {
-        res.status(200).json(details)
+        if (notebook.parentNotebook) {
+          notebook.updateParentNotebook({ details, created: true }, handleUpdateNotebook)
+        } else {
+          res.status(200).json(details)
+        }
       }
     }
   }
@@ -42,12 +47,12 @@ exports.CreateNotebook = function (req, res) {
         error: "There already exists a notebook with this name. Please rename the notebook."
       })
     } else {
-      const newNotebook = new Notebook(req.body)
+      const newNotebook = new Notebook(notebook)
       newNotebook.save(handleSaveNotebook)
     }
   }
 
-  Notebook.countDocuments(req.body, handleCheckDuplicates)
+  Notebook.countDocuments(notebook, handleCheckDuplicates)
 }
 
 exports.GetNotebook = function (req, res) {
@@ -62,6 +67,8 @@ exports.GetNotebook = function (req, res) {
     if (error) {
       console.log(error)
       res.status(500).send("Error finding notebook in database")
+    } else if (!notebook) {
+      res.status(401).send("Error finding notebook with provided notebook id")
     } else {
       if (userId && notebook.creator === userId) {
         res.status(200).send(notebook.content)
@@ -102,13 +109,12 @@ exports.UpdateNotebook = function (req, res) {
       console.log(err)
       res.status(500).send("Error saving notebook")
     } else {
-      notebook.details(function (details) {
-        if (notebook.parentNotebook) {
-          Notebook.updateOne({ title: notebook.parentNotebook, creator: notebook.creator, "content.id": notebookId }, { $set: { "content.$": details }}, handleUpdateNotebook)
-        } else {
-          res.status(200).send(details)
-        }
-      })
+      const details = notebook.details()
+      if (notebook.parentNotebook) {
+        notebook.updateParentNotebook({ details, created: false }, handleUpdateNotebook)
+      } else {
+        res.status(200).send(details)
+      }
     }
   }
 
