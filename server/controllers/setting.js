@@ -7,7 +7,7 @@ exports.GetUserSetting = function(req, res){
       res.status(401).send("Failed to provide a username")
     }
   
-    const HandleFindUserSetting = function (err, setting){
+    const handleFindUserSetting = function (err, setting){
       if (err) {
         console.log(err)
         res.status(500).send("Problem occurred when getting user setting!");
