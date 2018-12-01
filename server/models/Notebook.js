@@ -14,15 +14,24 @@ let NotebookSchema = new mongoose.Schema({
   content: [ NoteDetails ]
 }, { timestamps: true })
 
-NotebookSchema.methods.details = function (cb) {
+NotebookSchema.methods.details = function () {
   const details = {
     title: this.title,
     id: this._id,
     type: 'notebook',
-    creator: this.creator
+    creator: this.creator,
+    updatedAt: this.updatedAt
   }
 
-  return cb(details)
+  return details
+}
+
+NotebookSchema.methods.updateParentNotebook = function (data, cb) {
+  if (data.created) {
+    return this.model('Notebook').updateOne({ title: this.parentNotebook, creator: this.creator }, { $push: { content: data.details }}, cb)
+  } else {
+    return this.model('Notebook').updateOne({ title: this.parentNotebook, creator: this.creator, "content.id": this._id }, { $set: { "content.$": data.details }}, cb)
+  }
 }
 
 module.exports = mongoose.model('Notebook', NotebookSchema)
