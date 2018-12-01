@@ -89,7 +89,7 @@ class ContextMenu extends React.Component {
     })
   }
 
-  renderModalContent = async (activeMenuItem) => {
+  renderModalContent = (activeMenuItem) => {
     if (activeMenuItem === 'Rename') {
       const label = (this.state.item.notebookId) ? 'Notebook' : 'Notepage'
       return (
