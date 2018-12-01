@@ -1,10 +1,21 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Menu, Modal, Input, Button } from 'semantic-ui-react'
-import { updateNotebook } from '../xhr/notebook'
+import PropTypes from 'prop-types'
+import { Menu, Modal, Input, Button, List, Image } from 'semantic-ui-react'
+import { updateNotebook, retrieveNotebook } from '../xhr/notebook'
 import { updateNotepage } from '../xhr/notepage';
+import notebookIcon from '../images/notebook.png'
 
 class ContextMenu extends React.Component {
+  static propTypes = {
+    showMenu: PropTypes.bool.isRequired,
+    contextMenuItem: PropTypes.object,
+    handleNoteChanges: PropTypes.func.isRequired,
+    historyState: PropTypes.object.isRequired,
+    userId: PropTypes.string,
+    menuPosition: PropTypes.array
+  }
+
   constructor (props) {
     super(props)
 
@@ -18,6 +29,17 @@ class ContextMenu extends React.Component {
   componentDidUpdate (prevProps) {
     if (!prevProps.showMenu && this.props.showMenu) {
       this.setState({ item: this.props.contextMenuItem })
+    }
+  }
+
+  getNotebookContents = async (notebookId) => {
+    if (!notebookId) return this.props.notebooks
+
+    try {
+      const contents = await retrieveNotebook(notebookId, this.props.userId)
+      return contents
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -51,7 +73,23 @@ class ContextMenu extends React.Component {
     }
   }
 
-  renderModalContent = (activeMenuItem) => {
+  renderNotebookContents = (contents) => {
+    if (!contents || !contents.length) return null
+
+    return contents.map((item) => {
+      console.log(item)
+      return (
+        <List.Item key={item.notebookId}>
+          <Image avatar src={notebookIcon} />
+          <List.Content>
+            <List.Header> { item.title } </List.Header>
+          </List.Content>
+        </List.Item>
+      )
+    })
+  }
+
+  renderModalContent = async (activeMenuItem) => {
     if (activeMenuItem === 'Rename') {
       const label = (this.state.item.notebookId) ? 'Notebook' : 'Notepage'
       return (
@@ -59,9 +97,9 @@ class ContextMenu extends React.Component {
           <Input name="title" value={this.state.item.title} onChange={this.handleChange} label={`${label} Title:`} />
         </Modal.Content>
       )
-    } else {
-      return null
     }
+
+    return null
   }
 
   render () {
@@ -97,7 +135,8 @@ class ContextMenu extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    userId: state.user.signInData.userId
+    userId: state.user.signInData.userId,
+    notebooks: state.notebooks.userNotebooks
   }
 }
 

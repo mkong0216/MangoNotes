@@ -125,6 +125,7 @@ class NoteCards extends React.Component {
           menuPosition={this.state.menuPosition}
           contextMenuItem={this.state.contextMenuItem}
           handleNoteChanges={this.props.handleNoteChanges}
+          historyState={historyState}
         />
         <Card.Group className="notecards" itemsPerRow={5}>
           { createNewCard }
