@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Menu, Modal, Input, Button } from 'semantic-ui-react'
 import { updateNotebook } from '../xhr/notebook'
+import { updateNotepage } from '../xhr/notepage';
 
 class ContextMenu extends React.Component {
   constructor (props) {
@@ -35,9 +36,18 @@ class ContextMenu extends React.Component {
     this.setState({ item: updatedItem })
   }
 
-  handleSave = () => {
-    if (this.state.item.notebookId) {
-      updateNotebook(this.state.item, this.props.userId)
+  handleSave = async () => {
+    try {
+      if (this.state.item.notebookId) {
+        await updateNotebook(this.state.item, this.props.userId)
+      } else if (this.state.item.notepageId) {
+        await updateNotepage(this.state.item, this.props.userId)
+      }
+
+      this.props.handleNoteChanges()
+      this.setState({ openModal: false })
+    } catch (error) {
+      console.log(error)
     }
   }
 

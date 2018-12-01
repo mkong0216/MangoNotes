@@ -21,7 +21,8 @@ class NoteCards extends React.Component {
     parentNotebook: PropTypes.string,
     notebooks: PropTypes.array,
     notepages: PropTypes.array,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    handleNoteChanges: PropTypes.func.isRequired
   }
 
   constructor (props) {
@@ -119,7 +120,12 @@ class NoteCards extends React.Component {
   
     return (
       <React.Fragment>
-        <ContextMenu showMenu={this.state.showMenu} menuPosition={this.state.menuPosition} contextMenuItem={this.state.contextMenuItem} />
+        <ContextMenu
+          showMenu={this.state.showMenu}
+          menuPosition={this.state.menuPosition}
+          contextMenuItem={this.state.contextMenuItem}
+          handleNoteChanges={this.props.handleNoteChanges}
+        />
         <Card.Group className="notecards" itemsPerRow={5}>
           { createNewCard }
           { this.renderNoteCards(this.props.notebooks, 'notebook') }

@@ -28,17 +28,18 @@ class Dashboard extends React.Component {
 
     this.state = {
       contents: null,
-      parentNotebook: null
+      parentNotebook: null,
+      checkUpdate: false
     }
   }
 
-  async componentDidMount () {
-    await this.getNotebooksAndNotepages()
+  componentDidMount () {
+    this.setState({ checkUpdate: true })
     window.addEventListener('mangonotes:creation', this.getNotebooksAndNotepages)
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.location.pathname !== this.props.location.pathname) {
+    if (prevProps.location.pathname !== this.props.location.pathname || this.state.checkUpdate) {
       this.getNotebooksAndNotepages()
     }
   }
@@ -47,27 +48,35 @@ class Dashboard extends React.Component {
     window.removeEventListener('mangonotes:creation', this.getNotebooksAndNotepages)
   }
 
+  handleNoteChanges = () => { this.setState({ checkUpdate: true }) }
+
   getNotebooksAndNotepages = async () => {
     const historyState = this.props.location.state
     let noteItems = {}
 
-    if (historyState.id === 'workspace') {
-      noteItems = {
-        notebooks: this.props.notebooks,
-        notepages: this.props.notepages
+    try {
+      if (historyState.id === 'workspace') {
+        noteItems = {
+          notebooks: this.props.notebooks,
+          notepages: this.props.notepages
+        }
+      } else if (historyState.type === 'notebook' && historyState.noteId) {
+        noteItems = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
+      } else if (historyState.id === 'recent') {
+        noteItems = {
+          notepages: await retrieveRecentNotepages(this.props.user.signInData.userId)
+        }
       }
-    } else if (historyState.type === 'notebook' && historyState.noteId) {
-      noteItems = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
-    } else if (historyState.id === 'recent') {
-      noteItems = {
-        notepages: await retrieveRecentNotepages(this.props.user.signInData.userId)
-      }
-    }
 
-    this.setState({
-      contents: noteItems,
-      parentNotebook: (historyState.currentPath.length > 1) ? historyState.currentPath[historyState.currentPath.length - 1] : null
-    })
+      this.setState({
+        checkUpdate: false,
+        contents: noteItems,
+        parentNotebook: (historyState.currentPath.length > 1) ? historyState.currentPath[historyState.currentPath.length - 1] : null
+      })
+    } catch (error) {
+      console.log(error)
+      this.setState({ checkUpdate: false })
+    }
   }
 
   renderBreadCrumb = (state) => {
@@ -107,6 +116,7 @@ class Dashboard extends React.Component {
             notebooks={contents && contents.notebooks}
             notepages={contents && contents.notepages}
             parentNotebook={parentNotebook}
+            handleNoteChanges={this.handleNoteChanges}
             history={this.props.history}
           />
         </Grid.Column>
