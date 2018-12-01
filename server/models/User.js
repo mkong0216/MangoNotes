@@ -31,13 +31,14 @@ let UserSchema = new mongoose.Schema({
   notebooks: [ NoteDetails ],
   notepages: [ NoteDetails ]
 })
-
+//will be removed
 let SettingSchema = new mongoose.Schema({
   username: {type: String, required: true},
   option: {type: String, required: true},
   modified: {type: Boolean, default: false}
 })
 
+//will be removed
 let TrashSchema = new mongoose.Schema({
   username: {type: String, required: true},
   starred: {type:[String], default:[]}
