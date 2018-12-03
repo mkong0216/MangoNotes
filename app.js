@@ -55,7 +55,7 @@ app.get('/notebook/:notebookId/:userId', notebook.GetNotebook)
 app.put('/notebook/:notebookId/:userId', notebook.UpdateNotebook)
 
 // Handling settings
-app.put('/setting', setting.UpdateUserSetting);
+app.put('/setting/:username', setting.UpdateUserSetting);
 app.get('/setting/:username', setting.GetUserSetting);
 
 app.get('*', (req, res) => {
