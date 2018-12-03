@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Menu, Modal, Input, Button, List, Image } from 'semantic-ui-react'
+import { Menu, Modal, Input, Button, List, Image, Label } from 'semantic-ui-react'
 import { updateNotebook, retrieveNotebook } from '../xhr/notebook'
 import { updateNotepage } from '../xhr/notepage';
 import notebookIcon from '../images/notebook.png'
+import '../css/ContextMenu.css'
 
 class ContextMenu extends React.Component {
   static propTypes = {
@@ -93,7 +94,14 @@ class ContextMenu extends React.Component {
         <List.Item key={item.notebookId}>
           <Image avatar src={notebookIcon} />
           <List.Content>
-            <List.Header> { item.title } </List.Header>
+            <List.Header>
+              { item.title }
+              { (this.props.contextMenuItem.notebookId === item.notebookId) && 
+                <Label className="current-item">
+                  Current notebook being moved
+                </Label>
+              }
+            </List.Header>
           </List.Content>
         </List.Item>
       )
