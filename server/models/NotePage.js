@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Notebook = require('./Notebook')
+
 let NotepageSchema = new mongoose.Schema({
   creator: {
     type: String,
