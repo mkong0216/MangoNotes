@@ -25,7 +25,6 @@ class NoteDetails extends React.PureComponent {
   handleStarClick = (event) => {
     const starIcon = (!this.state.starred) ? 'star' : 'star outline'
     this.setState({ starIcon, starred: !this.state.starred })
-    // starNotepage(this.props.userId, this.props.historyState.noteId, !this.state.starred)
   }
 
   render () {
@@ -50,7 +49,7 @@ class NoteDetails extends React.PureComponent {
             inverted
             on="hover"
           />
-          <Icon name={this.state.starIcon} link onClick={this.handleStarClick} color="yellow" size="tiny" />
+          <Icon className="starred" name={this.state.starIcon} link onClick={this.handleStarClick} color="yellow" size="tiny" />
           <span className="timestamp">
             Last edited on { this.props.details && this.props.details.updatedAt }
           </span>
