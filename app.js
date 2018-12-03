@@ -8,6 +8,7 @@ const helmet = require('helmet')
 const users = require('./server/controllers/users.js')
 const notepage = require('./server/controllers/notepage')
 const notebook = require('./server/controllers/notebook')
+const setting = require('./server/controllers/setting.js')
 
 const app = express()
 const url = process.env.MONGODB_URI || "mongodb://localhost:27017/mangonotes"
@@ -54,8 +55,8 @@ app.get('/notebook/:notebookId/:userId', notebook.GetNotebook)
 app.put('/notebook/:notebookId/:userId', notebook.UpdateNotebook)
 
 // Handling settings
-app.put('/setting', users.updateUserSetting);
-app.get('/setting/:username', users.GetUserSetting);
+app.put('/setting', setting.UpdateUserSetting);
+app.get('/setting/:username', setting.GetUserSetting);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/build/index.html'));
