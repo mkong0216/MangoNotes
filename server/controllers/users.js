@@ -181,3 +181,29 @@ exports.UpdateUsersNotepages = function (req, res) {
   }
 }
 
+exports.RemoveNoteItem = function (req, res) {
+  const userId = req.params.userId
+  const noteId = req.params.noteId
+  const type = req.params.type
+
+  if (!userId) {
+    res.status(401).send("Failed to provide a userId")
+  } else if (!noteId) {
+    res.status(401).send("Failed to provide a notebook or notepage id")
+  }
+
+  const handleUpdateUser = function (err, user) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error updating user's workspace")
+    } else {
+      res.sendStatus(200)
+    }
+  }
+
+  if (type === 'notebook') {
+    User.updateOne({ id: userId }, { $pull: { notebooks: { id: noteId } }}, { multi: true }, handleUpdateUser)
+  } else if (type === 'notepage') {
+    User.updateOne({ id: userId }, { $pull: { notepages: { id: noteId } }}, { multi: true }, handleUpdateUser)
+  }
+}
