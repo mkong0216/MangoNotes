@@ -1,4 +1,9 @@
-import { ADD_USER_NOTEPAGE, SET_USER_NOTEPAGES, UPDATE_USER_NOTEPAGE } from '../actions'
+import {
+  ADD_USER_NOTEPAGE,
+  SET_USER_NOTEPAGES,
+  UPDATE_USER_NOTEPAGE,
+  REMOVE_USER_NOTEPAGE
+} from '../actions'
 
 const initialState = {
   userNotepages: [],
@@ -23,6 +28,14 @@ const notepages = (state = initialState, action) => {
         userNotepages: [
           ...state.userNotepages.slice(0, action.index),
           action.noteDetails,
+          ...state.userNotepages.slice(action.index + 1)
+        ]
+      }
+    case REMOVE_USER_NOTEPAGE:
+      return {
+        ...state,
+        userNotepages: [
+          ...state.userNotepages.slice(0, action.index),
           ...state.userNotepages.slice(action.index + 1)
         ]
       }
