@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Menu, Modal, Input, Button, Image, Label, Table, Header } from 'semantic-ui-react'
 import { updateNotebook, retrieveNotebook, moveNotebook } from '../xhr/notebook'
+import { moveNotepage } from '../xhr/notepage'
 import { updateNotepage } from '../xhr/notepage'
 import notebookIcon from '../images/notebook.png'
 import '../css/ContextMenu.css'
@@ -94,6 +95,8 @@ class ContextMenu extends React.Component {
         const { updatedAt, ...noteItem } = this.state.item
         if (item.notebookId) {
           await moveNotebook(this.state.selected, noteItem, this.props.userId)
+        } else if (item.notepageId) {
+          await moveNotepage(this.state.selected, noteItem, this.props.userId)
         }
       }
 
@@ -104,9 +107,6 @@ class ContextMenu extends React.Component {
     }
   }
 
-  // 1) Update notebook.parentNotebook or notepage.parentNotebook
-  // 2) Remove notebook/notepage from parentNotebook's contents
-  // 3) Add notebook/notepage to new notebook.contents
   handleSelectNotebook = (id, title) => {
     const { notebookId, parentNotebook } = this.props.contextMenuItem
     if (id === notebookId || parentNotebook === title) return
