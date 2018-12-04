@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Menu, Modal, Input, Button, List, Image, Label } from 'semantic-ui-react'
-import { updateNotebook, retrieveNotebook } from '../xhr/notebook'
-import { updateNotepage } from '../xhr/notepage';
+import { Menu, Modal, Input, Button, Image, Label, Table, Header } from 'semantic-ui-react'
+import { updateNotebook, retrieveNotebook, moveNotebook } from '../xhr/notebook'
+import { updateNotepage } from '../xhr/notepage'
 import notebookIcon from '../images/notebook.png'
 import '../css/ContextMenu.css'
 
@@ -24,35 +24,55 @@ class ContextMenu extends React.Component {
       activeMenuItem: null,
       openModal: false,
       item: null,
-      notebookId: null,
-      notebooks: props.notebooks
+
+      currNotebook: null,
+      prevNotebook: null,
+      contents: null,
+      selected: null
     }
   }
 
-  async componentDidUpdate (prevProps) {
+  async componentDidUpdate (prevProps, prevState) {
     if (!prevProps.showMenu && this.props.showMenu) {
-      this.setState({ item: this.props.contextMenuItem })
-    } else if (prevProps.historyState && this.props.historyState && prevProps.historyState.noteId !== this.props.historyState.noteId) {
+      const { historyState } = this.props
 
-      if (!this.props.historyState.noteId) {
-        this.setState({ notebooks: this.props.notebooks })
-      } else {
-        const contents = await this.getNotebookContents(this.props.historyState.noteId)
-        this.setState({ notebookId: this.props.historyState.noteId, notebooks: contents.notebooks  })
-      }
+      const prevNotebook = (historyState.id !== 'workspace' && !historyState.prevNotebook) ? 'workspace' :
+        (historyState.prevNotebook) ? historyState.prevNotebook : null
+      const currNotebook = historyState.type === 'notebook' && historyState.noteId
+
+      this.setState({
+        item: this.props.contextMenuItem,
+        notebooks: this.props.notebooks,
+        prevNotebook,
+        currNotebook
+      })
+    } else if (prevState.currNotebook !== this.state.currNotebook) {
+      const { currNotebook } = this.state
+      const notebook = await this.getNotebookContents(currNotebook)
+      this.setState({ ...notebook })
     }
   }
 
   getNotebookContents = async (notebookId) => {
-    if (!notebookId) return this.props.notebooks
+    if (!notebookId) {
+      return {
+        contents: this.props.userNotebooks,
+        prevNotebook: undefined
+      }
+    }
 
     try {
-      const contents = await retrieveNotebook(notebookId, this.props.userId)
-      return contents
+      const notebook = await retrieveNotebook(notebookId, this.props.userId)
+      return {
+        contents: notebook.contents.notebooks,
+        prevNotebook: notebook.parentNotebook
+      }
     } catch (error) {
       console.log(error)
     }
   }
+
+  getPrevNotebook = () => { this.setState({ currNotebook: this.state.prevNotebook }) }
 
   handleMenuClick = (event, { name }) => {
     event.stopPropagation()
@@ -60,7 +80,7 @@ class ContextMenu extends React.Component {
     this.setState({ activeMenuItem: name, openModal })
   }
 
-  closeModal = () => { this.setState({ activeMenuItem: null, openModal: false }) }
+  closeModal = () => { this.setState({ activeMenuItem: null, openModal: false, selected: null }) }
 
   handleChange = (event, { name, value }) => {
     const updatedItem = { ...this.state.item }
@@ -71,10 +91,14 @@ class ContextMenu extends React.Component {
 
   handleSave = async () => {
     try {
-      if (this.state.item.notebookId) {
-        await updateNotebook(this.state.item, this.props.userId)
-      } else if (this.state.item.notepageId) {
-        await updateNotepage(this.state.item, this.props.userId)
+      const { item } = this.state
+      if (this.state.activeMenuItem === 'Rename') {
+        (this.state.item.notebookId) ? await updateNotebook(item.notebookId, this.props.userId) : await updateNotepage(item.notepageId, this.props.userId)
+      } else if (this.state.activeMenuItem === 'Move' && this.state.selected) {
+        const { updatedAt, ...noteItem } = this.state.item
+        if (item.notebookId) {
+          await moveNotebook(this.state.selected, noteItem, this.props.userId)
+        }
       }
 
       this.props.handleNoteChanges()
@@ -84,26 +108,62 @@ class ContextMenu extends React.Component {
     }
   }
 
+  // 1) Update notebook.parentNotebook or notepage.parentNotebook
+  // 2) Remove notebook/notepage from parentNotebook's contents
+  // 3) Add notebook/notepage to new notebook.contents
+  handleSelectNotebook = (id, title) => {
+    const { notebookId, parentNotebook } = this.props.contextMenuItem
+    if (id === notebookId || parentNotebook === title) return
+
+    this.setState({ selected: { id, title } })
+  }
+
   renderNotebookContents = (contents) => {
     if (!contents || !contents.length) {
-      return (<List.Item> No available notebooks </List.Item>)
+      return (
+        <Table.Row>
+          <Table.Cell> No available notebooks. </Table.Cell>
+        </Table.Row>
+      )
     }
+
+    const { notebookId, parentNotebook } = this.props.contextMenuItem
 
     return contents.map((item) => {
       return (
-        <List.Item key={item.notebookId}>
-          <Image avatar src={notebookIcon} />
-          <List.Content>
-            <List.Header>
-              { item.title }
-              { (this.props.contextMenuItem.notebookId === item.notebookId) && 
-                <Label className="current-item">
-                  Current notebook being moved
-                </Label>
-              }
-            </List.Header>
-          </List.Content>
-        </List.Item>
+        <Table.Row
+          key={item.notebookId}
+          active={(this.state.selected && this.state.selected.id === item.notebookId)}
+          onClick={() => { this.handleSelectNotebook(item.notebookId, item.title) }}
+        >
+          <Table.Cell>
+            <Header as='h4' image>
+              <Image src={notebookIcon} />
+              <Header.Content>
+                { item.title }
+                { (this.props.contextMenuItem.notebookId === item.notebookId) &&
+                  <Label className="current-item">
+                    Current notebook being moved
+                  </Label>
+                }
+                { (this.props.contextMenuItem.parentNotebook === item.title) &&
+                  <Label className="current-item">
+                    Already inside this notebook
+                  </Label>
+                }
+              </Header.Content>
+            </Header>
+            { (this.props.contextMenuItem.notebookId !== item.notebookId) &&
+              <Button
+                icon="chevron right"
+                floated="right"
+                compact
+                size="small"
+                onClick={() => { this.setState({ currNotebook: item.notebookId }) }}
+              />
+            }
+          </Table.Cell>
+        </Table.Row>
       )
     })
   }
@@ -119,18 +179,16 @@ class ContextMenu extends React.Component {
     } else if (activeMenuItem === 'Move') {
       return (
         <Modal.Content>
-          <List divided relaxed>
-            { this.renderNotebookContents(this.state.notebooks) }
-          </List>
+          <Table compact selectable>
+            <Table.Body>
+              { this.renderNotebookContents(this.state.contents) }
+            </Table.Body>
+          </Table>
         </Modal.Content>
       )
     }
 
     return null
-  }
-
-  getPrevNotebook = () => {
-    console.log(this.props.historyState)
   }
 
   render () {
@@ -155,7 +213,7 @@ class ContextMenu extends React.Component {
           <Modal.Header> { this.state.activeMenuItem } </Modal.Header>
           { this.renderModalContent(this.state.activeMenuItem) }
           <Modal.Actions>
-            { this.state.activeMenuItem === "Move" && this.props.contextMenuItem.parentNotebook && (
+            { this.state.activeMenuItem === "Move" && typeof this.state.prevNotebook !== 'undefined' && (
               <Button floated="left" compact icon="left arrow" basic onClick={this.getPrevNotebook} />
             )}
             <Button basic compact onClick={this.closeModal}> Cancel </Button>
@@ -170,7 +228,7 @@ class ContextMenu extends React.Component {
 function mapStateToProps (state) {
   return {
     userId: state.user.signInData.userId,
-    notebooks: state.notebooks.userNotebooks
+    userNotebooks: state.notebooks.userNotebooks
   }
 }
 
