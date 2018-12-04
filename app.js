@@ -58,8 +58,8 @@ app.put('/notebook/:notebookId/:userId', notebook.UpdateNotebook)
 app.put('/move-notebook/:notebookId/:userId', notebook.MoveNotebook)
 
 // Handling settings
-app.put('/setting/:username', settings.UpdateUserSettings);
-app.get('/setting/:username', settings.GetUserSettings);
+app.put('/settings/:username', settings.UpdateUserSettings);
+app.get('/settings/:username', settings.GetUserSettings);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/build/index.html'));
