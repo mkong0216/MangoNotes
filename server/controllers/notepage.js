@@ -184,3 +184,52 @@ exports.GetRecentNotepages = function (req, res) {
   const query = Notepage.find({ creator: userId }).select('-content -createdAt').sort({ updatedAt: -1 }).limit(10)
   query.exec(handleGetRecentNotepages)
 }
+
+exports.MoveNotepage = function (req, res) {
+  const userId = req.params.userId
+  const notepageId = req.params.notepageId
+  const newParentNotebook = req.body
+
+  if (!userId) {
+    res.status(401).send("Failed to provide a user id")
+  } else if (!notepageId) {
+    res.status(401).send("Failed to provide a note page id")
+  }
+
+  const handleUpdateNotepage = function (err, notepage) {
+    if (err || !notepage) {
+      console.log(err)
+      res.status(500).send("Error updating notepage")
+    } else {
+      res.sendStatus(200)
+    }
+  }
+
+  const handleSaveNotepage = function (err, notepage) {
+    if (err || !notepage) {
+      console.log(err)
+      res.status(500).send("Error updating notepage")
+    } else {
+      // Add notepage details to new parent notebook's contents
+      const details = notepage.details()
+      notepage.updateParentNotebook({ details, created: true }, handleUpdateNotepage)
+    }
+  }
+  const handleFindNotepage = function (err, notepage) {
+    if (err || !notepage) {
+      console.log(err)
+      res.status(500).send("Error finding notepage in database")
+    } else {
+      if (notepage.parentNotebook) {
+        // Remove note details from notepage's original parent notebook
+        notepage.removeNoteDetails(notepageId)
+      }
+
+      // Update notepage's parentNotebook to be newParentNotebook
+      notepage.parentNotebook = newParentNotebook.title
+      notepage.save(handleSaveNotepage)
+    }
+  }
+
+  Notepage.findById(notepageId, handleFindNotepage)
+}
