@@ -13,9 +13,9 @@ exports.GetUserSettings = function (req, res){
         console.log(err)
         res.status(500).send("Problem occurred when getting user setting!");
       } else if (!settings) {
-        res.status(200).json(defaultSettings)
+        res.status(200).json({ settings: defaultSettings, default: true })
       } else {
-        res.status(200).json(settings);
+        res.status(200).json({ settings: settings.options, default: false });
       }
     }
   
@@ -24,18 +24,33 @@ exports.GetUserSettings = function (req, res){
   
 exports.UpdateUserSettings = function (req, res) {
   const username = req.params.username
+  const userSettings = req.body.userSettings
 
   if (!username) {
     res.status(401).send("Failed to provide a username")
   }
 
-  const handleUpdateSettings = function (err, settings) {
+  const handleSaveSettings = function (err, settings) {
     if (err) {
-      res.status(500).send("Problem occurred when updating user settings!");
+      console.log(err)
+      res.status(500).send("Error occurred when saving user's settings")
     } else {
-      res.status(200).send("User settings has been updated");
+      res.sendStatus(200)
     }
   }
 
-  Settings.findOneAndUpdate({ username: username }, { $set: { option: req.body.option } }, handleUpdateSettings);
+  const handleFindSettings = function (err, settings) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Problem occurred when trying to find user's settings")
+    } else if (!settings) {
+      const newSettings = new Settings({ username: username, options: userSettings })
+      newSettings.save(handleSaveSettings)
+    } else {
+      settings.options = userSettings
+      settings.save(handleSaveSettings)
+    }
+  }
+
+  Settings.findOne({ username: username }, handleFindSettings)
 }
