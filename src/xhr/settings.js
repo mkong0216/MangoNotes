@@ -5,8 +5,7 @@ export async function saveUserSettings (username, settings) {
 
   try {
     const json = JSON.stringify(settings)
-    const response = axios.put(endpoint, { userSettings: json })
-    // const response = axios.put(endpoint, JSON.stringify(settings))
+    await axios.put(endpoint, { userSettings: json })
   } catch (error) {
     console.log(error)
     throw Error(error.response.data)
