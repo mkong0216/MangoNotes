@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { updateUsersWork } from './user'
+import { updateUsersWork, removeNoteItem } from './user'
 import store from '../store'
 
 /**
@@ -32,14 +32,14 @@ export async function createNewNotebook (notebook) {
  * @param {String} notebookId
  * @param {String} userId
  *
- * @returns {Array} - [notebooks, notepages]
+ * @returns {Array} - { contents: [notebooks, notepages], parentNotebook: id }
  */
 export async function retrieveNotebook (notebookId, userId) {
   const endpoint = `/notebook/${notebookId}/${userId}`
 
   try {
     const response = await axios.get(endpoint)
-    const noteDetails = filterNoteDetails(response.data)
+    const noteDetails = filterNoteDetails(response.data.contents)
 
     let noteItems = {
       notebooks: [],
@@ -58,7 +58,10 @@ export async function retrieveNotebook (notebookId, userId) {
       return obj
     }, noteItems)
 
-    return noteItems
+    return {
+      contents: noteItems,
+      parentNotebook: response.data.parentNotebook
+    }
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.error)
@@ -70,27 +73,52 @@ export async function retrieveNotebook (notebookId, userId) {
  * 
  * @param {Object} notebook - in shape of { title, parentNotebook, notebookId }
  * @param {String} userId
- * @param {Array} contents - optional; is included if moving items into notebook
+ * @param {Boolean} moved - parentNotebook was changed
  */
-export async function updateNotebook (notebook, userId, contents = false) {
+export async function updateNotebook (notebook, userId, moved = false) {
   const endpoint = `/notebook/${notebook.notebookId}/${userId}`
 
   try {
     // Updating actual notebook
-    const response = await axios.put(endpoint, { notebook, contents })
+    const response = await axios.put(endpoint, { notebook, moved })
     const details = response.data
+
     // Update workspace if parentNotebook = null
     if (!notebook.parentNotebook) {
       const notebooks = store.getState().notebooks.userNotebooks
       const index = notebooks.findIndex(item => item.notebookId === notebook.notebookId)
-      console.log(index)
       await updateUsersWork(details, index)
     }
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.message)
   }
-} 
+}
+
+/**
+ * Moves a notebook into another notebook
+ *
+ * @param {Object} newParentNotebook - in shape of { id, title }
+ * @param {Object} notebook - in shape of { notebookId, title, parentNotebook }
+ * @param {String} userId
+ *
+ */
+export async function moveNotebook (newParentNotebook, notebook, userId) {
+  const endpoint = `/move-notebook/${notebook.notebookId}/${userId}`
+
+  try {
+    await axios.put(endpoint, newParentNotebook)
+
+    if (!notebook.parentNotebook) {
+      const notebooks = store.getState().notebooks.userNotebooks
+      const index = notebooks.findIndex(item => item.notebookId === notebook.notebookId)
+      await removeNoteItem('notebook', notebook.notebookId, userId, index)
+    }
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.message)
+  }
+}
 
 /**
  * Filters unnecessary fields from return value of GET request.
