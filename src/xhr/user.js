@@ -1,7 +1,17 @@
 import axios from 'axios'
 import store from '../store'
-import { setUserNotebooks, updateUserNotebook, addUserNotebook } from '../store/actions/notebooks'
-import { setUserNotepages, updateUserNotepage, addUserNotepage } from '../store/actions/notepages'
+import {
+  setUserNotebooks,
+  updateUserNotebook,
+  addUserNotebook,
+  removeUserNotebook
+} from '../store/actions/notebooks'
+import {
+  setUserNotepages,
+  updateUserNotepage,
+  addUserNotepage,
+  removeUserNotepage
+} from '../store/actions/notepages'
 
 /**
  * Authenticating user's login or register attempt
@@ -108,3 +118,20 @@ export async function updateUsersWork (details, index) {
   }
 }
 
+export async function removeNoteItem (type, noteId, userId, index) {
+  const endpoint = `/remove-item/${userId}/${type}/${noteId}`
+
+  try {
+    if (type === 'notebook') {
+      console.log(index)
+      store.dispatch(removeUserNotebook(index))
+    } else if (type === 'notepage') {
+      store.dispatch(removeUserNotepage(index))
+    }
+
+    await axios.put(endpoint)
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.error)
+  }
+}
