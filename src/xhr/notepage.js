@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { updateUsersWork } from './user'
+import { updateUsersWork, removeNoteItem } from './user'
 import store from '../store'
 
 /**
@@ -89,5 +89,30 @@ export async function retrieveRecentNotepages (userId) {
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.error)
+  }
+}
+
+/**
+ * Moves a notepage into another notebook
+ *
+ * @param {Object} newParentNotebook - in shape of { id, title }
+ * @param {Object} notepage - in shape of { notebookId, title, parentNotebook }
+ * @param {String} userId
+ *
+ */
+export async function moveNotepage (newParentNotebook, notepage, userId) {
+  const endpoint = `/move-notepage/${notepage.notepageId}/${userId}`
+
+  try {
+    await axios.put(endpoint, newParentNotebook)
+
+    if (!notepage.parentNotebook) {
+      const notepages = store.getState().notepages.userNotepages
+      const index = notepages.findIndex(item => item.notepageId === notepage.notepageId)
+      await removeNoteItem('notepage', notepage.notepageId, userId, index)
+    }
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.message)
   }
 }
