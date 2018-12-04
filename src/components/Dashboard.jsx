@@ -106,7 +106,7 @@ class Dashboard extends React.Component {
         <Grid.Column width={3}>
           <SidebarMenu history={this.props.history} />
         </Grid.Column>
-        <Grid.Column width={13}>
+        <Grid.Column width={11}>
           <Header as="h1" dividing className="nav">
             <Breadcrumb>
               { this.renderBreadCrumb(this.props.location.state) }
