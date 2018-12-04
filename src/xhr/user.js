@@ -123,7 +123,6 @@ export async function removeNoteItem (type, noteId, userId, index) {
 
   try {
     if (type === 'notebook') {
-      console.log(index)
       store.dispatch(removeUserNotebook(index))
     } else if (type === 'notepage') {
       store.dispatch(removeUserNotepage(index))
