@@ -61,7 +61,8 @@ class Dashboard extends React.Component {
           notepages: this.props.notepages
         }
       } else if (historyState.type === 'notebook' && historyState.noteId) {
-        noteItems = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
+        const results = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
+        noteItems = results.contents
       } else if (historyState.id === 'recent') {
         noteItems = {
           notepages: await retrieveRecentNotepages(this.props.user.signInData.userId)

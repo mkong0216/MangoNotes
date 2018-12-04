@@ -35,15 +35,11 @@ class ContextMenu extends React.Component {
   async componentDidUpdate (prevProps, prevState) {
     if (!prevProps.showMenu && this.props.showMenu) {
       const { historyState } = this.props
-
-      const prevNotebook = (historyState.id !== 'workspace' && !historyState.prevNotebook) ? 'workspace' :
-        (historyState.prevNotebook) ? historyState.prevNotebook : null
       const currNotebook = historyState.type === 'notebook' && historyState.noteId
 
       this.setState({
         item: this.props.contextMenuItem,
         notebooks: this.props.notebooks,
-        prevNotebook,
         currNotebook
       })
     } else if (prevState.currNotebook !== this.state.currNotebook) {
@@ -126,8 +122,6 @@ class ContextMenu extends React.Component {
         </Table.Row>
       )
     }
-
-    const { notebookId, parentNotebook } = this.props.contextMenuItem
 
     return contents.map((item) => {
       return (
