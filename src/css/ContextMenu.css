@@ -1,3 +1,7 @@
 .ui.label.current-item {
     margin-left: 10px;
 }
+
+.ui.image.header {
+    margin-bottom: 0px;
+}
