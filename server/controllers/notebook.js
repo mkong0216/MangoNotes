@@ -71,7 +71,19 @@ exports.GetNotebook = function (req, res) {
       res.status(401).send("Error finding notebook with provided notebook id")
     } else {
       if (userId && notebook.creator === userId) {
-        res.status(200).send(notebook.content)
+        if (notebook.parentNotebook) {
+          notebook.getParentNotebook(function (err, parentNotebook) {
+            res.status(200).json({
+              contents: notebook.content,
+              parentNotebook: parentNotebook && parentNotebook._id
+            })
+          })
+        } else {
+          res.status(200).json({
+            contents: notebook.content,
+            parentNotebook: null
+          })
+        }
       } else {
         res.status(401).json({
           error: "Looks like you don't have the right permissions to view the notebook."
@@ -87,7 +99,7 @@ exports.UpdateNotebook = function (req, res) {
   const userId = req.params.userId
   const notebookId = req.params.notebookId
   const notebookDetails = req.body.notebook
-  const contents = req.body.contents
+  const moved = req.body.moved
 
   if (!userId) {
     res.status(401).send("Failed to provide a user id")
@@ -111,7 +123,7 @@ exports.UpdateNotebook = function (req, res) {
     } else {
       const details = notebook.details()
       if (notebook.parentNotebook) {
-        notebook.updateParentNotebook({ details, created: false }, handleUpdateNotebook)
+        notebook.updateParentNotebook({ details, created: moved }, handleUpdateNotebook)
       } else {
         res.status(200).send(details)
       }
@@ -127,14 +139,60 @@ exports.UpdateNotebook = function (req, res) {
     } else {
       notebook.title = notebookDetails.title
       notebook.parentNotebook = notebookDetails.parentNotebook
-
-      if (contents) {
-        notebook.contents = contents
-      }
-
       notebook.save(handleSaveNotebook)
     }
   }
 
+  Notebook.findById(notebookId, handleFindNotebook)
+}
+
+exports.MoveNotebook = function (req, res) {
+  const notebookId = req.params.notebookId
+  const userId = req.params.userId
+  const newParentNotebook = req.body
+
+  if (!notebookId) {
+    res.status(401).send("Failed to provide a notebook id")
+  } else if (!userId) {
+    res.status(401).send("Failed to provide a user id")
+  }
+
+  const handleUpdateNotebook = function (err, notebook) {
+    if (err || !notebook) {
+      console.log(err)
+      res.status(500).send("Error updating parent notebook")
+    } else {
+      res.sendStatus(200)
+    }
+  }
+
+  const handleSaveNotebook = function (err, notebook) {
+    if (err || !notebook) {
+      console.log(err)
+      res.status(500).send("Error updating notebook")
+    } else {
+      // Add notebook details to new parent notebook's contents
+      const details = notebook.details()
+      notebook.updateParentNotebook({ details, created: true }, handleUpdateNotebook)
+    }
+  }
+
+  const handleFindNotebook = function (err, notebook) {
+    if (err || !notebook) {
+      console.log(err)
+      res.status(500).send("Error finding notebook in database")
+    } else {
+      if (notebook.parentNotebook) {
+        // Remove note details from notebook's original parentNotebook
+        notebook.removeNoteDetails(notebookId)
+      }
+
+      // Update notebook's parentNotebook to be newParentNotebook's title
+      notebook.parentNotebook = newParentNotebook.title
+      notebook.save(handleSaveNotebook)
+    }
+  }
+
+  // TODO: refactor to use findOneAndUpdate
   Notebook.findById(notebookId, handleFindNotebook)
 }
