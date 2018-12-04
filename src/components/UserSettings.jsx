@@ -4,12 +4,14 @@ import axios from 'axios'
 import { Modal, Button, Form, Header } from 'semantic-ui-react'
 import SymbolForm from './SymbolForm'
 import { BULLET_POINTS, FONT_SIZES, FONT_FAMILIES } from '../textEditor'
+import { saveUserSettings } from '../xhr/settings'
 import '../css/UserSettings.css'
 
 class UserSettings extends React.Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
-    closeModal: PropTypes.func.isRequired
+    closeModal: PropTypes.func.isRequired,
+    username: PropTypes.string
   }
 
   constructor (props) {
@@ -27,10 +29,11 @@ class UserSettings extends React.Component {
   }
 
   async componentDidMount () {
-    const endpoint = `/setting/${this.props.username}`
+    const endpoint = `/settings/${this.props.username}`
     try {
       const response = await axios.get(endpoint)
-      this.setState({...response.data})
+      const settings = (response.data.default) ? response.data.settings : JSON.parse(response.data.settings)
+      this.setState({...settings})
     } catch (error) {
       console.log(error)
     }
@@ -129,7 +132,7 @@ class UserSettings extends React.Component {
     }
   }
 
-  handleSaveSettings = () => {
+  handleSaveSettings = async () => {
     const { hierarchy, fontFamily, fontSize, bulletPoints, symbols } = this.state
     const errors = this.checkForErrors()
 
@@ -141,7 +144,8 @@ class UserSettings extends React.Component {
     if (hierarchy === 'default' && fontFamily === 'Times New Roman' && fontSize === '14pt' && !symbols.length) {
       console.log("using default settings")
     } else {
-      console.log(hierarchy, fontFamily, fontSize, bulletPoints, symbols)
+      const settings = { fontFamily, fontSize, bulletPoints } 
+      await saveUserSettings(this.props.username, settings)
     }
 
     this.props.closeModal()
@@ -156,6 +160,7 @@ class UserSettings extends React.Component {
             <Form.Group widths="equal">
               <Form.Select
                 label="Default Font Family"
+                name="fontFamily"
                 options={FONT_FAMILIES}
                 placeholder="Default Font Family"
                 value={this.state.fontFamily}
@@ -163,6 +168,7 @@ class UserSettings extends React.Component {
               />
               <Form.Select
                 label="Default Font Size"
+                name="fontSize"
                 options={FONT_SIZES}
                 placeholder="Default Font Size"
                 value={this.state.fontSize}
