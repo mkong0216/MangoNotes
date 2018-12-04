@@ -32,6 +32,7 @@ class NoteCards extends React.Component {
       showModal: false,
       showMenu: false,
       contextMenuItem: null,
+      itemType: null,
       menuPosition: null
     }
   }
@@ -78,7 +79,7 @@ class NoteCards extends React.Component {
     }
   }
 
-  showContextMenu = (event, item) => {
+  showContextMenu = (event, item, type) => {
     event.preventDefault()
 
     const el = (event.target.parentElement.nodeName === 'A') ? event.target.parentElement : event.target.parentElement.parentElement
@@ -87,7 +88,8 @@ class NoteCards extends React.Component {
     this.setState({
       showMenu: true,
       contextMenuItem: {...item, parentNotebook: this.props.parentNotebook },
-      menuPosition: position
+      menuPosition: position,
+      itemType: type
     })
   }
 
@@ -106,7 +108,7 @@ class NoteCards extends React.Component {
           meta={modifiedOn}
           link
           onClick={() => { this.handleNoteCardClick(item, type) }}
-          onContextMenu={(event) => { this.showContextMenu(event, item) }}
+          onContextMenu={(event) => { this.showContextMenu(event, item, type) }}
         />
       )
     })
@@ -124,6 +126,7 @@ class NoteCards extends React.Component {
           showMenu={this.state.showMenu}
           menuPosition={this.state.menuPosition}
           contextMenuItem={this.state.contextMenuItem}
+          type={this.state.itemType}
           handleNoteChanges={this.props.handleNoteChanges}
           historyState={historyState}
         />
