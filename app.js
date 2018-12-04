@@ -42,6 +42,7 @@ app.get('/workspace/:userId', users.GetUsersWorkspace)
 
 app.put('/workspace/add-notebook/:userId', users.UpdateUsersNotebooks)
 app.put('/workspace/add-notepage/:userId', users.UpdateUsersNotepages)
+app.put('/remove-item/:userId/:type/:noteId', users.RemoveNoteItem)
 
 // Handling notepages
 app.post('/notepage/new', notepage.CreateNotepage)
@@ -53,6 +54,7 @@ app.put('/notepage/:notepageId/:userId', notepage.UpdateNotepage)
 app.post('/notebook/new', notebook.CreateNotebook)
 app.get('/notebook/:notebookId/:userId', notebook.GetNotebook)
 app.put('/notebook/:notebookId/:userId', notebook.UpdateNotebook)
+app.put('/move-notebook/:notebookId/:userId', notebook.MoveNotebook)
 
 // Handling settings
 app.put('/setting/:username', settings.UpdateUserSettings);
