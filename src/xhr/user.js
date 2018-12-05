@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '../store'
+import { createUserSignInData } from '../store/actions/user'
 import {
   setUserNotebooks,
   updateUserNotebook,
@@ -28,11 +29,20 @@ export async function authenticateUser (credentials, submissionType) {
     const signedIn = await axios.post(endpoint, credentials)
     await retrieveUsersWork(signedIn.data.userId)
 
-    window.sessionStorage.userId = JSON.stringify(signedIn.data)
+    window.sessionStorage.signedIn = JSON.stringify(signedIn.data)
     return signedIn.data
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.error)
+  }
+}
+
+export async function initialize () {
+  if (window.sessionStorage.signedIn) {
+    const signedIn = JSON.parse(window.sessionStorage.signedIn)
+    const response = await retrieveUsersWork(signedIn.userId)
+    store.dispatch(createUserSignInData(signedIn))
+    return response.data
   }
 }
 
