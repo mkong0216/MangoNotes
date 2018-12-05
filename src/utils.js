@@ -26,5 +26,5 @@ export const TYPE_NOTEPAGE = 'notepage'
 export function createPermissionCode (readOnly) {
   const code = shortid.generate()
   const extra = (readOnly) ? 0 : 1
-  return code + extra
+  return (extra + code)
 }
