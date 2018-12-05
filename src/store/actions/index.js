@@ -4,6 +4,7 @@
 
  /* user */
  export const SET_USER_SIGN_IN_DATA = 'SET_USER_SIGN_IN_DATA'
+ export const SET_SIGN_IN_ATTEMPTED = 'SET_SIGN_IN_ATTEMPTED'
  
  /* notebooks */
  export const ADD_USER_NOTEBOOK = 'ADD_USER_NOTEBOOK'
