@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '../store'
-import { createUserSignInData, setSignInAttempted } from '../store/actions/user'
+import { createUserSignInData } from '../store/actions/user'
 import {
   setUserNotebooks,
   updateUserNotebook,
@@ -42,9 +42,7 @@ export async function initialize () {
     const signedIn = JSON.parse(window.sessionStorage.signedIn)
     const response = await retrieveUsersWork(signedIn.userId)
     store.dispatch(createUserSignInData(signedIn))
-    return response
-  } else {
-    store.dispatch(setSignInAttempted())
+    return response.data
   }
 }
 

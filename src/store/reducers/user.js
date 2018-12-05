@@ -1,9 +1,8 @@
-import { SET_USER_SIGN_IN_DATA, SET_SIGN_IN_ATTEMPTED } from '../actions'
+import { SET_USER_SIGN_IN_DATA } from '../actions'
 
 const initialState = {
     signInData: null,
-    signedIn: false,
-    signedInAttempted: false
+    signedIn: false
 }
 
 const settings = (state = initialState, action) => {
@@ -12,13 +11,7 @@ const settings = (state = initialState, action) => {
             return {
                 ...state,
                 signInData: action.userData,
-                signedIn: true,
-                signedInAttempted: true
-            }
-        case SET_SIGN_IN_ATTEMPTED:
-            return {
-                ...state,
-                signedInAttempted: true
+                signedIn: true
             }
         default:
             return state
