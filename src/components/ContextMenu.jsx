@@ -5,7 +5,7 @@ import { Menu } from 'semantic-ui-react'
 import RenameModal from './RenameModal'
 import MoveItemModal from './MoveItemModal'
 import ShareModal from './ShareModal'
-import { TYPE_NOTEPAGE, TYPE_NOTEBOOK } from '../utils'
+import { TYPE_NOTEPAGE } from '../utils'
 import '../css/ContextMenu.css'
 
 class ContextMenu extends React.Component {
