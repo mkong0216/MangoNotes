@@ -22,7 +22,6 @@
   
 .notepage-details .ui.button.save {
   width: 90px !important;
-  height: 45px;
   position: absolute;
   right: 20px;
 }
@@ -30,6 +29,12 @@
 .notepage-details .star.icon.starred {
   display: inline-block;
   margin-right: 25px;
+}
+
+.notepage-details .ui.button.user-account {
+    right: 125px;
+    top: 15px;
+    z-index: 100;
 }
   
   /* .notepage {
