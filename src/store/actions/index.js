@@ -4,7 +4,7 @@
 
  /* user */
  export const SET_USER_SIGN_IN_DATA = 'SET_USER_SIGN_IN_DATA'
- 
+ export const SIGN_OUT_USER = 'SIGN_OUT_USER'
  /* notebooks */
  export const ADD_USER_NOTEBOOK = 'ADD_USER_NOTEBOOK'
  export const SET_USER_NOTEBOOKS = 'SET_USER_NOTEBOOKS'

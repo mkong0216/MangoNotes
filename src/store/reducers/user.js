@@ -1,4 +1,4 @@
-import { SET_USER_SIGN_IN_DATA } from '../actions'
+import { SET_USER_SIGN_IN_DATA, SIGN_OUT_USER } from '../actions'
 
 const initialState = {
     signInData: null,
@@ -12,6 +12,13 @@ const settings = (state = initialState, action) => {
                 ...state,
                 signInData: action.userData,
                 signedIn: true
+            }
+        case SIGN_OUT_USER:
+            delete window.sessionStorage.signedIn
+            return {
+                ...state,
+                signInData: null,
+                signedIn: false
             }
         default:
             return state
