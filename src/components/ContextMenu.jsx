@@ -5,6 +5,7 @@ import { Menu } from 'semantic-ui-react'
 import RenameModal from './RenameModal'
 import MoveItemModal from './MoveItemModal'
 import ShareModal from './ShareModal'
+import { TYPE_NOTEPAGE, TYPE_NOTEBOOK } from '../utils'
 import '../css/ContextMenu.css'
 
 class ContextMenu extends React.Component {
@@ -70,7 +71,9 @@ class ContextMenu extends React.Component {
             <Menu.Item name="Rename" link onClick={this.handleMenuClick}> Rename </Menu.Item>
             <Menu.Item name="Remove" link onClick={this.handleMenuClick}> Remove </Menu.Item>
             <Menu.Item name="Starred" link onClick={this.handleMenuClick}> Add to starred </Menu.Item>
-            <Menu.Item name="Share" link onClick={this.handleMenuClick}> Share </Menu.Item>
+            { this.props.type === TYPE_NOTEPAGE && 
+              <Menu.Item name="Share" link onClick={this.handleMenuClick}> Share </Menu.Item>
+            }
             <Menu.Item name="Move" link onClick={this.handleMenuClick}> Move to... </Menu.Item>
           </Menu>
         ) }
