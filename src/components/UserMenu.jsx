@@ -2,11 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Dropdown } from 'semantic-ui-react'
 import UserSettings from './UserSettings'
-
-const USER_MENU = [
-  { key: 'account', text: 'User Account', value: 'User Account', content: 'User Account' },
-  { key: 'settings', text: 'User Settings', value: 'User Settings', content: 'User Settings' }
-]
+import { signOutUser } from '../store/actions/user'
 
 class UserMenu extends React.Component {
   constructor (props) {
@@ -19,21 +15,7 @@ class UserMenu extends React.Component {
 
   handleClick = (event, { name }) => { this.setState({ modalOpen: name }) }
   
-  handleCloseModal = () => { this.setState({ modalOpen: false })}
-
-  renderMenuItems = (menuItems) => {
-    return menuItems.map((item) => {
-      return (
-        <Dropdown.Item
-          key={item.key}
-          name={item.key}
-          onClick={this.handleClick}
-        >
-          { item.text }
-        </Dropdown.Item> 
-      )
-    })
-  }
+  handleCloseModal = () => { this.setState({ modalOpen: false }) }
 
   render () {
     return (
@@ -45,14 +27,17 @@ class UserMenu extends React.Component {
           className='icon user-account'
         >
           <Dropdown.Menu>
-            { this.renderMenuItems(USER_MENU) }
+            <Dropdown.Item name="settings" onClick={() => { this.setState({ modalOpen: true }) }}> User Settings </Dropdown.Item>
+            <Dropdown.Item name="signout" onClick={this.props.signOutUser}> Sign Out </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+
         <UserSettings
-          open={(this.state.modalOpen === 'settings')}
+          open={this.state.modalOpen}
           closeModal={this.handleCloseModal}
           username={this.props.username}
         />
+
       </React.Fragment>
     )
   }
@@ -64,4 +49,10 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps)(UserMenu)
+function mapDispatchToProps (dispatch) {
+  return {
+    signOutUser: (...args) => { dispatch(signOutUser(...args)) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserMenu)
