@@ -136,6 +136,7 @@ exports.UpdateUsersNotebooks = function (req, res) {
       res.status(200).json({
         notebookId: notebook.id,
         updatedAt: notebook.updatedAt,
+        starred: notebook.starred,
         title: notebook.title
       })
     }
@@ -167,7 +168,8 @@ exports.UpdateUsersNotepages = function (req, res) {
       res.status(200).json({
         notepageId: notepage.id,
         updatedAt: notepage.updatedAt,
-        title: notepage.title
+        title: notepage.title,
+        starred: notepage.starred
       })
     }
   }
