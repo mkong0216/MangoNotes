@@ -11,7 +11,8 @@ let NotepageSchema = new mongoose.Schema({
     required: true
   },
   parentNotebook: String,
-  content: String
+  content: String,
+  permissions: [String]
 }, { timestamps: true })
 
 NotepageSchema.methods.details = function () {

@@ -40,6 +40,7 @@ export async function retrieveNotepage (notepageId, userId) {
 
   try {
     const response = await axios.get(endpoint)
+
     const notepage = {
       title: response.data.title,
       parentNotebook: response.data.parentNotebook,
@@ -114,5 +115,17 @@ export async function moveNotepage (newParentNotebook, notepage, userId) {
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.message)
+  }
+}
+
+export async function addSharePermissions (noteId, permissionCode) {
+  const endpoint = `/share/${noteId}`
+
+  try {
+    const response = await axios.put(endpoint, { permissionCode })
+    console.log(response)
+  } catch (error) {
+    console.log(error)
+    throw Error(error.response.data.error)
   }
 }

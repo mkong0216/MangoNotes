@@ -50,6 +50,7 @@ app.get('/notepage/:notepageId/:userId', notepage.GetNotepage)
 app.get('/notepages/recent/:userId', notepage.GetRecentNotepages)
 app.put('/notepage/:notepageId/:userId', notepage.UpdateNotepage)
 app.put('/move-notepage/:notepageId/:userId', notepage.MoveNotepage)
+app.put('/share/:noteId', notepage.ShareNotepage)
 
 // Handling notebooks
 app.post('/notebook/new', notebook.CreateNotebook)

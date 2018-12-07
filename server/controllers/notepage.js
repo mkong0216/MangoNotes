@@ -73,7 +73,7 @@ exports.GetNotepage = function (req, res) {
     } else if (!notepage) {
       res.status(500).send("Error finding a notepage with the provided notepage id")
     } else {
-      if (notepage.creator === userId) {
+      if (notepage.creator === userId || notepage.permissions.indexOf(userId) !== -1) {
         res.status(200).send(notepage)
       } else {
         res.status(401).json({
@@ -129,11 +129,18 @@ exports.UpdateNotepage = function (req, res) {
     } else if (!notepage) {
       res.status(500).send("Error finding notepage with provided notepage id")
     } else {
-      notepage.title = data.title
-      notepage.parentNotebook = data.parentNotebook
-      notepage.content = data.content || notepage.content
-      
-      notepage.save(handleSaveNotepage)
+      console.log(userId)
+      if (notepage.creator !== userId && !userId[0]) {
+        res.status(401).json({
+          error: "User does not have permission to edit notepage."
+        })
+      } else {
+        notepage.title = data.title
+        notepage.parentNotebook = data.parentNotebook
+        notepage.content = data.content || notepage.content
+        
+        notepage.save(handleSaveNotepage)
+      }
     }
   }
 
@@ -232,4 +239,36 @@ exports.MoveNotepage = function (req, res) {
   }
 
   Notepage.findById(notepageId, handleFindNotepage)
+}
+
+exports.ShareNotepage = function (req, res) {
+  const noteId = req.params.noteId
+  const permissionCode = req.body.permissionCode
+
+  if (!noteId) {
+    res.status(400).send("Failed to provide a note id")
+  } else if (!permissionCode) {
+    res.status(400).send("Failed to provide a permission code")
+  }
+
+  const handleSaveNotepage = function (err, notepage) {
+    if (err || !notepage) {
+      console.log(err)
+      res.status(500).send("Failed to update notepage")
+    } else {
+      res.sendStatus(200)
+    }
+  }
+
+  const handleFindNotepage = function (err, notepage) {
+    if (err || !notepage) {
+      console.log(err)
+      res.status(500).send("Error finding notepage in database")
+    } else {
+      notepage.permissions.push(permissionCode)
+      notepage.save(handleSaveNotepage)
+    }
+  }
+
+  Notepage.findById(noteId, handleFindNotepage)
 }
