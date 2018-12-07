@@ -11,6 +11,7 @@ let NotepageSchema = new mongoose.Schema({
     required: true
   },
   parentNotebook: String,
+  starred: { type: Boolean, default: false },
   content: String,
   permissions: [String]
 }, { timestamps: true })
@@ -21,7 +22,8 @@ NotepageSchema.methods.details = function () {
     id: this._id,
     type: 'notepage',
     creator: this.creator,
-    updatedAt: this.updatedAt
+    updatedAt: this.updatedAt,
+    starred: this.starred
   }
 
   return details

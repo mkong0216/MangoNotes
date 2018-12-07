@@ -129,16 +129,16 @@ exports.UpdateNotepage = function (req, res) {
     } else if (!notepage) {
       res.status(500).send("Error finding notepage with provided notepage id")
     } else {
-      console.log(userId)
       if (notepage.creator !== userId && !userId[0]) {
         res.status(401).json({
           error: "User does not have permission to edit notepage."
         })
       } else {
-        notepage.title = data.title
-        notepage.parentNotebook = data.parentNotebook
+        notepage.title = data.title || notepage.title
+        notepage.parentNotebook = data.parentNotebook || notepage.parentNotebook
         notepage.content = data.content || notepage.content
-        
+        notepage.starred = (typeof data.starred !== 'undefined') ? data.starred : notepage.starred
+
         notepage.save(handleSaveNotepage)
       }
     }
@@ -271,4 +271,24 @@ exports.ShareNotepage = function (req, res) {
   }
 
   Notepage.findById(noteId, handleFindNotepage)
+}
+
+exports.GetStarredNotepages = function (req, res) {
+  const userId = req.params.userId
+
+  if (!userId) {
+    res.status(400).send("Failed to provide a user id")
+  }
+
+  const handleFindStarredNotepages = function (error, notepages) {
+    if (error) {
+      console.log(error)
+      res.status(500).send("Error finding starred notepages")
+    } else {
+      const starredDetails = notepages.map(notepage => notepage.details())
+      res.status(200).send(starredDetails)
+    }
+  }
+
+  Notepage.find({ creator: userId, starred: true }, handleFindStarredNotepages)
 }

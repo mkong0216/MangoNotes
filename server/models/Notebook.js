@@ -11,6 +11,7 @@ let NotebookSchema = new mongoose.Schema({
     required: true
   },
   parentNotebook: String,
+  starred: { type: Boolean, default: false },
   content: [ NoteDetails ]
 }, { timestamps: true })
 
@@ -20,7 +21,8 @@ NotebookSchema.methods.details = function () {
     id: this._id,
     type: 'notebook',
     creator: this.creator,
-    updatedAt: this.updatedAt
+    updatedAt: this.updatedAt,
+    starred: this.starred
   }
 
   return details

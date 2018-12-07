@@ -1,11 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+
 import { Menu } from 'semantic-ui-react'
 import RenameModal from './RenameModal'
 import MoveItemModal from './MoveItemModal'
 import ShareModal from './ShareModal'
-import { TYPE_NOTEPAGE } from '../utils'
+
+import { TYPE_NOTEPAGE, TYPE_NOTEBOOK } from '../utils'
+import { updateNotebook } from '../xhr/notebook'
+import { updateNotepage } from '../xhr/notepage'
+
 import '../css/ContextMenu.css'
 
 class ContextMenu extends React.Component {
@@ -27,9 +32,20 @@ class ContextMenu extends React.Component {
     }
   }
 
-  handleMenuClick = (event, { name }) => {
+  handleMenuClick = async (event, { name }) => {
     event.stopPropagation()
     this.setState({ activeMenuItem: name })
+
+    if (name === 'Starred') {
+      const { updatedAt, ...noteItem } = this.props.contextMenuItem
+      noteItem.starred = !noteItem.starred
+
+      if (this.props.type === TYPE_NOTEBOOK) {
+        await updateNotebook(noteItem, this.props.userId)
+      } else if (this.props.type === TYPE_NOTEPAGE) {
+        await updateNotepage(noteItem, this.props.userId)
+      }
+    }
   }
 
   closeModal = () => { this.setState({ activeMenuItem: null }) }
@@ -64,13 +80,17 @@ class ContextMenu extends React.Component {
       top: this.props.menuPosition && this.props.menuPosition[1] + 'px'
     }
 
+    const { contextMenuItem } = this.props
+
     return (this.props.contextMenuItem) ? (
       <React.Fragment>
         { this.props.showMenu && (
           <Menu pointing vertical compact className="context-menu" style={style}>
             <Menu.Item name="Rename" link onClick={this.handleMenuClick}> Rename </Menu.Item>
             <Menu.Item name="Remove" link onClick={this.handleMenuClick}> Remove </Menu.Item>
-            <Menu.Item name="Starred" link onClick={this.handleMenuClick}> Add to starred </Menu.Item>
+            <Menu.Item name="Starred" link onClick={this.handleMenuClick}>
+              { (contextMenuItem && contextMenuItem.starred) ? 'Remove from starred' : 'Add to starred' }
+            </Menu.Item>
             { this.props.type === TYPE_NOTEPAGE && 
               <Menu.Item name="Share" link onClick={this.handleMenuClick}> Share </Menu.Item>
             }

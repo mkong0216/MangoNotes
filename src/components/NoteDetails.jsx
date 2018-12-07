@@ -15,15 +15,20 @@ class NoteDetails extends React.Component {
     super(props)
 
     this.state = {
-      starIcon: 'star outline',
-      starred: false,
+      starIcon: (props.details.starred) ? 'star' : 'star outline',
+      starred: (props.details.starred),
       title: ''
     }
   }
 
-  handleStarClick = (event) => {
-    const starIcon = (!this.state.starIcon) ? 'star' : 'star outline'
-    this.setState({ starIcon, starred: !this.state.starred })
+  handleStarClick = async () => {
+    const starIcon = (!this.state.starred) ? 'star' : 'star outline'
+
+    const { updatedAt, ...notepage } = this.props.details
+    notepage.starred = !this.state.starred
+
+    this.setState({ starIcon, starred: notepage.starred })
+    await updateNotepage(notepage, this.props.userId)
   }
 
   handleChange = (event, { value }) => { this.setState({ title: value }) }
@@ -58,7 +63,7 @@ class NoteDetails extends React.Component {
             inverted
             on="hover"
           />
-          <Icon className="starred" name={this.state.starIcon} link color="yellow" size="tiny" />
+          <Icon className="starred" name={this.state.starIcon} onClick={this.handleStarClick} link color="yellow" size="tiny" />
           <span className="timestamp">
             Last edited on { this.props.details && this.props.details.updatedAt }
           </span>

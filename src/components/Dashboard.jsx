@@ -9,6 +9,7 @@ import NoteCards from './NoteCards'
 import UserMenu from './UserMenu'
 import { retrieveNotebook } from '../xhr/notebook'
 import { retrieveRecentNotepages } from '../xhr/notepage'
+import { getStarredNoteItems } from '../xhr/user'
 
 /**
  * Dashboard.jsx
@@ -67,6 +68,8 @@ class Dashboard extends React.Component {
         noteItems = {
           notepages: await retrieveRecentNotepages(this.props.user.signInData.userId)
         }
+      } else if (historyState.id === 'starred') {
+        noteItems = await getStarredNoteItems(this.props.user.signInData.userId)
       }
 
       this.setState({

@@ -145,3 +145,21 @@ export async function removeNoteItem (type, noteId, userId, index) {
     throw Error (error.response.data.error)
   }
 }
+
+export async function getStarredNoteItems (userId) {
+  const endpoint = `/notepages/starred/${userId}`
+  const endpoint2 = `/notebooks/starred/${userId}`
+
+  try {
+    const notepages = await axios.get(endpoint)
+    const notebooks = await axios.get(endpoint2)
+
+    return {
+      notebooks: notebooks.data,
+      notepages: notepages.data
+    }
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.error)
+  }
+}

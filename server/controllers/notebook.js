@@ -137,8 +137,9 @@ exports.UpdateNotebook = function (req, res) {
     } else if (!notebook) {
       res.status(401).send("Error finding notebook with the provided notebook id")
     } else {
-      notebook.title = notebookDetails.title
+      notebook.title = notebookDetails.title || notebook.title
       notebook.parentNotebook = notebookDetails.parentNotebook
+      notebook.starred = (typeof notebookDetails.starred !== 'undefined') ? notebookDetails.starred : notebook.starred
       notebook.save(handleSaveNotebook)
     }
   }
@@ -195,4 +196,24 @@ exports.MoveNotebook = function (req, res) {
 
   // TODO: refactor to use findOneAndUpdate
   Notebook.findById(notebookId, handleFindNotebook)
+}
+
+exports.GetStarredNotebooks = function (req, res) {
+  const userId = req.params.userId
+
+  if (!userId) {
+    res.status(400).send("Failed to provide a user id")
+  }
+
+  const handleFindStarredNotebooks = function (err, notebooks) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error finding starred notebooks")
+    } else {
+      const starredDetails = notebooks.map(notebook => notebook.details())
+      res.status(200).send(starredDetails)
+    }
+  }
+
+  Notebook.find({ creator: userId, starred: true }, handleFindStarredNotebooks)
 }
