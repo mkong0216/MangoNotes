@@ -25,9 +25,10 @@ class SidebarMenu extends React.Component {
     super(props)
 
     const parsedURL = new URL(window.location.href)
+    const historyState = props.history.location.state
 
     this.state = {
-      activeMenuItem: 'workspace',
+      activeMenuItem: (historyState) ? historyState.id : 'workspace',
       username: parsedURL.pathname.slice(1)
     }
   }
