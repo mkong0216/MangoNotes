@@ -41,7 +41,8 @@ class Notepage extends React.Component {
     const { permissions } = this.props.match.params
     const userId = (permissions || this.props.userId)
     const { content, ...details } = this.state.notepage
-    const shared = (permissions !== null)
+
+    let shared = !(!permissions)
 
     return (
       <div className="notepage">
