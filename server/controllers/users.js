@@ -1,7 +1,5 @@
 const bcrypt = require('bcrypt')
-const { Credentials, User, Setting } = require('../models/User.js')
-const NoteDetails = require('../models/NoteDetails.js')
-const defaultSettings = require('../data/default_settings.json')
+const { Credentials, User } = require('../models/User.js')
 
 // Login / Register User
 exports.AuthenticateUser = function (req, res) {
