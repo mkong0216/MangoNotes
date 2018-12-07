@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Button, Input, Dropdown } from 'semantic-ui-react'
 import { createPermissionCode } from '../utils'
+import { addSharePermissions } from '../xhr/notepage'
 
 const SHARE_PERMISSIONS = [
   { key: 'view', text: 'View Only', value: 'view' },
@@ -41,16 +42,17 @@ class ShareModal extends React.Component {
   handleChangePermissions = (event, { value }) => { this.setState({ permissions: value }) }
 
   savePermissions = () => {
-    const noteId = (this.props.noteItem.notebookId || this.props.noteItem.notepageId)
-    const { permissions, code } = this.state
+    const noteId = this.props.noteItem.notepageId
+    const { code } = this.state
 
-    console.log(noteId, permissions, code)
+    addSharePermissions(noteId, code)
     this.props.closeModal()
   }
 
   render () {
-    const noteId = (this.props.noteItem.notebookId || this.props.noteItem.notepageId)
-    const shareLink = `${window.location.hostname}/share/${noteId}/${this.state.code}`
+    const noteId = this.props.noteItem.notepageId
+    const hostname = `${window.location.hostname}:3000`
+    const shareLink = `${hostname}/share/${noteId}/${this.state.code}`
 
     return (
       <Modal size="tiny" open={this.props.open}>
