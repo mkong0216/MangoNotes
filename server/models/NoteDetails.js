@@ -17,6 +17,7 @@ let NoteDetails = new mongoose.Schema({
     type: String,
     required: true
   },
+  starred: Boolean,
   parentNotebook: String
 }, { timestamps: true })
 
