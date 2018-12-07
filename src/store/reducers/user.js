@@ -24,7 +24,7 @@ const settings = (state = initialState, action) => {
                 ...state,
                 signInData: null,
                 signedIn: false,
-                signInAttempted: false
+                signInAttempted: true
             }
         case SET_SIGN_IN_ATTEMPTED:
             return {
