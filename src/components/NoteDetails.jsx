@@ -1,17 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Grid, Header, Popup, Image, Input, Button, Icon } from 'semantic-ui-react'
-import UserMenu from './UserMenu'
-// import { starNotepage } from '../xhr/notepage'
+import { Grid, Header, Image, Icon, Popup, Button, Input } from 'semantic-ui-react'
+import { updateNotepage } from '../xhr/notepage'
 import notepageIcon from '../images/notepage.png'
 
-class NoteDetails extends React.PureComponent {
+class NoteDetails extends React.Component {
   static propTypes = {
     details: PropTypes.object,
-    toggleEditTitle: PropTypes.func.isRequired,
-    handleChange: PropTypes.func.isRequired,
-    historyState: PropTypes.object,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    shared: PropTypes.bool.isRequired
   }
 
   constructor (props) {
@@ -19,13 +16,24 @@ class NoteDetails extends React.PureComponent {
 
     this.state = {
       starIcon: 'star outline',
-      starred: false
+      starred: false,
+      title: ''
     }
   }
 
   handleStarClick = (event) => {
-    const starIcon = (!this.state.starred) ? 'star' : 'star outline'
+    const starIcon = (!this.state.starIcon) ? 'star' : 'star outline'
     this.setState({ starIcon, starred: !this.state.starred })
+  }
+
+  handleChange = (event, { value }) => { this.setState({ title: value }) }
+
+  handleTitleChange = async () => {
+    if (this.props.details.title !== this.state.title) {
+      const { updatedAt, ...notepage } = this.props.details
+      notepage.title = this.state.title
+      await updateNotepage(notepage, this.props.userId)
+    }
   }
 
   render () {
@@ -40,9 +48,9 @@ class NoteDetails extends React.PureComponent {
                 name="title"
                 transparent
                 defaultValue={this.props.details && this.props.details.title}
-                onClick={this.props.toggleEditTitle}
-                onBlur={this.props.toggleEditTitle}
-                onChange={this.props.handleChange}
+                onChange={this.handleChange}
+                onBlur={this.handleTitleChange}
+                disabled={this.props.shared}
               />
             )}
             content="Rename"
@@ -50,17 +58,15 @@ class NoteDetails extends React.PureComponent {
             inverted
             on="hover"
           />
-          <Icon className="starred" name={this.state.starIcon} link onClick={this.handleStarClick} color="yellow" size="tiny" />
+          <Icon className="starred" name={this.state.starIcon} link color="yellow" size="tiny" />
           <span className="timestamp">
             Last edited on { this.props.details && this.props.details.updatedAt }
           </span>
         </Header> 
-        <UserMenu />
         <Button
           className="save"
           icon="save"
           content="Save"
-          onClick={this.props.saveNotepage}
           compact primary
         />
       </Grid.Row>
