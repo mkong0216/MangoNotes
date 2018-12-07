@@ -1,8 +1,13 @@
-import { SET_USER_SIGN_IN_DATA, SIGN_OUT_USER } from '../actions'
+import {
+    SET_USER_SIGN_IN_DATA,
+    SIGN_OUT_USER,
+    SET_SIGN_IN_ATTEMPTED
+} from '../actions'
 
 const initialState = {
     signInData: null,
-    signedIn: false
+    signedIn: false,
+    signInAttempted: false
 }
 
 const settings = (state = initialState, action) => {
@@ -18,7 +23,13 @@ const settings = (state = initialState, action) => {
             return {
                 ...state,
                 signInData: null,
-                signedIn: false
+                signedIn: false,
+                signInAttempted: false
+            }
+        case SET_SIGN_IN_ATTEMPTED:
+            return {
+                ...state,
+                signInAttempted: true
             }
         default:
             return state
