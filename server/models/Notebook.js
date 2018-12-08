@@ -40,8 +40,4 @@ NotebookSchema.methods.getParentNotebook = function (cb) {
   return this.model('Notebook').findOne({ title: this.parentNotebook, creator: this.creator }, '_id', cb)
 }
 
-NotebookSchema.methods.removeNoteDetails = function (noteId) {
-  return this.model('Notebook').updateOne({ title: this.parentNotebook, creator: this.creator }, { $pull: { content: { id: noteId } }}, { multi: true })
-}
-
 module.exports = mongoose.model('Notebook', NotebookSchema)

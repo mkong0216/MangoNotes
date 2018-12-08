@@ -192,15 +192,53 @@ exports.GetRecentNotepages = function (req, res) {
   query.exec(handleGetRecentNotepages)
 }
 
-exports.MoveNotepage = function (req, res) {
+exports.MoveNotepage = async function (req, res) {
   const userId = req.params.userId
   const notepageId = req.params.notepageId
-  const newParentNotebook = req.body
+  const { newParentNotebook, original } = req.body
 
   if (!userId) {
     res.status(401).send("Failed to provide a user id")
   } else if (!notepageId) {
     res.status(401).send("Failed to provide a note page id")
+  }
+
+  let notepage
+  let originalParentNotebook
+
+  try {
+    if (original) {
+      originalParentNotebook = await Notebook.findOne({ title: original, creator: userId })
+    }
+
+    notepage = await Notepage.findById(notepageId)
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Error moving notepage to another notebook.")
+  }
+
+  if (!notepage) {
+    res.status(500).send("Error finding notepage with provided notepage id")
+  } else if (!originalParentNotebook && original) {
+    res.status(500).send("Error finding original parent notebook")
+  }
+
+  // 1) Remove note details from original parent notebook
+  originalParentNotebook.content = originalParentNotebook.content.filter(detail => detail.id !== notepageId)[0]
+  // 2) Update notepage's parent notebook to new notebook title
+  notepage.parentNotebook = newParentNotebook.title
+
+  let updatedNotepage
+  try {
+    await originalParentNotebook.save()
+    updatedNotepage = await notepage.save()
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Error moving notepage to another notebook.")
+  }
+
+  if (!updatedNotepage) {
+    res.status(500).send("Error updating notepage")
   }
 
   const handleUpdateNotepage = function (err, notepage) {
@@ -212,33 +250,9 @@ exports.MoveNotepage = function (req, res) {
     }
   }
 
-  const handleSaveNotepage = function (err, notepage) {
-    if (err || !notepage) {
-      console.log(err)
-      res.status(500).send("Error updating notepage")
-    } else {
-      // Add notepage details to new parent notebook's contents
-      const details = notepage.details()
-      notepage.updateParentNotebook({ details, created: true }, handleUpdateNotepage)
-    }
-  }
-  const handleFindNotepage = function (err, notepage) {
-    if (err || !notepage) {
-      console.log(err)
-      res.status(500).send("Error finding notepage in database")
-    } else {
-      if (notepage.parentNotebook) {
-        // Remove note details from notepage's original parent notebook
-        notepage.removeNoteDetails(notepageId)
-      }
-
-      // Update notepage's parentNotebook to be newParentNotebook
-      notepage.parentNotebook = newParentNotebook.title
-      notepage.save(handleSaveNotepage)
-    }
-  }
-
-  Notepage.findById(notepageId, handleFindNotepage)
+  // 3) Add notepage's details to new parent notebook
+  const details = updatedNotepage.details()
+  updatedNotepage.updateParentNotebook({ details, created: true }, handleUpdateNotepage)
 }
 
 exports.ShareNotepage = function (req, res) {

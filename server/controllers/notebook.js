@@ -147,10 +147,10 @@ exports.UpdateNotebook = function (req, res) {
   Notebook.findById(notebookId, handleFindNotebook)
 }
 
-exports.MoveNotebook = function (req, res) {
+exports.MoveNotebook = async function (req, res) {
   const notebookId = req.params.notebookId
   const userId = req.params.userId
-  const newParentNotebook = req.body
+  const { newParentNotebook, original } = req.body
 
   if (!notebookId) {
     res.status(401).send("Failed to provide a notebook id")
@@ -158,44 +158,56 @@ exports.MoveNotebook = function (req, res) {
     res.status(401).send("Failed to provide a user id")
   }
 
+  let notebook
+  let originalParentNotebook
+
+  try {
+    if (original) {
+      originalParentNotebook = await Notebook.findOne({ title: original, creator: userId })
+    }
+
+    notebook = await Notebook.findById(notebookId)
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Error moving notepage to another notebook.")
+  }
+
+  if (!notebook) {
+    res.status(500).send("Error finding notebook with provided notepage id")
+  } else if (!originalParentNotebook && original) {
+    res.status(500).send("Error finding original parent notebook")
+  }
+
+  // 1) Remove note details from original parent notebook
+  originalParentNotebook.content = originalParentNotebook.content.filter(detail => detail.id !== notebookId)[0]
+  // 2) Update notepage's parent notebook to new notebook title
+  notebook.parentNotebook = newParentNotebook.title
+
+  let updatedNotepage
+  try {
+    await originalParentNotebook.save()
+    updatedNotebook = await notebook.save()
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Error moving notepage to another notebook.")
+  }
+
+  if (!updatedNotebook) {
+    res.status(500).send("Error updating notepage")
+  }
+
   const handleUpdateNotebook = function (err, notebook) {
     if (err || !notebook) {
       console.log(err)
-      res.status(500).send("Error updating parent notebook")
+      res.status(500).send("Error updating notebook")
     } else {
       res.sendStatus(200)
     }
   }
 
-  const handleSaveNotebook = function (err, notebook) {
-    if (err || !notebook) {
-      console.log(err)
-      res.status(500).send("Error updating notebook")
-    } else {
-      // Add notebook details to new parent notebook's contents
-      const details = notebook.details()
-      notebook.updateParentNotebook({ details, created: true }, handleUpdateNotebook)
-    }
-  }
-
-  const handleFindNotebook = function (err, notebook) {
-    if (err || !notebook) {
-      console.log(err)
-      res.status(500).send("Error finding notebook in database")
-    } else {
-      if (notebook.parentNotebook) {
-        // Remove note details from notebook's original parentNotebook
-        notebook.removeNoteDetails(notebookId)
-      }
-
-      // Update notebook's parentNotebook to be newParentNotebook's title
-      notebook.parentNotebook = newParentNotebook.title
-      notebook.save(handleSaveNotebook)
-    }
-  }
-
-  // TODO: refactor to use findOneAndUpdate
-  Notebook.findById(notebookId, handleFindNotebook)
+  // 3) Add notepage's details to new parent notebook
+  const details = updatedNotebook.details()
+  updatedNotebook.updateParentNotebook({ details, created: true }, handleUpdateNotebook)
 }
 
 exports.GetStarredNotebooks = function (req, res) {

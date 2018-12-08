@@ -37,8 +37,4 @@ NotepageSchema.methods.updateParentNotebook = function (data, cb) {
   }
 }
 
-NotepageSchema.methods.removeNoteDetails = function (noteId) {
-  return Notebook.updateOne({ title: this.parentNotebook, creator: this.creator }, { $pull: { content: { id: noteId } }}, { multi: true })
-}
-
 module.exports = mongoose.model('Notepage', NotepageSchema)
