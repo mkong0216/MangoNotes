@@ -62,7 +62,8 @@ export async function retrieveNotepage (notepageId, userId) {
  * @returns {Object} - in shape of { title, creator, parentNotebook, type, id }
  */
 export async function updateNotepage(notepage, userId) {
-  const endpoint = `/notepage/${notepage.notepageId}/${userId}`
+  const noteId = (notepage.notepageId || notepage.id)
+  const endpoint = `/notepage/${noteId}/${userId}`
 
   try {
     const response = await axios.put(endpoint, notepage)
@@ -70,7 +71,7 @@ export async function updateNotepage(notepage, userId) {
 
     if (!notepage.parentNotebook) {
       const notepages = store.getState().notepages.userNotepages
-      const index = notepages.findIndex(item => item.notepageId === notepage.notepageId)
+      const index = notepages.findIndex(item => item.notepageId === noteId)
       await updateUsersWork(details, index)
     }
 
@@ -110,7 +111,7 @@ export async function moveNotepage (newParentNotebook, notepage, userId) {
 
     if (!notepage.parentNotebook) {
       const notepages = store.getState().notepages.userNotepages
-      const index = notepages.findIndex(item => item.notepageId === notepage.notepageId)
+      const index = notepages.findIndex(item => item.notepageId === noteId)
       await removeNoteItem('notepage', notepage.notepageId, userId, index)
     }
   } catch (error) {

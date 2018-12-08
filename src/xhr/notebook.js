@@ -87,7 +87,7 @@ export async function updateNotebook (notebook, userId, moved = false) {
     // Update workspace if parentNotebook = null
     if (!notebook.parentNotebook) {
       const notebooks = store.getState().notebooks.userNotebooks
-      const index = notebooks.findIndex(item => item.notebookId === notebook.notebookId)
+      const index = notebooks.findIndex(item => item.notebookId === noteId)
       await updateUsersWork(details, index)
     }
   } catch (error) {
