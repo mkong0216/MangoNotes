@@ -223,14 +223,17 @@ exports.MoveNotepage = async function (req, res) {
     res.status(500).send("Error finding original parent notebook")
   }
 
-  // 1) Remove note details from original parent notebook
-  originalParentNotebook.content = originalParentNotebook.content.filter(detail => detail.id !== notepageId)[0]
-  // 2) Update notepage's parent notebook to new notebook title
+  // 1) Update notepage's parent notebook to new notebook title
   notepage.parentNotebook = newParentNotebook.title
 
   let updatedNotepage
   try {
-    await originalParentNotebook.save()
+    // 2) Remove note details from original parent notebook
+    if (originalParentNotebook) {
+      await originalParentNotebook.save()
+      originalParentNotebook.content = originalParentNotebook.content.filter(detail => detail.id !== notepageId)[0] || originalParentNotebook.content
+    }
+
     updatedNotepage = await notepage.save()
   } catch (error) {
     console.log(error)
