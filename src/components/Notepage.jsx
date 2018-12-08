@@ -1,7 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Grid } from 'semantic-ui-react'
+import { Grid, Button } from 'semantic-ui-react'
 import NoteDetails from './NoteDetails'
+import UserMenu from './UserMenu'
+import TextEditor2 from './TextEditor2'
 import { retrieveNotepage } from '../xhr/notepage'
 import '../css/Notepage.css'
 
@@ -12,7 +14,8 @@ class Notepage extends React.Component {
     this.state = {
       isLoading: true,
       error: false,
-      notepage: null
+      notepage: null,
+      saveContents: false
     }
   }
 
@@ -35,6 +38,8 @@ class Notepage extends React.Component {
     }
   }
 
+  toggleSaveContents = () => { this.setState({ saveContents: !this.state.saveContents }) }
+
   render () {
     if (this.state.isLoading) return null
 
@@ -48,12 +53,29 @@ class Notepage extends React.Component {
       <div className="notepage">
         <Grid celled padded columns={3}>
           <NoteDetails details={details} userId={userId} shared={shared} />
+          <div className="user-actions">
+            <Button
+              className="save"
+              icon="save"
+              content="Save"
+              compact primary
+              labelPosition="left"
+              onClick={this.toggleSaveContents}
+            />
+            <UserMenu />
+          </div>
           <Grid.Row>
-            <Grid.Column width={4}>
+            <Grid.Column width={3}>
               Toolbar
             </Grid.Column>
-            <Grid.Column width={12}>
-              Text Editor
+            <Grid.Column width={10}>
+              <TextEditor2
+                content={content}
+                details={details}
+                userId={userId}
+                saveContents={this.state.saveContents}
+                toggleSaveContents={this.toggleSaveContents}
+              />
             </Grid.Column>
           </Grid.Row>
         </Grid>
