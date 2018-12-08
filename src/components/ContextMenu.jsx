@@ -17,6 +17,7 @@ class ContextMenu extends React.Component {
   static propTypes = {
     showMenu: PropTypes.bool.isRequired,
     contextMenuItem: PropTypes.object,
+    hideContextMenu: PropTypes.func.isRequired,
     handleNoteChanges: PropTypes.func.isRequired,
     historyState: PropTypes.object.isRequired,
     userId: PropTypes.string,
@@ -45,6 +46,9 @@ class ContextMenu extends React.Component {
       } else if (this.props.type === TYPE_NOTEPAGE) {
         await updateNotepage(noteItem, this.props.userId)
       }
+
+      this.props.handleNoteChanges()
+      this.props.hideContextMenu()
     }
   }
 
