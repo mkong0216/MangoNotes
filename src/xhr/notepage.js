@@ -102,7 +102,8 @@ export async function retrieveRecentNotepages (userId) {
  *
  */
 export async function moveNotepage (newParentNotebook, notepage, userId) {
-  const endpoint = `/move-notepage/${notepage.notepageId}/${userId}`
+  const noteId = notepage.notepageId || notepage.id
+  const endpoint = `/move-notepage/${noteId}/${userId}`
 
   try {
     await axios.put(endpoint, { newParentNotebook, original: notepage.parentNotebook })
