@@ -105,7 +105,7 @@ export async function moveNotepage (newParentNotebook, notepage, userId) {
   const endpoint = `/move-notepage/${notepage.notepageId}/${userId}`
 
   try {
-    await axios.put(endpoint, newParentNotebook)
+    await axios.put(endpoint, { newParentNotebook, original: notepage.parentNotebook })
 
     if (!notepage.parentNotebook) {
       const notepages = store.getState().notepages.userNotepages

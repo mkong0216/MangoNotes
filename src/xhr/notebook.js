@@ -107,7 +107,7 @@ export async function moveNotebook (newParentNotebook, notebook, userId) {
   const endpoint = `/move-notebook/${notebook.notebookId}/${userId}`
 
   try {
-    await axios.put(endpoint, newParentNotebook)
+    await axios.put(endpoint, { newParentNotebook, original: notebook.parentNotebook })
 
     if (!notebook.parentNotebook) {
       const notebooks = store.getState().notebooks.userNotebooks
