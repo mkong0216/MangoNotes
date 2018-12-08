@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Grid, Header, Image, Icon, Popup, Button, Input } from 'semantic-ui-react'
+import { Grid, Header, Image, Icon, Popup, Input } from 'semantic-ui-react'
 import { updateNotepage } from '../xhr/notepage'
 import notepageIcon from '../images/notepage.png'
 
@@ -68,12 +68,6 @@ class NoteDetails extends React.Component {
             Last edited on { this.props.details && this.props.details.updatedAt }
           </span>
         </Header> 
-        <Button
-          className="save"
-          icon="save"
-          content="Save"
-          compact primary
-        />
       </Grid.Row>
     )
   }
