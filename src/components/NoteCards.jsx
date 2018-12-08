@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card } from 'semantic-ui-react'
+import { Card, Image } from 'semantic-ui-react'
 import CreateModal from './CreateModal'
 import ContextMenu from './ContextMenu'
 
@@ -103,13 +103,21 @@ class NoteCards extends React.Component {
       return (
         <Card
           key={i}
-          image={(type === 'notebook') ? notebookIcon : notepageIcon}
-          header={item.title}
-          meta={modifiedOn}
           link
           onClick={() => { this.handleNoteCardClick(item, type) }}
           onContextMenu={(event) => { this.showContextMenu(event, item, type) }}
-        />
+        >
+          <Image
+            src={(type === 'notebook') ? notebookIcon : notepageIcon}
+            label={{ as: 'span', corner: 'right', color: 'yellow', icon: (item.starred) ? 'star' : 'star outline' }}
+          />
+          <Card.Content>
+            <Card.Header> { item.title } </Card.Header>
+            <Card.Meta>
+              <span className='date'> { modifiedOn} </span>
+            </Card.Meta>
+          </Card.Content>
+        </Card>
       )
     })
   }
@@ -127,6 +135,7 @@ class NoteCards extends React.Component {
           menuPosition={this.state.menuPosition}
           contextMenuItem={this.state.contextMenuItem}
           type={this.state.itemType}
+          hideContextMenu={this.hideContextMenu}
           handleNoteChanges={this.props.handleNoteChanges}
           historyState={historyState}
         />
