@@ -76,7 +76,8 @@ export async function retrieveNotebook (notebookId, userId) {
  * @param {Boolean} moved - parentNotebook was changed
  */
 export async function updateNotebook (notebook, userId, moved = false) {
-  const endpoint = `/notebook/${notebook.notebookId}/${userId}`
+  const noteId = notebook.notebookId || notebook.id
+  const endpoint = `/notebook/${noteId}/${userId}`
 
   try {
     // Updating actual notebook
