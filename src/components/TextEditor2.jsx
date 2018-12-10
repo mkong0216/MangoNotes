@@ -31,11 +31,12 @@ class TextEditor2 extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    // if (!prevProps.settings && this.props.settings) {
-    //   const decorators = createCompositeDecorator(this.props.settings.symbols)
-    //   const newEditorState = EditorState.createEmpty(decorators)
-    //   this.handleChange(newEditorState)
-    // }
+    if ((!prevProps.settings && this.props.settings) || (prevProps.settings !== this.props.settings)) {
+      const decorators = createCompositeDecorator(this.props.settings.symbols)
+      const contentState = this.state.editorState.getCurrentContent()
+      const newEditorState = (contentState) ? EditorState.createWithContent(contentState, decorators) : EditorState.createEmpty(decorators)
+      this.handleChange(newEditorState)
+    }
 
     if (!prevProps.saveContents && this.props.saveContents) {
       this.handleSaveContents(this.state.editorState)
@@ -59,9 +60,7 @@ class TextEditor2 extends React.Component {
     this.props.toggleSaveContents()
   }
 
-  handleChange = (editorState) => {
-    this.setState({ editorState })
-  }
+  handleChange = (editorState) => { this.setState({ editorState }) }
 
   handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
