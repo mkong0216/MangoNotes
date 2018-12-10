@@ -1,5 +1,5 @@
 import React from 'react'
-import { KeyBindingUtil, getDefaultKeyBinding } from 'draft-js'
+import { KeyBindingUtil, getDefaultKeyBinding, CompositeDecorator } from 'draft-js'
 import { Image } from 'semantic-ui-react'
 import arrow from './images/bulletpoints/arrow-right.png'
 import chevron from './images/bulletpoints/chevron-right.png'
@@ -111,3 +111,49 @@ export const FONT_STYLES = [
   { key: 'underline', text: <span style={{textDecoration: 'underline'}}> Underline </span>, value: 'underline' },
   { key: 'normal', text: 'Normal', value: 'normal' }
 ]
+
+function symbolStrategy (contentBlock, callback, contentState, symbol) {
+  const REGEX_VALUE = new RegExp(`(\\${symbol}.+?\\${symbol})`, 'g')
+  findWithRegex(REGEX_VALUE, contentBlock, callback)
+}
+
+const SymbolSpan = (props, style) => {
+  return <span {...props} style={style}>{ props.children }</span>
+}
+
+export function getDisplayStyle (fontStyle, highlightColor) {
+  const style = {
+    background: highlightColor
+  }
+
+  if (fontStyle === 'italic') {
+    style.fontStyle = fontStyle
+  } else if (fontStyle === 'bold') {
+    style.fontWeight = fontStyle
+  } else if (fontStyle === 'underline') {
+    style.textDecoration = fontStyle
+  }
+
+  return style
+}
+
+export function createCompositeDecorator (symbols) {
+  const decorators = symbols.map((symbol) => {
+    const style = getDisplayStyle(symbol.fontStyle, symbol.highlightColor)
+    return {
+      strategy: (...args) => { symbolStrategy(...args, symbol.symbol) },
+      component: (props) => { return SymbolSpan(props, style) }
+    }
+  })
+
+  return new CompositeDecorator(decorators)
+}
+
+function findWithRegex(regex, contentBlock, callback) {
+  const text = contentBlock.getText()
+  let matchArr, start
+  while ((matchArr = regex.exec(text)) !== null) {
+    start = matchArr.index
+    callback(start, start + matchArr[0].length)
+  }
+}
