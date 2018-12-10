@@ -39,10 +39,10 @@ app.listen(port, () => {
 app.post('/login', users.AuthenticateUser)
 app.post('/register', users.AuthenticateUser)
 app.get('/workspace/:userId', users.GetUsersWorkspace)
-
 app.put('/workspace/add-notebook/:userId', users.UpdateUsersNotebooks)
 app.put('/workspace/add-notepage/:userId', users.UpdateUsersNotepages)
 app.put('/remove-item/:userId/:type/:noteId', users.RemoveNoteItem)
+app.put('/shared/:userId/:noteId', users.AddSharedNotepages)
 
 // Handling notepages
 app.post('/notepage/new', notepage.CreateNotepage)

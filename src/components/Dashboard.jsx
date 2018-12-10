@@ -70,6 +70,8 @@ class Dashboard extends React.Component {
         }
       } else if (historyState.id === 'starred') {
         noteItems = await getStarredNoteItems(this.props.user.signInData.userId)
+      } else if (historyState.id === 'shared') {
+        noteItems.notepages = this.props.shared
       }
 
       this.setState({
@@ -135,6 +137,7 @@ function mapStateToProps (state) {
   return {
     notebooks: state.notebooks.userNotebooks,
     notepages: state.notepages.userNotepages,
+    shared: state.notepages.sharedNotepages,
     user: state.user
   }
 }

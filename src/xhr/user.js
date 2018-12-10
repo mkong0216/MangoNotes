@@ -11,7 +11,8 @@ import {
   setUserNotepages,
   updateUserNotepage,
   addUserNotepage,
-  removeUserNotepage
+  removeUserNotepage,
+  setUserShared
 } from '../store/actions/notepages'
 
 /**
@@ -62,7 +63,7 @@ export async function retrieveUsersWork (userId) {
   try {
     const results = await axios.get(endpoint)
 
-    if (results.data.notebooks.length) {
+    if (results.data.notebooks && results.data.notebooks.length) {
       const notebooks = results.data.notebooks.map((notebook) => {
         return {
           notebookId: notebook.id,
@@ -74,7 +75,7 @@ export async function retrieveUsersWork (userId) {
       store.dispatch(setUserNotebooks(notebooks))
     }
 
-    if (results.data.notepages.length) {
+    if (results.data.notepages && results.data.notepages.length) {
       const notepages = results.data.notepages.map((notepage) => {
         return {
           notepageId: notepage.id,
@@ -84,6 +85,18 @@ export async function retrieveUsersWork (userId) {
       })
 
       store.dispatch(setUserNotepages(notepages))
+    }
+
+    if (results.data.shared && results.data.shared.length) {
+      const shared = results.data.shared.map((noteItem) => {
+        return {
+          notepageId: noteItem.id,
+          title: noteItem.title,
+          updatedAt: noteItem.updatedAt
+        }
+      })
+
+      store.dispatch(setUserShared(shared))
     }
 
     return results.data
@@ -158,6 +171,17 @@ export async function getStarredNoteItems (userId) {
       notebooks: notebooks.data,
       notepages: notepages.data
     }
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.error)
+  }
+}
+
+export async function addToUserShared (userId, noteId) {
+  const endpoint = `/shared/${userId}/${noteId}`
+
+  try {
+    await axios.put(endpoint)
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.error)

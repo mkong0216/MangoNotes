@@ -2,7 +2,8 @@ import {
   ADD_USER_NOTEPAGE,
   SET_USER_NOTEPAGES,
   UPDATE_USER_NOTEPAGE,
-  REMOVE_USER_NOTEPAGE
+  REMOVE_USER_NOTEPAGE,
+  SET_USER_SHARED
 } from './index'
 
 export function addUserNotepage (noteDetails) {
@@ -31,5 +32,12 @@ export function removeUserNotepage (index) {
   return {
     type: REMOVE_USER_NOTEPAGE,
     index
+  }
+}
+
+export function setUserShared (notepages) {
+  return {
+    type: SET_USER_SHARED,
+    notepages
   }
 }

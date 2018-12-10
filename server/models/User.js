@@ -29,7 +29,8 @@ let UserSchema = new mongoose.Schema({
   // Free notepage: notepage that is not within a notebook.
   // Both notebooks and notepages are an array of objects in shape of { id, title, createdOn }
   notebooks: [ NoteDetails ],
-  notepages: [ NoteDetails ]
+  notepages: [ NoteDetails ],
+  shared: [ NoteDetails ]
 })
 
 

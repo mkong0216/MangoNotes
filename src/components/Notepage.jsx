@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { Grid, Button } from 'semantic-ui-react'
 import NoteDetails from './NoteDetails'
 import UserMenu from './UserMenu'
 import TextEditor2 from './TextEditor2'
 import { retrieveNotepage } from '../xhr/notepage'
+import { addToUserShared } from '../xhr/user'
 import '../css/Notepage.css'
 
 class Notepage extends React.Component {
@@ -25,6 +27,10 @@ class Notepage extends React.Component {
 
     try {
       const notepage = await retrieveNotepage(noteId, userId)
+      if (permissions && this.props.userId) {
+        await addToUserShared(this.props.userId, noteId)
+      }
+
       notepage.notepageId = noteId
 
       this.setState({
@@ -49,7 +55,7 @@ class Notepage extends React.Component {
 
     let shared = !(!permissions)
 
-    return (
+    return this.props.userId ? (
       <div className="notepage">
         <Grid celled padded columns={3}>
           <NoteDetails details={details} userId={userId} shared={shared} />
@@ -80,7 +86,7 @@ class Notepage extends React.Component {
           </Grid.Row>
         </Grid>
       </div>
-    )
+    ) : <Redirect to="/" />
   }
 }
 

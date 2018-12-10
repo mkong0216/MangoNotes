@@ -2,7 +2,8 @@ import {
   ADD_USER_NOTEPAGE,
   SET_USER_NOTEPAGES,
   UPDATE_USER_NOTEPAGE,
-  REMOVE_USER_NOTEPAGE
+  REMOVE_USER_NOTEPAGE,
+  SET_USER_SHARED
 } from '../actions'
 
 const initialState = {
@@ -30,6 +31,11 @@ const notepages = (state = initialState, action) => {
           action.noteDetails,
           ...state.userNotepages.slice(action.index + 1)
         ]
+      }
+    case SET_USER_SHARED:
+      return {
+        ...state,
+        sharedNotepages: action.notepages
       }
     case REMOVE_USER_NOTEPAGE:
       return {

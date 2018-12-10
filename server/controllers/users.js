@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const Notepage = require('../models/Notepage.js')
 const { Credentials, User } = require('../models/User.js')
 
 // Login / Register User
@@ -109,7 +110,8 @@ exports.GetUsersWorkspace = function (req, res) {
     } else {
       res.status(200).json({
         notebooks: user.notebooks,
-        notepages: user.notepages
+        notepages: user.notepages,
+        shared: user.shared
       })
     }
   }
@@ -205,5 +207,56 @@ exports.RemoveNoteItem = function (req, res) {
     User.updateOne({ id: userId }, { $pull: { notebooks: { id: noteId } }}, { multi: true }, handleUpdateUser)
   } else if (type === 'notepage') {
     User.updateOne({ id: userId }, { $pull: { notepages: { id: noteId } }}, { multi: true }, handleUpdateUser)
+  }
+}
+
+exports.AddSharedNotepages = async function (req, res) {
+  const userId = req.params.userId
+  const noteId = req.params.noteId
+
+  if (!userId) {
+    res.status(400).send("Failed to provide user id")
+  } else if (!noteId) {
+    res.status(400).send("Failed to provide notepage id")
+  }
+
+  let user
+
+  try {
+    user = await User.findOne({ id: userId })
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Error finding user in database")
+  }
+
+  if (!user) {
+    res.status(500).send("Error finding user with provided id.")
+  }
+
+  let notepage
+
+  try {
+    notepage = await Notepage.findById(noteId)
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Error finding notepage in database")
+  }
+
+  const handleSaveUser = function (error, user) {
+    if (error) {
+      console.log(error)
+      res.status(500).send("Error saving user")
+    } else {
+      res.sendStatus(200)
+    }
+  }
+
+  if (!notepage) {
+    res.status(500).send("Error finding notepage with provided notepage id")
+  } else if (user.id === notepage.creator) {
+    res.sendStatus(200)
+  } else {
+    user.shared = [...user.shared, notepage.details()]
+    user.save(handleSaveUser)
   }
 }
