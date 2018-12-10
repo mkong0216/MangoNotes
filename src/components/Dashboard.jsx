@@ -65,7 +65,6 @@ class Dashboard extends React.Component {
           break;
         case 'recent':
           noteItems.notepages = await retrieveRecentNotepages(this.props.user.signInData.userId)
-          console.log(noteItems)
           break;
         case 'starred':
           noteItems = await getStarredNoteItems(this.props.user.signInData.userId)
