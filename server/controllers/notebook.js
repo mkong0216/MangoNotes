@@ -186,7 +186,7 @@ exports.MoveNotebook = async function (req, res) {
   try {
     if (originalParentNotebook) {
       // 2) Remove note details from original parent notebook
-      originalParentNotebook.content = originalParentNotebook.content.filter(detail => detail.id === notebookId)[0]
+      originalParentNotebook.content = originalParentNotebook.content.filter(detail => detail.id !== notebookId)
       await originalParentNotebook.save()
     }
 
