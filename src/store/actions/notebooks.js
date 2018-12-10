@@ -2,7 +2,8 @@ import {
   ADD_USER_NOTEBOOK,
   SET_USER_NOTEBOOKS,
   UPDATE_USER_NOTEBOOK,
-  REMOVE_USER_NOTEBOOK
+  REMOVE_USER_NOTEBOOK,
+  CLEAR_USER_NOTEBOOKS
 } from './index'
 
 export function addUserNotebook (noteDetails) {
@@ -31,5 +32,11 @@ export function removeUserNotebook (index) {
   return {
     type: REMOVE_USER_NOTEBOOK,
     index
+  }
+}
+
+export function clearUserNotebooks () {
+  return {
+    type: CLEAR_USER_NOTEBOOKS
   }
 }

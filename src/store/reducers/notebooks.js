@@ -2,7 +2,8 @@ import {
   ADD_USER_NOTEBOOK,
   SET_USER_NOTEBOOKS,
   UPDATE_USER_NOTEBOOK,
-  REMOVE_USER_NOTEBOOK
+  REMOVE_USER_NOTEBOOK,
+  CLEAR_USER_NOTEBOOKS
 } from '../actions'
 
 const initialState = {
@@ -39,6 +40,8 @@ const notebooks = (state = initialState, action) => {
           ...state.userNotebooks.slice(action.index + 1)
         ]
       }
+    case CLEAR_USER_NOTEBOOKS:
+      return initialState
     default:
       return state
   }

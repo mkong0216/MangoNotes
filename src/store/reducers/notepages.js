@@ -3,7 +3,8 @@ import {
   SET_USER_NOTEPAGES,
   UPDATE_USER_NOTEPAGE,
   REMOVE_USER_NOTEPAGE,
-  SET_USER_SHARED
+  SET_USER_SHARED,
+  CLEAR_USER_NOTEPAGES
 } from '../actions'
 
 const initialState = {
@@ -45,6 +46,8 @@ const notepages = (state = initialState, action) => {
           ...state.userNotepages.slice(action.index + 1)
         ]
       }
+    case CLEAR_USER_NOTEPAGES:
+      return initialState
     default:
       return state
   }
