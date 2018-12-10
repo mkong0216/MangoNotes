@@ -136,6 +136,7 @@ function filterNoteDetails (details) {
       title: detail.title,
       updatedAt: detail.updatedAt,
       type: detail.type,
+      starred: detail.starred,
       [id]: detail.id
     }
   })
