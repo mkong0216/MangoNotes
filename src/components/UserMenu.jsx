@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { Dropdown } from 'semantic-ui-react'
 import UserSettings from './UserSettings'
 import { signOutUser } from '../store/actions/user'
+import { clearUserNotebooks } from '../store/actions/notebooks'
+import { clearUserNotepages } from '../store/actions/notepages'
 
 class UserMenu extends React.Component {
   constructor (props) {
@@ -17,6 +19,12 @@ class UserMenu extends React.Component {
   
   handleCloseModal = () => { this.setState({ modalOpen: false }) }
 
+  handleSignOut = () => {
+    this.props.signOutUser()
+    this.props.clearUserNotebooks()
+    this.props.clearUserNotepages()
+  }
+
   render () {
     return (
       <React.Fragment>
@@ -28,7 +36,7 @@ class UserMenu extends React.Component {
         >
           <Dropdown.Menu>
             <Dropdown.Item name="settings" onClick={() => { this.setState({ modalOpen: true }) }}> User Settings </Dropdown.Item>
-            <Dropdown.Item name="signout" onClick={this.props.signOutUser}> Sign Out </Dropdown.Item>
+            <Dropdown.Item name="signout" onClick={this.handleSignOut}> Sign Out </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
@@ -51,7 +59,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    signOutUser: (...args) => { dispatch(signOutUser(...args)) }
+    signOutUser: (...args) => { dispatch(signOutUser(...args)) },
+    clearUserNotepages: (...args) => { dispatch(clearUserNotepages(...args)) },
+    clearUserNotebooks: (...args) => { dispatch(clearUserNotebooks(...args)) }
   }
 }
 
