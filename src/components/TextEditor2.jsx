@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js'
+import { createCompositeDecorator } from '../textEditor'
 import { updateNotepage } from '../xhr/notepage'
 import '../css/TextEditor.css'
 
@@ -12,7 +14,9 @@ class TextEditor2 extends React.Component {
       PropTypes.object
     ]),
     saveContents: PropTypes.bool.isRequired,
-    toggleSaveContents: PropTypes.func.isRequired
+    toggleSaveContents: PropTypes.func.isRequired,
+    settings: PropTypes.object,
+    readOnly: PropTypes.bool
   }
 
   constructor (props) {
@@ -27,6 +31,12 @@ class TextEditor2 extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
+    // if (!prevProps.settings && this.props.settings) {
+    //   const decorators = createCompositeDecorator(this.props.settings.symbols)
+    //   const newEditorState = EditorState.createEmpty(decorators)
+    //   this.handleChange(newEditorState)
+    // }
+
     if (!prevProps.saveContents && this.props.saveContents) {
       this.handleSaveContents(this.state.editorState)
     }
@@ -49,7 +59,9 @@ class TextEditor2 extends React.Component {
     this.props.toggleSaveContents()
   }
 
-  handleChange = (editorState) => { this.setState({ editorState })}
+  handleChange = (editorState) => {
+    this.setState({ editorState })
+  }
 
   handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -63,16 +75,28 @@ class TextEditor2 extends React.Component {
   }
 
   render () {
+    if (!this.props.settings) return null
+
+    const { fontFamily, fontSize } = this.props.settings
+    const style = { fontFamily, fontSize }
+
     return (
-      <div className="text-editor">
+      <div className="text-editor" style={style}>
         <Editor
           editorState={this.state.editorState}
           onChange={this.handleChange}
           handleKeyCommand={this.handleKeyCommand}
+          readOnly={this.props.readOnly}
         />
       </div>
     )
   }
 }
 
-export default TextEditor2
+function mapStateToProps (state) {
+  return {
+    settings: state.user.settings
+  }
+}
+
+export default connect(mapStateToProps)(TextEditor2)

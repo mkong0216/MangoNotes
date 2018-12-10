@@ -1,10 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import { Modal, Button, Form, Header } from 'semantic-ui-react'
 import SymbolForm from './SymbolForm'
 import { BULLET_POINTS, FONT_SIZES, FONT_FAMILIES } from '../textEditor'
 import { saveUserSettings } from '../xhr/settings'
+import { setUserSettings } from '../store/actions/user'
 import '../css/UserSettings.css'
 
 class UserSettings extends React.Component {
@@ -33,6 +35,7 @@ class UserSettings extends React.Component {
     try {
       const response = await axios.get(endpoint)
       const settings = (response.data.default) ? response.data.settings : JSON.parse(response.data.settings)
+      this.props.setUserSettings(settings)
       this.setState({...settings})
     } catch (error) {
       console.log(error)
@@ -144,14 +147,19 @@ class UserSettings extends React.Component {
     if (hierarchy === 'default' && fontFamily === 'Times New Roman' && fontSize === '14pt' && !symbols.length) {
       console.log("using default settings")
     } else {
-      const settings = { fontFamily, fontSize, bulletPoints } 
+      const settings = { fontFamily, fontSize, bulletPoints, symbols, hierarchy }
       await saveUserSettings(this.props.username, settings)
+      this.props.setUserSettings(settings)
     }
 
     this.props.closeModal()
   }
 
   render () {
+    if (!this.props.settings) return null
+
+    const { fontFamily, fontSize, bulletPoints, symbols, hierarchy } = this.state
+
     return (
       <Modal open={this.props.open} onClose={this.props.closeModal} size="large">
         <Modal.Header> Personalize your notetaking settings </Modal.Header>
@@ -163,7 +171,7 @@ class UserSettings extends React.Component {
                 name="fontFamily"
                 options={FONT_FAMILIES}
                 placeholder="Default Font Family"
-                value={this.state.fontFamily}
+                value={fontFamily}
                 onChange={this.handleChange}
               />
               <Form.Select
@@ -171,7 +179,7 @@ class UserSettings extends React.Component {
                 name="fontSize"
                 options={FONT_SIZES}
                 placeholder="Default Font Size"
-                value={this.state.fontSize}
+                value={fontSize}
                 onChange={this.handleChange}
               />
             </Form.Group>
@@ -182,39 +190,39 @@ class UserSettings extends React.Component {
                 value="default"
                 label="Use default hierarchy"
                 onChange={this.handleChange}
-                checked={(this.state.hierarchy === 'default')}
+                checked={(hierarchy === 'default')}
               />
               <Form.Radio
                 name="hierarchy"
                 value="custom"
                 label="Use custom hierarchy"
                 onChange={this.handleChange}
-                checked={(this.state.hierarchy === 'custom')}
+                checked={(hierarchy === 'custom')}
               />
             </Form.Group>
             <Form.Group width="equal" className="bulletpoints">
               <Form.Select
                 name={0}
-                disabled={this.state.hierarchy === 'default'}
+                disabled={hierarchy === 'default'}
                 options={BULLET_POINTS}
                 label="First bullet point" 
-                value={this.state.bulletPoints[0]}
+                value={bulletPoints[0]}
                 onChange={this.handleSelectBullet}
               />
               <Form.Select
                 name={1}
-                disabled={this.state.hierarchy === 'default'}
+                disabled={hierarchy === 'default'}
                 options={BULLET_POINTS}
                 label="Second bullet point"
-                value={this.state.bulletPoints[1]}
+                value={bulletPoints[1]}
                 onChange={this.handleSelectBullet}
               />
               <Form.Select
                 name={2}
-                disabled={this.state.hierarchy === 'default'}
+                disabled={hierarchy === 'default'}
                 options={BULLET_POINTS}
                 label="Third bullet point" 
-                value={this.state.bulletPoints[2]}
+                value={bulletPoints[2]}
                 onChange={this.handleSelectBullet}
               />
             </Form.Group>
@@ -223,7 +231,7 @@ class UserSettings extends React.Component {
               <Header as="h4" color="red"> { this.state.symbolFormErrors } </Header>
             }
             <SymbolForm example />
-            { this.renderSymbolForm(this.state.symbols) }
+            { this.renderSymbolForm(symbols) }
             <Form.Button
               icon="plus"
               content="Add a symbol signifier"
@@ -242,4 +250,16 @@ class UserSettings extends React.Component {
   }
 }
 
-export default UserSettings
+function mapStateToProps (state) {
+  return {
+    settings: state.user.settings
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setUserSettings: (...args) => { dispatch(setUserSettings(...args)) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserSettings)

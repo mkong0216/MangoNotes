@@ -1,13 +1,15 @@
 import {
     SET_USER_SIGN_IN_DATA,
     SIGN_OUT_USER,
-    SET_SIGN_IN_ATTEMPTED
+    SET_SIGN_IN_ATTEMPTED,
+    SET_USER_SETTINGS
 } from '../actions'
 
 const initialState = {
     signInData: null,
     signedIn: false,
-    signInAttempted: false
+    signInAttempted: false,
+    settings: null
 }
 
 const settings = (state = initialState, action) => {
@@ -20,16 +22,16 @@ const settings = (state = initialState, action) => {
             }
         case SIGN_OUT_USER:
             delete window.sessionStorage.signedIn
-            return {
-                ...state,
-                signInData: null,
-                signedIn: false,
-                signInAttempted: true
-            }
+            return initialState
         case SET_SIGN_IN_ATTEMPTED:
             return {
                 ...state,
                 signInAttempted: true
+            }
+        case SET_USER_SETTINGS:
+            return {
+                ...state,
+                settings: action.settings
             }
         default:
             return state

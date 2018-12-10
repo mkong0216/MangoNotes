@@ -6,6 +6,7 @@
  export const SET_USER_SIGN_IN_DATA = 'SET_USER_SIGN_IN_DATA'
  export const SIGN_OUT_USER = 'SIGN_OUT_USER'
  export const SET_SIGN_IN_ATTEMPTED = 'SET_SIGN_IN_ATTEMPTED'
+ export const SET_USER_SETTINGS = 'SET_USER_SETTINGS'
  
  /* notebooks */
  export const ADD_USER_NOTEBOOK = 'ADD_USER_NOTEBOOK'
