@@ -53,7 +53,8 @@ class Notepage extends React.Component {
     const userId = (permissions || this.props.userId)
     const { content, ...details } = this.state.notepage
 
-    let shared = !(!permissions)
+    const shared = !(!permissions)
+    const readOnly = (shared) ? (permissions[0] === '0') : false
 
     return this.props.userId ? (
       <div className="notepage">
@@ -81,6 +82,7 @@ class Notepage extends React.Component {
                 userId={userId}
                 saveContents={this.state.saveContents}
                 toggleSaveContents={this.toggleSaveContents}
+                readOnly={readOnly}
               />
             </Grid.Column>
           </Grid.Row>
