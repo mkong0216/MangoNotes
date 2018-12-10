@@ -45,7 +45,7 @@ export async function retrieveNotepage (notepageId, userId) {
       title: response.data.title,
       parentNotebook: response.data.parentNotebook,
       updatedAt: response.data.updatedAt,
-      content: JSON.parse(response.data.content) || ''
+      content: (response.data.content) ? JSON.parse(response.data.content) : ''
     }
 
     return notepage
