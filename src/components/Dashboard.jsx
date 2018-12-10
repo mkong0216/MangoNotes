@@ -56,22 +56,29 @@ class Dashboard extends React.Component {
     let noteItems = {}
 
     try {
-      if (historyState.id === 'workspace') {
-        noteItems = {
-          notebooks: this.props.notebooks,
-          notepages: this.props.notepages
-        }
-      } else if (historyState.type === 'notebook' && historyState.noteId) {
-        const results = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
-        noteItems = results.contents
-      } else if (historyState.id === 'recent') {
-        noteItems = {
-          notepages: await retrieveRecentNotepages(this.props.user.signInData.userId)
-        }
-      } else if (historyState.id === 'starred') {
-        noteItems = await getStarredNoteItems(this.props.user.signInData.userId)
-      } else if (historyState.id === 'shared') {
-        noteItems.notepages = this.props.shared
+      switch (historyState.id) {
+        case 'workspace':
+          noteItems = {
+            notebooks: this.props.notebooks,
+            notepages: this.props.notepages
+          }
+          break;
+        case 'recent':
+          noteItems.notepages = await retrieveRecentNotepages(this.props.user.signInData.userId)
+          console.log(noteItems)
+          break;
+        case 'starred':
+          noteItems = await getStarredNoteItems(this.props.user.signInData.userId)
+          break;
+        case 'shared':
+          noteItems.notepages = this.props.shared
+          break;
+        default:
+          if (historyState.type === 'notebook' && historyState.noteId) {
+            const results = await retrieveNotebook(historyState.noteId, this.props.user.signInData.userId)
+            noteItems = results.contents
+          }
+          break;
       }
 
       this.setState({
