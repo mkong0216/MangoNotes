@@ -4,6 +4,7 @@
   background: white;
   border: solid 1px lightgray;
   padding: 50px;
+  line-height: 20pt;
 }
 
 .text-box {
@@ -14,4 +15,51 @@
 .text-box:focus {
   border: dashed 1px darkgray;
   padding: 5px;
+}
+
+
+.custom-list-item {
+  list-style-type: none !important;
+  position: relative;
+  padding-left: 20px;
+}
+
+.custom-list-item:before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.arrow:before {
+  background-image: url('../images/bulletpoints/arrow-right.png')
+}
+
+.chevron:before {
+  background-image: url('../images/bulletpoints/chevron-right.png');
+}
+
+.circleFilled:before {
+  background-image: url('../images/bulletpoints/circle-filled.png');
+}
+
+.circleOutline:before {
+  background-image: url('../images/bulletpoints/circle-outline.png');
+}
+
+.squareFilled:before {
+  background-image: url('../images/bulletpoints/square-filled.png');
+}
+
+.squareOutline:before {
+  background-image: url('../images/bulletpoints/square-outline.png');
+}
+
+.thinArrow:before {
+  background-image: url('../images/bulletpoints/thin-arrow-right.png');
 }
