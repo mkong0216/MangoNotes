@@ -58,7 +58,7 @@ class Notepage extends React.Component {
 
     return this.props.userId ? (
       <div className="notepage">
-        <Grid celled padded columns={3}>
+        <Grid padded columns={3}>
           <NoteDetails details={details} userId={userId} shared={shared} />
           <div className="user-actions">
             <Button

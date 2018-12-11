@@ -1,6 +1,7 @@
 .notepage-details {
   background: white;
   padding: 15px !important;
+  border: solid 1px lightgray;
 }
   
 .ui.input.title {
