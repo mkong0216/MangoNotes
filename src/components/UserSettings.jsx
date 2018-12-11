@@ -47,6 +47,13 @@ class UserSettings extends React.Component {
       const errors = this.checkForErrors()
       this.setState({ symbolFormErrors: errors })
     }
+
+    // Setting back default bullet points
+    if (prevState.hierarchy !== this.state.hierarchy && this.state.hierarchy === 'default') {
+      this.setState({
+        bulletPoints: [BULLET_POINTS[0].value, BULLET_POINTS[1].value, BULLET_POINTS[2].value]
+      })
+    }
   }
 
   handleChange = (event, { name, value }) => { this.setState({ [name]: value })}
