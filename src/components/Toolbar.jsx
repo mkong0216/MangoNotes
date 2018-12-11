@@ -61,11 +61,15 @@ class Toolbar extends React.Component {
   }
 
   renderToolIcons = (icons) => {
+    const blockType = this.props.getCurrentBlockType()
+    const inlineStyle = this.props.getCurrentInlineStyle()
+
     return icons.map((icon) => {
       return (
         <Popup
           trigger={(
             <Button
+              active={(blockType === icon.style || inlineStyle.has(icon.style))}
               icon={icon.name}
               value={icon.style}
               onClick={this.handleToggle}

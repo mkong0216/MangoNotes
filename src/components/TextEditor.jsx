@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Grid } from 'semantic-ui-react'
-import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js'
+import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js'
+import Editor from 'draft-js-plugins-editor'
 import Toolbar from './Toolbar'
 import { createCompositeDecorator, handleKeyBindings } from '../textEditor'
 import { updateNotepage } from '../xhr/notepage'
@@ -87,6 +88,20 @@ class TextEditor extends React.Component {
     return 'not-handled';
   }
 
+  getCurrentBlockType = () => {
+    const selection = this.state.editorState.getSelection()
+    const blockType = this.state.editorState
+      .getCurrentContent()
+      .getBlockForKey(selection.getStartKey())
+      .getType();
+
+    return blockType
+  }
+
+  getCurrentInlineStyle = () => {
+    return this.state.editorState.getCurrentInlineStyle()
+  }
+
   onTab = (event) => {
     const maxDepth = 3
     const newState = RichUtils.onTab(event, this.state.editorState, maxDepth)
@@ -125,7 +140,12 @@ class TextEditor extends React.Component {
     return (
       <Grid.Row>
         <Grid.Column width={3}>
-          <Toolbar toggleInlineStyle={this.toggleInlineStyle} toggleBlockType={this.toggleBlockType} />
+          <Toolbar
+            toggleInlineStyle={this.toggleInlineStyle}
+            toggleBlockType={this.toggleBlockType}
+            getCurrentBlockType={this.getCurrentBlockType}
+            getCurrentInlineStyle={this.getCurrentInlineStyle}
+          />
         </Grid.Column>
         <Grid.Column width={10}>
           <div className="text-editor" style={style}>
