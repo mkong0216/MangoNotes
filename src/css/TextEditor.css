@@ -63,3 +63,19 @@
 .thinArrow:before {
   background-image: url('../images/bulletpoints/thin-arrow-right.png');
 }
+
+.align-left div {
+  text-align: left;
+}
+
+.align-right div {
+  text-align: right;
+}
+
+.align-center div {
+  text-align: center;
+}
+
+.align-justify div {
+  text-align: justify;
+}
