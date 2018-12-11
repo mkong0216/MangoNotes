@@ -1,126 +1,156 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Editor, EditorState, RichUtils, Modifier, convertToRaw, convertFromRaw } from 'draft-js'
-import { handleCustomKeyBindingsFn } from '../textEditor'
-import { updateEditorStyles } from '../store/actions/editor'
-
+import { connect } from 'react-redux'
+import { Grid } from 'semantic-ui-react'
+import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js'
+import Toolbar from './Toolbar'
+import { createCompositeDecorator, handleKeyBindings } from '../textEditor'
+import { updateNotepage } from '../xhr/notepage'
 import '../css/TextEditor.css'
 import '../../node_modules/draft-js/dist/Draft.css'
 
 class TextEditor extends React.Component {
   static propTypes = {
-    content: PropTypes.string.isRequired,
-    updateNotepage: PropTypes.func.isRequired
+    details: PropTypes.object.isRequired,
+    content: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object
+    ]),
+    saveContents: PropTypes.bool.isRequired,
+    toggleSaveContents: PropTypes.func.isRequired,
+    settings: PropTypes.object,
+    readOnly: PropTypes.bool
   }
 
   constructor (props) {
     super(props)
 
+    const contentState = (props.content && convertFromRaw(props.content))
+
     this.state = {
-      editorState: EditorState.createEmpty()
+      editorState: (contentState) ? EditorState.createWithContent(contentState) : EditorState.createEmpty(),
+      error: null
     }
 
     this.editor = React.createRef()
   }
 
   componentDidUpdate (prevProps) {
-    const { activeButtons } = this.props.editorStyles
+    if ((!prevProps.settings && this.props.settings) || (prevProps.settings !== this.props.settings)) {
+      this.applyUserSettings(this.props.settings)
+    }
 
-    if (!prevProps.content && this.props.content) {
-      const contentState = convertFromRaw(JSON.parse(this.props.content))
-      this.handleChange(EditorState.createWithContent(contentState))
-    } else if (prevProps.editorStyles.activeButtons !== activeButtons) {
-      activeButtons.fontStyle.forEach((style) => {
-        if (!prevProps.editorStyles.activeButtons.fontStyle.includes(style)) {
-          this.handleInlineStyles(style)
-        }
-      })
-
-      if (activeButtons.lists) {
-        const listType = (activeButtons.lists.includes('ol')) ? 'ordered-list-item' : 'unordered-list-item'
-        const newState = RichUtils.toggleBlockType(this.state.editorState, listType)
-        this.handleChange(newState)
-      }
-
-    } else if (this.props.saveContents) {
+    if (!prevProps.saveContents && this.props.saveContents) {
       this.handleSaveContents(this.state.editorState)
     }
   }
 
-  handleSaveContents = (editorState) => {
-    const rawContent = JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-    this.props.updateNotepage(rawContent)
-  }
-
-  handleInlineStyles = (style) => {
-    const newState = RichUtils.toggleInlineStyle(this.state.editorState, style.toUpperCase())
-    this.handleChange(newState)
-  }
-
-  handleFocusEditor = () => { this.editor.current.focus() }
-
-  handleChange = (editorState) => { this.setState({ editorState })}
-
-  handleKeyCommand = (command, editorState) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command)
-    if (newState) {
-      this.handleChange(newState)
-      return 'handled'
-    } else if (command === 'mangonotes-save') {
-      this.handleSaveContents(editorState)
-      return 'handled'
-    } else {
-      return 'not-handled'
+  applyUserSettings = (settings) => {
+    if (settings.symbols) {
+      const decorators = createCompositeDecorator(settings.symbols)
+      const contentState = this.state.editorState.getCurrentContent()
+      const newEditorState = (contentState) ? EditorState.createWithContent(contentState, decorators) : EditorState.createEmpty(decorators)
+      this.handleChange(newEditorState)
     }
   }
 
-  handleTab = (event) => {
-    event.preventDefault()
+  handleSaveContents = async (editorState) => {
+    const contentState = editorState.getCurrentContent()
+    const rawContent = JSON.stringify(convertToRaw(contentState))
+    
+    const { updatedAt, ...notepage } = this.props.details
+    notepage.content = rawContent
 
-    if (this.props.editorStyles.activeButtons.lists) {
-      const newState = RichUtils.onTab(event, this.state.editorState, 3)
-      this.handleChange(newState)
-    } else {
-      const TAB_CHARACTER = '    '
-      const currentState = this.state.editorState
-      const newContentState = Modifier.replaceText(
-        currentState.getCurrentContent(),
-        currentState.getSelection(),
-        TAB_CHARACTER
-      )
+    try {
+      await updateNotepage(notepage, this.props.userId)
+    } catch (error) {
+      console.log(error)
+      this.setState({ error: error.message })
+    }
 
-      this.setState({ editorState: EditorState.push(currentState, newContentState, 'insert-characters') })
+    this.props.toggleSaveContents()
+  }
+
+  handleChange = (editorState) => { this.setState({ editorState }) }
+
+  handleKeyCommand = (command, editorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+
+    if (newState) {
+      this.handleChange(newState);
+      return 'handled';
+    } else if (command === 'mangonotes-save') {
+      this.handleSaveContents(editorState)
+      return 'handled'
+    }
+
+    return 'not-handled';
+  }
+
+  onTab = (event) => {
+    const maxDepth = 3
+    const newState = RichUtils.onTab(event, this.state.editorState, maxDepth)
+    this.handleChange(newState)
+  }
+
+  toggleBlockType = (blockType) => {
+    this.handleChange(
+      RichUtils.toggleBlockType(this.state.editorState, blockType)
+    )
+  }
+
+  toggleInlineStyle = (inlineStyle) => {
+    this.handleChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
+    )
+  }
+
+  applyCustomBlockStyles = (contentBlock) => {
+    const type = contentBlock.getType()
+    if (type === 'unordered-list-item') {
+      const depth = contentBlock.getDepth()
+      const { bulletPoints } = this.props.settings
+      const bulletType = (bulletPoints && bulletPoints[depth % 3]) || ''
+
+      return `custom-list-item ${bulletType}`
     }
   }
 
   render () {
+    if (!this.props.settings) return null
+
+    const { fontFamily, fontSize } = this.props.settings
+    const style = { fontFamily, fontSize }
+
     return (
-      <div className="text-editor" onClick={this.handleFocusEditor}>
-        <Editor
-          editorState={this.state.editorState}
-          onChange={this.handleChange}
-          handleKeyCommand={this.handleKeyCommand}
-          keyBindingFn={handleCustomKeyBindingsFn}
-          onTab={this.handleTab}
-          spellCheck
-          ref={this.editor}
-        />
-      </div>
+      <Grid.Row>
+        <Grid.Column width={3}>
+          <Toolbar toggleInlineStyle={this.toggleInlineStyle} toggleBlockType={this.toggleBlockType} />
+        </Grid.Column>
+        <Grid.Column width={10}>
+          <div className="text-editor" style={style}>
+            <Editor
+              ref={this.editor}
+              editorState={this.state.editorState}
+              onChange={this.handleChange}
+              handleKeyCommand={this.handleKeyCommand}
+              keyBindingFn={handleKeyBindings}
+              readOnly={this.props.readOnly}
+              onTab={this.onTab}
+              blockStyleFn={this.applyCustomBlockStyles}
+              spellCheck
+            />
+          </div>
+        </Grid.Column>
+      </Grid.Row>
     )
   }
 }
 
 function mapStateToProps (state) {
   return {
-    editorStyles: state.editor
+    settings: state.user.settings
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    updateEditorStyles: (...args) => { dispatch(updateEditorStyles(...args)) }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TextEditor)
+export default connect(mapStateToProps)(TextEditor)
