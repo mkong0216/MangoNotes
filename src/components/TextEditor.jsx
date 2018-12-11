@@ -122,12 +122,16 @@ class TextEditor extends React.Component {
 
   applyCustomBlockStyles = (contentBlock) => {
     const type = contentBlock.getType()
+    const textAlignments = ['align-left', 'align-right', 'align-center', 'align-justify']
+
     if (type === 'unordered-list-item') {
       const depth = contentBlock.getDepth()
       const { bulletPoints } = this.props.settings
       const bulletType = (bulletPoints && bulletPoints[depth % 3]) || ''
 
       return `custom-list-item ${bulletType}`
+    } else if (textAlignments.includes(type)) {
+      return type
     }
   }
 
