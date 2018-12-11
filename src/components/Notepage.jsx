@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom'
 import { Grid, Button } from 'semantic-ui-react'
 import NoteDetails from './NoteDetails'
 import UserMenu from './UserMenu'
-import TextEditor2 from './TextEditor2'
+import TextEditor from './TextEditor'
 import { retrieveNotepage } from '../xhr/notepage'
 import { addToUserShared } from '../xhr/user'
 import '../css/Notepage.css'
@@ -71,21 +71,14 @@ class Notepage extends React.Component {
             />
             <UserMenu />
           </div>
-          <Grid.Row>
-            <Grid.Column width={3}>
-              Toolbar
-            </Grid.Column>
-            <Grid.Column width={10}>
-              <TextEditor2
-                content={content}
-                details={details}
-                userId={userId}
-                saveContents={this.state.saveContents}
-                toggleSaveContents={this.toggleSaveContents}
-                readOnly={readOnly}
-              />
-            </Grid.Column>
-          </Grid.Row>
+          <TextEditor
+            content={content}
+            details={details}
+            userId={userId}
+            saveContents={this.state.saveContents}
+            toggleSaveContents={this.toggleSaveContents}
+            readOnly={readOnly}
+          />
         </Grid>
       </div>
     ) : <Redirect to="/" />
