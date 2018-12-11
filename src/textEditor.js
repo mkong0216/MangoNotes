@@ -26,37 +26,37 @@ export const BULLET_POINTS = [
   {
     key: 'circleFilled',
     text: <span> <Image src={circleFilled} avatar /> Filled Circle </span>,
-    value: circleFilled
+    value: "circleFilled"
   },
   {
     key: 'circleOutline',
     text: <span> <Image src={circleOutline} avatar /> Circle Outline </span>,
-    value: circleOutline
+    value: "circleOutline"
   },
   {
     key: 'squareFilled',
     text: <span> <Image src={squareFilled} avatar /> Shaded Square </span>,
-    value: squareFilled
+    value: "squareFilled"
   },
   {
     key: 'squareOutline',
     text: <span> <Image src={squareOutline} avatar /> Square Outline </span>,
-    value: squareOutline
+    value: "squareOutline"
   },
   {
     key: 'arrow',
     text: <span> <Image src={arrow} avatar /> Arrow </span>,
-    value: arrow
+    value: "arrow"
   },
   {
     key: 'chevron',
     text: <span> <Image src={chevron} avatar /> Chevron </span>,
-    value: chevron
+    value: "chevron"
   },
   {
     key: 'thinArrow',
     text: <span> <Image src={thinArrow} avatar /> Thin Arrow </span>,
-    value: thinArrow
+    value: "thinArrow"
   }
 ]
 
@@ -156,4 +156,12 @@ function findWithRegex(regex, contentBlock, callback) {
     start = matchArr.index
     callback(start, start + matchArr[0].length)
   }
+}
+
+export function handleKeyBindings (event) {
+  if (event.keyCode === 83 && KeyBindingUtil.hasCommandModifier(event)) {
+    return 'mangonotes-save'
+  }
+
+  return getDefaultKeyBinding(event)
 }
