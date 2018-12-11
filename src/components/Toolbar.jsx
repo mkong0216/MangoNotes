@@ -12,10 +12,10 @@ const BLOCK_TYPES = [
 ]
 
 const TEXT_ALIGN = [
-  { name: 'align left', label: 'Left align' },
-  { name: 'align center', label: 'Center align' },
-  { name: 'align right', label: 'Right align' },
-  { name: 'align justify', label: 'Justify' }
+  { name: 'align left', type: 'block', label: 'Left align', style: 'align-left' },
+  { name: 'align center', type: 'block', label: 'Center align', style: 'align-center' },
+  { name: 'align right', type: 'block', label: 'Right align', style: 'align-right' },
+  { name: 'align justify', type: 'block', label: 'Justify', style: 'align-justify' }
 ]
 
 const INLINE_STYLES = [
