@@ -43,7 +43,7 @@ class ContextMenu extends React.Component {
       
       if (name === 'Remove') {
         noteItem.removed = true
-      } else if (name = 'Restore') {
+      } else if (name === 'Restore') {
         noteItem.removed = false
       }
 
