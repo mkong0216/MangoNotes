@@ -22,7 +22,10 @@ const settings = (state = initialState, action) => {
             }
         case SIGN_OUT_USER:
             delete window.sessionStorage.signedIn
-            return initialState
+            return {
+                ...initialState,
+                signInAttempted: true
+            }
         case SET_SIGN_IN_ATTEMPTED:
             return {
                 ...state,
