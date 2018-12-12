@@ -37,19 +37,20 @@ class ContextMenu extends React.Component {
     event.stopPropagation()
     this.setState({ activeMenuItem: name })
 
-    if (name === 'Starred') {
+    if (name === 'Starred' || name === 'Remove') {
       const { updatedAt, ...noteItem } = this.props.contextMenuItem
-      noteItem.starred = !noteItem.starred
+      noteItem.starred = (name === 'Starred') ? !noteItem.starred : noteItem.starred
+      noteItem.removed = (name === 'Remove')
 
       if (this.props.type === TYPE_NOTEBOOK) {
         await updateNotebook(noteItem, this.props.userId)
       } else if (this.props.type === TYPE_NOTEPAGE) {
         await updateNotepage(noteItem, this.props.userId)
       }
-
-      this.props.handleNoteChanges()
-      this.props.hideContextMenu()
     }
+
+    this.props.handleNoteChanges()
+    this.props.hideContextMenu()
   }
 
   closeModal = () => { this.setState({ activeMenuItem: null }) }

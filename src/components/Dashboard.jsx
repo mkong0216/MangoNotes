@@ -9,7 +9,7 @@ import NoteCards from './NoteCards'
 import UserMenu from './UserMenu'
 import { retrieveNotebook } from '../xhr/notebook'
 import { retrieveRecentNotepages } from '../xhr/notepage'
-import { getStarredNoteItems } from '../xhr/user'
+import { getStarredNoteItems, getTrashNoteItems } from '../xhr/user'
 
 /**
  * Dashboard.jsx
@@ -71,6 +71,9 @@ class Dashboard extends React.Component {
           break;
         case 'shared':
           noteItems.notepages = this.props.shared
+          break;
+        case 'trash':
+          noteItems = await getTrashNoteItems(this.props.user.signInData.userId)
           break;
         default:
           if (historyState.type === 'notebook' && historyState.noteId) {

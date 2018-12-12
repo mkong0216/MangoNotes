@@ -187,3 +187,21 @@ export async function addToUserShared (userId, noteId) {
     throw Error (error.response.data.error)
   }
 }
+
+export async function getTrashNoteItems (userId) {
+  const trashNotebooks = `/notebooks/trash/${userId}`
+  const trashNotepages = `/notepages/trash/${userId}`
+
+  try {
+    const notebooks = await axios.get(trashNotebooks)
+    const notepages = await axios.get(trashNotepages)
+
+    return {
+      notebooks: notebooks.data,
+      notepages: notepages.data
+    }
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.error)
+  }
+}
