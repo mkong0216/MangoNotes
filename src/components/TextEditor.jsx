@@ -1,14 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+
 import { Grid } from 'semantic-ui-react'
 import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
 import Toolbar from './Toolbar'
+import CustomInlineToolbar from './CustomInlineToolbar'
+
 import { createCompositeDecorator, handleKeyBindings } from '../textEditor'
 import { updateNotepage } from '../xhr/notepage'
+
 import '../css/TextEditor.css'
 import '../../node_modules/draft-js/dist/Draft.css'
+import '../../node_modules/draft-js-inline-toolbar-plugin/lib/plugin.css'
+
+import createListDepthPlugin from 'draft-js-list-depth-plugin'
+import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
+
+const inlineToolbarPlugin = createInlineToolbarPlugin()
+const { InlineToolbar } = inlineToolbarPlugin
+
+const plugins = [
+  createListDepthPlugin(),
+  inlineToolbarPlugin
+]
 
 class TextEditor extends React.Component {
   static propTypes = {
@@ -163,7 +179,11 @@ class TextEditor extends React.Component {
               onTab={this.onTab}
               blockStyleFn={this.applyCustomBlockStyles}
               spellCheck
+              plugins={plugins}
             />
+            <InlineToolbar>
+              { (props) => <CustomInlineToolbar {...props} /> }
+            </InlineToolbar>
           </div>
         </Grid.Column>
       </Grid.Row>
