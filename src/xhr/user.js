@@ -62,6 +62,7 @@ export async function retrieveUsersWork (userId) {
 
   try {
     const results = await axios.get(endpoint)
+    const noteItems = {}
 
     if (results.data.notebooks && results.data.notebooks.length) {
       const notebooks = results.data.notebooks.map((notebook) => {
@@ -72,6 +73,7 @@ export async function retrieveUsersWork (userId) {
         }
       })
 
+      noteItems.notebooks = notebooks
       store.dispatch(setUserNotebooks(notebooks))
     }
 
@@ -84,6 +86,7 @@ export async function retrieveUsersWork (userId) {
         }
       })
 
+      noteItems.notepages = notepages
       store.dispatch(setUserNotepages(notepages))
     }
 
@@ -96,10 +99,11 @@ export async function retrieveUsersWork (userId) {
         }
       })
 
+      noteItems.shared = shared
       store.dispatch(setUserShared(shared))
     }
 
-    return results.data
+    return noteItems
   } catch (error) {
     console.log(error)
   }
