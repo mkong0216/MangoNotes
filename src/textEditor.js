@@ -117,7 +117,8 @@ function symbolStrategy (contentBlock, callback, contentState, symbol) {
   findWithRegex(REGEX_VALUE, contentBlock, callback)
 }
 
-const SymbolSpan = (props, style) => {
+const SymbolSpan = (props, symbol) => {
+  const style = getDisplayStyle(symbol.fontStyle, symbol.highlightColor)
   return <span {...props} style={style}>{ props.children }</span>
 }
 
@@ -139,10 +140,9 @@ export function getDisplayStyle (fontStyle, highlightColor) {
 
 export function createCompositeDecorator (symbols) {
   const decorators = symbols.map((symbol) => {
-    const style = getDisplayStyle(symbol.fontStyle, symbol.highlightColor)
     return {
       strategy: (...args) => { symbolStrategy(...args, symbol.symbol) },
-      component: (props) => { return SymbolSpan(props, style) }
+      component: (props) => { return SymbolSpan(props, symbol) }
     }
   })
 
