@@ -24,7 +24,8 @@ NotebookSchema.methods.details = function () {
     creator: this.creator,
     updatedAt: this.updatedAt,
     starred: this.starred,
-    removed: this.removed
+    removed: this.removed,
+    parentNotebook: this.parentNotebook
   }
 
   return details
