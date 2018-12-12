@@ -82,17 +82,17 @@ export async function updateNotebook (notebook, userId, moved = false) {
   try {
     // Updating actual notebook
     const response = await axios.put(endpoint, { notebook, moved })
-    const details = response.data
 
     // Update workspace if parentNotebook = null
     if (!notebook.parentNotebook) {
+      const details = response.data
       const notebooks = store.getState().notebooks.userNotebooks
       const index = notebooks.findIndex(item => item.notebookId === noteId)
       await updateUsersWork(details, index)
     }
   } catch (error) {
     console.log(error)
-    throw Error (error.response.data.message)
+    throw Error (error.response.data.error)
   }
 }
 
