@@ -79,8 +79,10 @@ exports.GetNotebook = function (req, res) {
             })
           })
         } else {
+          // Filter out any details that were "removed"
+          const contents = notebook.content.filter(item => item.removed === false)
           res.status(200).json({
-            contents: notebook.content,
+            contents: contents,
             parentNotebook: null
           })
         }
@@ -99,6 +101,7 @@ exports.UpdateNotebook = function (req, res) {
   const userId = req.params.userId
   const notebookId = req.params.notebookId
   const notebookDetails = req.body.notebook
+
   const moved = req.body.moved
 
   if (!userId) {
@@ -140,6 +143,7 @@ exports.UpdateNotebook = function (req, res) {
       notebook.title = notebookDetails.title || notebook.title
       notebook.parentNotebook = notebookDetails.parentNotebook
       notebook.starred = (typeof notebookDetails.starred !== 'undefined') ? notebookDetails.starred : notebook.starred
+      notebook.removed = (typeof notebookDetails.removed !== 'undefined')
       notebook.save(handleSaveNotebook)
     }
   }
@@ -232,4 +236,24 @@ exports.GetStarredNotebooks = function (req, res) {
   }
 
   Notebook.find({ creator: userId, starred: true }, handleFindStarredNotebooks)
+}
+
+exports.GetRemovedNotebooks = function (req, res) {
+  const userId = req.params.userId
+
+  if (!userId) {
+    res.status(500).send("Failed to provide user id")
+  }
+
+  const handleFindRemovedNotebooks = function (err, notebooks) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error finding removed notebooks")
+    } else {
+      const removedDetails = notebooks.map(notebook => notebook.details())
+      res.status(200).send(removedDetails)
+    }
+  }
+
+  Notebook.find({ creator: userId, removed: true }, handleFindRemovedNotebooks)
 }

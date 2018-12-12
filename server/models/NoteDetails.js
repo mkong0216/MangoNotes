@@ -18,7 +18,8 @@ let NoteDetails = new mongoose.Schema({
     required: true
   },
   starred: Boolean,
-  parentNotebook: String
+  parentNotebook: String,
+  removed: { type: Boolean, default: false }
 }, { timestamps: true })
 
 module.exports = NoteDetails

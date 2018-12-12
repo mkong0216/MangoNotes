@@ -138,7 +138,7 @@ exports.UpdateNotepage = function (req, res) {
         notepage.parentNotebook = data.parentNotebook || notepage.parentNotebook
         notepage.content = data.content || notepage.content
         notepage.starred = (typeof data.starred !== 'undefined') ? data.starred : notepage.starred
-
+        notepage.removed = (typeof data.removed !== 'undefined')
         notepage.save(handleSaveNotepage)
       }
     }
@@ -308,4 +308,24 @@ exports.GetStarredNotepages = function (req, res) {
   }
 
   Notepage.find({ creator: userId, starred: true }, handleFindStarredNotepages)
+}
+
+exports.GetRemovedNotepages = function (req, res) {
+  const userId = req.params.userId
+
+  if (!userId) {
+    res.status(500).send("Failed to provide user id")
+  }
+
+  const handleFindRemovedNotepages = function (err, notepages) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error finding removed notepages")
+    } else {
+      const removedDetails = notepages.map(notepage => notepage.details())
+      res.status(200).send(removedDetails)
+    }
+  }
+
+  Notepage.find({ creator: userId, removed: true }, handleFindRemovedNotepages)
 }
