@@ -8,8 +8,8 @@ import MoveItemModal from './MoveItemModal'
 import ShareModal from './ShareModal'
 
 import { TYPE_NOTEPAGE, TYPE_NOTEBOOK } from '../utils'
-import { updateNotebook } from '../xhr/notebook'
-import { updateNotepage } from '../xhr/notepage'
+import { updateNotebook, removeNotebook } from '../xhr/notebook'
+import { updateNotepage, removeNotepage } from '../xhr/notepage'
 
 import '../css/ContextMenu.css'
 
@@ -37,16 +37,35 @@ class ContextMenu extends React.Component {
     event.stopPropagation()
     this.setState({ activeMenuItem: name })
 
-    if (name === 'Starred' || name === 'Remove') {
+    if (name === 'Starred' || name === 'Remove' || name === 'Restore') {
       const { updatedAt, ...noteItem } = this.props.contextMenuItem
       noteItem.starred = (name === 'Starred') ? !noteItem.starred : noteItem.starred
-      noteItem.removed = (name === 'Remove')
+      
+      if (name === 'Remove') {
+        noteItem.removed = true
+      } else if (name = 'Restore') {
+        noteItem.removed = false
+      }
 
       if (this.props.type === TYPE_NOTEBOOK) {
         await updateNotebook(noteItem, this.props.userId)
       } else if (this.props.type === TYPE_NOTEPAGE) {
         await updateNotepage(noteItem, this.props.userId)
       }
+    }
+
+    this.props.handleNoteChanges()
+    this.props.hideContextMenu()
+  }
+
+  handleDelete = async (event) => {
+    event.stopPropagation()
+    
+    const { updatedAt, ...noteItem } = this.props.contextMenuItem
+    if (this.props.type === TYPE_NOTEBOOK) {
+      await removeNotebook(noteItem, this.props.userId)
+    } else if (this.props.type === TYPE_NOTEPAGE) {
+      await removeNotepage(noteItem, this.props.userId)
     }
 
     this.props.handleNoteChanges()
@@ -85,21 +104,31 @@ class ContextMenu extends React.Component {
       top: this.props.menuPosition && this.props.menuPosition[1] + 'px'
     }
 
-    const { contextMenuItem } = this.props
+    const { contextMenuItem, historyState } = this.props
 
     return (this.props.contextMenuItem) ? (
       <React.Fragment>
         { this.props.showMenu && (
           <Menu pointing vertical compact className="context-menu" style={style}>
-            <Menu.Item name="Rename" link onClick={this.handleMenuClick}> Rename </Menu.Item>
-            <Menu.Item name="Remove" link onClick={this.handleMenuClick}> Remove </Menu.Item>
-            <Menu.Item name="Starred" link onClick={this.handleMenuClick}>
-              { (contextMenuItem && contextMenuItem.starred) ? 'Remove from starred' : 'Add to starred' }
-            </Menu.Item>
-            { this.props.type === TYPE_NOTEPAGE && 
-              <Menu.Item name="Share" link onClick={this.handleMenuClick}> Share </Menu.Item>
+            { historyState.id !== 'trash' &&
+              <React.Fragment>
+                <Menu.Item name="Rename" link onClick={this.handleMenuClick}> Rename </Menu.Item>
+                <Menu.Item name="Starred" link onClick={this.handleMenuClick}>
+                  { (contextMenuItem && contextMenuItem.starred) ? 'Remove from starred' : 'Add to starred' }
+                </Menu.Item>
+                { this.props.type === TYPE_NOTEPAGE && 
+                  <Menu.Item name="Share" link onClick={this.handleMenuClick}> Share </Menu.Item>
+                }
+                <Menu.Item name="Move" link onClick={this.handleMenuClick}> Move to... </Menu.Item>
+                <Menu.Item name="Remove" link onClick={this.handleMenuClick}> Remove </Menu.Item>
+              </React.Fragment>
             }
-            <Menu.Item name="Move" link onClick={this.handleMenuClick}> Move to... </Menu.Item>
+            { historyState.id === 'trash' &&
+              <React.Fragment>
+                <Menu.Item name="Delete" link onClick={this.handleDelete}> Delete </Menu.Item>
+                <Menu.Item name="Restore" link onClick={this.handleMenuClick}> Restore </Menu.Item>
+              </React.Fragment>
+            } 
           </Menu>
         ) }
         

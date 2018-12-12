@@ -73,16 +73,17 @@ exports.GetNotebook = function (req, res) {
       if (notebook.removed) {
         res.status(401).send("This notebook was removed")
       } else if (userId && notebook.creator === userId) {
+        // Filter out any details that were "removed"
+        const contents = notebook.content.filter(item => item.removed === false)
         if (notebook.parentNotebook) {
+
           notebook.getParentNotebook(function (err, parentNotebook) {
             res.status(200).json({
-              contents: notebook.content,
+              contents: contents,
               parentNotebook: parentNotebook && parentNotebook._id
             })
           })
         } else {
-          // Filter out any details that were "removed"
-          const contents = notebook.content.filter(item => item.removed === false)
           res.status(200).json({
             contents: contents,
             parentNotebook: null
@@ -145,7 +146,7 @@ exports.UpdateNotebook = function (req, res) {
       notebook.title = notebookDetails.title || notebook.title
       notebook.parentNotebook = notebookDetails.parentNotebook
       notebook.starred = (typeof notebookDetails.starred !== 'undefined') ? notebookDetails.starred : notebook.starred
-      notebook.removed = (typeof notebookDetails.removed !== 'undefined')
+      notebook.removed = (typeof notebookDetails.removed !== 'undefined') ? notebookDetails.removed : notebook.removed
       notebook.save(handleSaveNotebook)
     }
   }
@@ -258,4 +259,40 @@ exports.GetRemovedNotebooks = function (req, res) {
   }
 
   Notebook.find({ creator: userId, removed: true }, handleFindRemovedNotebooks)
+}
+
+exports.DeleteNotebook = function (req, res) {
+  const noteId = req.params.noteId
+  const userId = req.params.userId
+  const parentNotebook = req.body.parentNotebook
+
+  if (!noteId) {
+    res.status(400).send("Failed to provide a note id")
+  } else if (!userId) {
+    res.status(400).send("Failed to provide a user id")
+  }
+
+  const handleFindParentNotebook = function (err, notebook) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error updating parent notebook")
+    }
+  }
+
+  // 1) Remove from parent notebook contents
+  if (parentNotebook) {
+    Notebook.findOneAndUpdate({ title: parentNotebook, creator: userId }, { $pull: { content: { id: noteId }}}, handleFindParentNotebook)
+  }
+
+  const handleDeleteNotebook = function (err, notebook) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error deleting a notebook")
+    } else {
+      res.sendStatus(200)
+    }
+  }
+
+  // 2) Remove from collection
+  Notebook.deleteOne({ _id: noteId }, handleDeleteNotebook)
 }

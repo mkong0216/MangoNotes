@@ -140,7 +140,7 @@ exports.UpdateNotepage = function (req, res) {
         notepage.parentNotebook = data.parentNotebook || notepage.parentNotebook
         notepage.content = data.content || notepage.content
         notepage.starred = (typeof data.starred !== 'undefined') ? data.starred : notepage.starred
-        notepage.removed = (typeof data.removed !== 'undefined')
+        notepage.removed = (typeof data.removed !== 'undefined') ? data.removed : notepage.removed
         notepage.save(handleSaveNotepage)
       }
     }
@@ -330,4 +330,40 @@ exports.GetRemovedNotepages = function (req, res) {
   }
 
   Notepage.find({ creator: userId, removed: true }, handleFindRemovedNotepages)
+}
+
+exports.DeleteNotepage = function (req, res) {
+  const userId = req.params.userId
+  const noteId = req.params.noteId
+  const parentNotebook = req.body.parentNotebook
+
+  if (!userId) {
+    res.status(400).send("Failed to provide a user id")
+  } else if (!noteId) {
+    res.status(400).send("Failed to provide a notepage id")
+  }
+
+  const handleRemoveFromNotebook = function (err, notebook) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error removing notepage from parent notebook")
+    }
+  }
+
+  if (parentNotebook) {
+    // 1) Remove from parent notebook
+    Notebook.findOneAndUpdate({ title: parentNotebook, creator: userId }, { $pull: { content: { id: noteId }}}, handleRemoveFromNotebook)
+  }
+
+  const handleRemoveNotepage = function (err, notepage) {
+    if (err) {
+      console.log(err)
+      res.status(500).send("Error deleting notepage from collection")
+    } else {
+      res.sendStatus(200)
+    }
+  }
+
+  // 2) Remove from collection
+  Notepage.deleteOne({ _id: noteId}, handleRemoveNotepage)
 }

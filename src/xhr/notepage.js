@@ -131,3 +131,15 @@ export async function addSharePermissions (noteId, permissionCode) {
     throw Error(error.response.data.error)
   }
 }
+
+export async function removeNotepage (noteItem, userId) {
+  const noteId = noteItem.notepageId || noteItem.id
+  const endpoint = `/remove-notepage/${noteId}/${userId}`
+
+  try {
+    await axios.delete(endpoint)
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.error)
+  }
+}

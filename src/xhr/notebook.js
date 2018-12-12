@@ -121,6 +121,24 @@ export async function moveNotebook (newParentNotebook, notebook, userId) {
   }
 }
 
+export async function removeNotebook (noteItem, userId) {
+  const noteId = noteItem.notebookId || noteItem.id
+  const endpoint = `/remove-notebook/${noteId}/${userId}`
+
+  try {
+    await axios.delete(endpoint, { data: { parentNotebook: noteItem.parentNotebook }})
+
+    if (!noteItem.parentNotebook) {
+      const notebooks = store.getState().notebooks.userNotebooks
+      const index = notebooks.findIndex(item => item.notebookId === noteId)
+      await removeNoteItem('notebook', noteId, userId, index)
+    }
+  } catch (error) {
+    console.log(error)
+    throw Error (error.response.data.error)
+  }
+}
+
 /**
  * Filters unnecessary fields from return value of GET request.
  *

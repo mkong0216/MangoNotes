@@ -53,6 +53,7 @@ app.get('/notepages/trash/:userId', notepage.GetRemovedNotepages)
 app.put('/notepage/:notepageId/:userId', notepage.UpdateNotepage)
 app.put('/move-notepage/:notepageId/:userId', notepage.MoveNotepage)
 app.put('/share/:noteId', notepage.ShareNotepage)
+app.delete('/remove-notepage/:noteId/:userId', notepage.DeleteNotepage)
 
 // Handling notebooks
 app.post('/notebook/new', notebook.CreateNotebook)
@@ -61,6 +62,7 @@ app.get('/notebooks/starred/:userId', notebook.GetStarredNotebooks)
 app.get('/notebooks/trash/:userId', notebook.GetRemovedNotebooks)
 app.put('/notebook/:notebookId/:userId', notebook.UpdateNotebook)
 app.put('/move-notebook/:notebookId/:userId', notebook.MoveNotebook)
+app.delete('/remove-notebook/:noteId/:userId', notebook.DeleteNotebook)
 
 // Handling settings
 app.put('/settings/:username', settings.UpdateUserSettings);
