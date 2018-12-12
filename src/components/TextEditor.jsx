@@ -50,6 +50,11 @@ class TextEditor extends React.Component {
     }
 
     this.editor = React.createRef()
+    this.timer = null
+  }
+
+  componentDidMount () {
+    this.timer = window.setInterval(() => { this.handleSaveContents(this.state.editorState) }, 10000)
   }
 
   componentDidUpdate (prevProps) {
@@ -60,6 +65,10 @@ class TextEditor extends React.Component {
     if (!prevProps.saveContents && this.props.saveContents) {
       this.handleSaveContents(this.state.editorState)
     }
+  }
+
+  componentWillUnmount () {
+    window.clearInterval(this.timer)
   }
 
   applyUserSettings = (settings) => {
