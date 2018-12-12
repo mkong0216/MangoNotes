@@ -138,6 +138,12 @@ export async function removeNotepage (noteItem, userId) {
 
   try {
     await axios.delete(endpoint)
+
+    if (!noteItem.parentNotebook) {
+      const notepages = store.getState().notepages.userNotepages
+      const index = notepages.findIndex(item => item.notepageId === noteId)
+      await removeNoteItem('notepage', noteId, userId, index)
+    }
   } catch (error) {
     console.log(error)
     throw Error (error.response.data.error)
