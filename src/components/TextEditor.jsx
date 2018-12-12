@@ -16,7 +16,7 @@ import '../../node_modules/draft-js/dist/Draft.css'
 import '../../node_modules/draft-js-inline-toolbar-plugin/lib/plugin.css'
 
 import createListDepthPlugin from 'draft-js-list-depth-plugin'
-import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
+import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin'
 
 const inlineToolbarPlugin = createInlineToolbarPlugin()
 const { InlineToolbar } = inlineToolbarPlugin
