@@ -9,7 +9,7 @@ import NoteCards from './NoteCards'
 import UserMenu from './UserMenu'
 import { retrieveNotebook } from '../xhr/notebook'
 import { retrieveRecentNotepages } from '../xhr/notepage'
-import { getStarredNoteItems, getTrashNoteItems } from '../xhr/user'
+import { getStarredNoteItems, getTrashNoteItems, retrieveUsersWork } from '../xhr/user'
 
 /**
  * Dashboard.jsx
@@ -39,8 +39,13 @@ class Dashboard extends React.Component {
     window.addEventListener('mangonotes:creation', this.getNotebooksAndNotepages)
   }
 
-  componentDidUpdate (prevProps) {
+  async componentDidUpdate (prevProps) {
     if (prevProps.location.pathname !== this.props.location.pathname || this.state.checkUpdate) {
+      const historyState = this.props.location.state
+      if (historyState.id === 'workspace' || historyState.id === 'shared') {
+        await retrieveUsersWork(this.props.user.signInData.userId)
+      }
+
       this.getNotebooksAndNotepages()
     }
   }

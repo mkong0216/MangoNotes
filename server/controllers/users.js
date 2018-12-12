@@ -108,9 +108,11 @@ exports.GetUsersWorkspace = function (req, res) {
     } else if (!user) {
       res.status(500).send("No user exists with the provided id")
     } else {
+      const notebooks = user.notebooks.filter(notebook => notebook.removed === false)
+      const notepages = user.notepages.filter(notepage => notepage.removed === false)
       res.status(200).json({
-        notebooks: user.notebooks,
-        notepages: user.notepages,
+        notebooks: notebooks,
+        notepages: notepages,
         shared: user.shared
       })
     }
