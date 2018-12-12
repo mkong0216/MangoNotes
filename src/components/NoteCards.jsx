@@ -58,7 +58,8 @@ class NoteCards extends React.Component {
 
   handleNoteCardClick = (item, type) => {
     const historyState = this.props.history.location.state
-
+    if (historyState.id === 'trash') return
+  
     const state = {
       id: item.title,
       noteId: (type === 'notebook') ? item.notebookId : item.notepageId,
@@ -103,7 +104,7 @@ class NoteCards extends React.Component {
       return (
         <Card
           key={i}
-          link
+          link={this.props.history.location.state.id !== 'trash'}
           onClick={() => { this.handleNoteCardClick(item, type) }}
           onContextMenu={(event) => { this.showContextMenu(event, item, type) }}
         >
