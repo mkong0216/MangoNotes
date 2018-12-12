@@ -21,6 +21,7 @@ class Dashboard extends React.Component {
   static propTypes = {
     notebooks: PropTypes.array,
     notepages: PropTypes.array,
+    shared: PropTypes.array,
     user: PropTypes.object.isRequired
   }
 
@@ -41,11 +42,6 @@ class Dashboard extends React.Component {
 
   async componentDidUpdate (prevProps) {
     if (prevProps.location.pathname !== this.props.location.pathname || this.state.checkUpdate) {
-      const historyState = this.props.location.state
-      if (historyState.id === 'workspace' || historyState.id === 'shared') {
-        await retrieveUsersWork(this.props.user.signInData.userId)
-      }
-
       this.getNotebooksAndNotepages()
     }
   }
@@ -63,10 +59,7 @@ class Dashboard extends React.Component {
     try {
       switch (historyState.id) {
         case 'workspace':
-          noteItems = {
-            notebooks: this.props.notebooks,
-            notepages: this.props.notepages
-          }
+          noteItems = await retrieveUsersWork(this.props.user.signInData.userId)
           break;
         case 'recent':
           noteItems.notepages = await retrieveRecentNotepages(this.props.user.signInData.userId)
@@ -75,7 +68,8 @@ class Dashboard extends React.Component {
           noteItems = await getStarredNoteItems(this.props.user.signInData.userId)
           break;
         case 'shared':
-          noteItems.notepages = this.props.shared
+          const { shared } = await retrieveUsersWork(this.props.user.signInData.userId)
+          noteItems.notepages = shared
           break;
         case 'trash':
           noteItems = await getTrashNoteItems(this.props.user.signInData.userId)
@@ -149,9 +143,6 @@ class Dashboard extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    notebooks: state.notebooks.userNotebooks,
-    notepages: state.notepages.userNotepages,
-    shared: state.notepages.sharedNotepages,
     user: state.user
   }
 }
