@@ -73,7 +73,9 @@ exports.GetNotepage = function (req, res) {
     } else if (!notepage) {
       res.status(500).send("Error finding a notepage with the provided notepage id")
     } else {
-      if (notepage.creator === userId || notepage.permissions.indexOf(userId) !== -1) {
+      if (notepage.removed) {
+        res.status(401).send("This notepage was removed")
+      } else if (notepage.creator === userId || notepage.permissions.indexOf(userId) !== -1) {
         res.status(200).send(notepage)
       } else {
         res.status(401).json({
@@ -188,7 +190,7 @@ exports.GetRecentNotepages = function (req, res) {
     }
   }
 
-  const query = Notepage.find({ creator: userId }).select('-content -createdAt').sort({ updatedAt: -1 }).limit(10)
+  const query = Notepage.find({ creator: userId, removed: false }).select('-content -createdAt').sort({ updatedAt: -1 }).limit(10)
   query.exec(handleGetRecentNotepages)
 }
 
@@ -307,7 +309,7 @@ exports.GetStarredNotepages = function (req, res) {
     }
   }
 
-  Notepage.find({ creator: userId, starred: true }, handleFindStarredNotepages)
+  Notepage.find({ creator: userId, starred: true, removed: false }, handleFindStarredNotepages)
 }
 
 exports.GetRemovedNotepages = function (req, res) {

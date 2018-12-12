@@ -70,7 +70,9 @@ exports.GetNotebook = function (req, res) {
     } else if (!notebook) {
       res.status(401).send("Error finding notebook with provided notebook id")
     } else {
-      if (userId && notebook.creator === userId) {
+      if (notebook.removed) {
+        res.status(401).send("This notebook was removed")
+      } else if (userId && notebook.creator === userId) {
         if (notebook.parentNotebook) {
           notebook.getParentNotebook(function (err, parentNotebook) {
             res.status(200).json({
@@ -235,7 +237,7 @@ exports.GetStarredNotebooks = function (req, res) {
     }
   }
 
-  Notebook.find({ creator: userId, starred: true }, handleFindStarredNotebooks)
+  Notebook.find({ creator: userId, starred: true, removed: false }, handleFindStarredNotebooks)
 }
 
 exports.GetRemovedNotebooks = function (req, res) {
