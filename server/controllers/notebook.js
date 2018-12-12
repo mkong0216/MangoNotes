@@ -118,7 +118,7 @@ exports.UpdateNotebook = function (req, res) {
       console.log(error)
       res.status(500).send("Error updating parent notebook.")
     } else {
-      res.sendStatus(200)
+      res.status(200).send("Successfully updated notebook.")
     }
   }
 
@@ -144,7 +144,7 @@ exports.UpdateNotebook = function (req, res) {
       res.status(401).send("Error finding notebook with the provided notebook id")
     } else {
       notebook.title = notebookDetails.title || notebook.title
-      notebook.parentNotebook = notebookDetails.parentNotebook
+      notebook.parentNotebook = notebookDetails.parentNotebook || notebook.parentNotebook
       notebook.starred = (typeof notebookDetails.starred !== 'undefined') ? notebookDetails.starred : notebook.starred
       notebook.removed = (typeof notebookDetails.removed !== 'undefined') ? notebookDetails.removed : notebook.removed
       notebook.save(handleSaveNotebook)
