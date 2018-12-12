@@ -88,7 +88,7 @@ class NoteCards extends React.Component {
 
     this.setState({
       showMenu: true,
-      contextMenuItem: {...item, parentNotebook: this.props.parentNotebook },
+      contextMenuItem: item,
       menuPosition: position,
       itemType: type
     })
