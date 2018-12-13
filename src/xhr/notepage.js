@@ -124,8 +124,7 @@ export async function addSharePermissions (noteId, permissionCode) {
   const endpoint = `/share/${noteId}`
 
   try {
-    const response = await axios.put(endpoint, { permissionCode })
-    console.log(response)
+    await axios.put(endpoint, { permissionCode })
   } catch (error) {
     console.log(error)
     throw Error(error.response.data.error)
