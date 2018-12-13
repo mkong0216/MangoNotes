@@ -5,6 +5,7 @@ import { Grid, Button } from 'semantic-ui-react'
 import NoteDetails from './NoteDetails'
 import UserMenu from './UserMenu'
 import TextEditor from './TextEditor'
+import ShareModal from './ShareModal'
 import { retrieveNotepage } from '../xhr/notepage'
 import { addToUserShared } from '../xhr/user'
 import '../css/Notepage.css'
@@ -17,7 +18,8 @@ class Notepage extends React.Component {
       isLoading: true,
       error: false,
       notepage: null,
-      saveContents: false
+      saveContents: false,
+      openModal: false
     }
   }
 
@@ -46,6 +48,8 @@ class Notepage extends React.Component {
 
   toggleSaveContents = () => { this.setState({ saveContents: !this.state.saveContents }) }
 
+  toggleShareModal = () => { this.setState({ openModal: !this.state.openModal }) }
+
   render () {
     if (this.state.isLoading) return null
 
@@ -70,7 +74,20 @@ class Notepage extends React.Component {
               onClick={this.toggleSaveContents}
             />
             <UserMenu />
+            <Button
+              className="share"
+              icon="share"
+              content="Share"
+              compact secondary
+              labelPosition="left"
+              onClick={this.toggleShareModal}
+            />
           </div>
+          <ShareModal
+            open={this.state.openModal}
+            noteItem={this.state.notepage}
+            closeModal={this.toggleShareModal}
+          />
           <TextEditor
             content={content}
             details={details}
