@@ -143,6 +143,14 @@ exports.UpdateNotebook = function (req, res) {
     } else if (!notebook) {
       res.status(401).send("Error finding notebook with the provided notebook id")
     } else {
+      // If title changed, update contents
+      if (notebookDetails.title) {
+        notebook.contents = notebook.content.map((noteDetail) => {
+          noteDetail.parentNotebook = notebookDetails.title
+          return noteDetail
+        })
+      }
+
       notebook.title = notebookDetails.title || notebook.title
       notebook.parentNotebook = notebookDetails.parentNotebook || notebook.parentNotebook
       notebook.starred = (typeof notebookDetails.starred !== 'undefined') ? notebookDetails.starred : notebook.starred
