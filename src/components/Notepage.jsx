@@ -66,6 +66,15 @@ class Notepage extends React.Component {
           <NoteDetails details={details} userId={userId} shared={shared} />
           <div className="user-actions">
             <Button
+              className="share"
+              icon="share"
+              content="Share"
+              compact
+              color="yellow"
+              labelPosition="left"
+              onClick={this.toggleShareModal}
+            />
+            <Button
               className="save"
               icon="save"
               content="Save"
@@ -74,14 +83,6 @@ class Notepage extends React.Component {
               onClick={this.toggleSaveContents}
             />
             <UserMenu />
-            <Button
-              className="share"
-              icon="share"
-              content="Share"
-              compact secondary
-              labelPosition="left"
-              onClick={this.toggleShareModal}
-            />
           </div>
           <ShareModal
             open={this.state.openModal}
