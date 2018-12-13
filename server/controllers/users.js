@@ -149,7 +149,7 @@ exports.UpdateUsersNotebooks = function (req, res) {
   if (createNew) {
     User.updateOne({ id: userId }, { $push: { notebooks: notebook }}, handleUpdateNotebooks)
   } else {
-    User.updateOne({ id: userId, "notebooks.id":  notebook.id }, { $set: { "notebooks.$.title": notebook.title }}, handleUpdateNotebooks)
+    User.updateOne({ id: userId, "notebooks.id":  notebook.id }, { $set: { "notebooks.$": notebook }}, handleUpdateNotebooks)
   }
 }
 
