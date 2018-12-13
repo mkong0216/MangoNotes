@@ -69,7 +69,8 @@ export async function retrieveUsersWork (userId) {
         return {
           notebookId: notebook.id,
           title: notebook.title,
-          updatedAt: notebook.updatedAt
+          updatedAt: notebook.updatedAt,
+          starred: notebook.starred
         }
       })
 
@@ -82,7 +83,8 @@ export async function retrieveUsersWork (userId) {
         return {
           notepageId: notepage.id,
           title: notepage.title,
-          updatedAt: notepage.updatedAt
+          updatedAt: notepage.updatedAt,
+          starred: notepage.starred
         }
       })
 
@@ -95,7 +97,8 @@ export async function retrieveUsersWork (userId) {
         return {
           notepageId: noteItem.id,
           title: noteItem.title,
-          updatedAt: noteItem.updatedAt
+          updatedAt: noteItem.updatedAt,
+          starred: noteItem.starred
         }
       })
 

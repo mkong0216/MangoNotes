@@ -28,6 +28,10 @@ div.user-actions {
     width: auto;
 }
 
+div.user-actions .ui.button {
+    margin-left: 5px;
+}
+
 .user-actions .ui.button.user-account {
     position: relative;
     top: 0px;
