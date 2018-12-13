@@ -54,15 +54,13 @@ class TextEditor extends React.Component {
   }
 
   componentDidMount () {
-    this.timer = window.setInterval(() => { this.handleSaveContents(this.state.editorState) }, 10000)
+    this.timer = window.setInterval(() => { this.setState({ saveContents: true }) }, 10000)
   }
 
   componentDidUpdate (prevProps) {
-    if ((!prevProps.settings && this.props.settings) || (prevProps.settings !== this.props.settings)) {
+    if (prevProps.settings && this.props.settings && prevProps.settings.symbols !== this.props.settings.symbols) {
       this.applyUserSettings(this.props.settings)
-    }
-
-    if (!prevProps.saveContents && this.props.saveContents) {
+    } else if (!prevProps.saveContents && this.props.saveContents) {
       this.handleSaveContents(this.state.editorState)
     }
   }
@@ -74,9 +72,7 @@ class TextEditor extends React.Component {
   applyUserSettings = (settings) => {
     if (settings.symbols) {
       const decorators = createCompositeDecorator(settings.symbols)
-      const contentState = this.state.editorState.getCurrentContent()
-      const newEditorState = (contentState) ? EditorState.createWithContent(contentState, decorators) : EditorState.createEmpty(decorators)
-      this.handleChange(newEditorState)
+      EditorState.set(this.state.editorState, { decorator: decorators })
     }
   }
 
@@ -97,7 +93,11 @@ class TextEditor extends React.Component {
     this.props.toggleSaveContents()
   }
 
-  handleChange = (editorState) => { this.setState({ editorState }) }
+  handleChange = (editorState) => {
+    if (editorState !== this.state.editorState) {
+      this.setState({ editorState: editorState })
+    }
+  }
 
   handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
