@@ -58,8 +58,9 @@ class TextEditor extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.settings && this.props.settings && prevProps.settings.symbols !== this.props.settings.symbols) {
-      this.applyUserSettings(this.props.settings)
+    if (prevProps.settings !== this.props.settings) {
+      const newEditorState = this.applyUserSettings(this.props.settings)
+      this.setState({ editorState: newEditorState })
     } else if (!prevProps.saveContents && this.props.saveContents) {
       this.handleSaveContents(this.state.editorState)
     }
@@ -72,7 +73,7 @@ class TextEditor extends React.Component {
   applyUserSettings = (settings) => {
     if (settings.symbols) {
       const decorators = createCompositeDecorator(settings.symbols)
-      EditorState.set(this.state.editorState, { decorator: decorators })
+      return EditorState.set(this.state.editorState, { decorator: decorators })
     }
   }
 
